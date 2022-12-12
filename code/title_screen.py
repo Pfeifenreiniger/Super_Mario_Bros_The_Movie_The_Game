@@ -22,12 +22,12 @@ class TitleScreen:
         self.logo_appearance = False
 
         # music
-        self.music = pg.mixer.Sound("../audio/music/Walk_the_Dinosaur_(GXSCC_Gameboy_Mix).wav")
+        self.music = pg.mixer.Sound("../audio/music/Walk_the_Dinosaur_(GXSCC_Gameboy_Mix).ogg")
         self.music.play(loops=-1)
 
     def check_logo_appearance(self):
         if not self.logo_appearance:
-            if pg.time.get_ticks() - self.logo.inst_time > 1500:
+            if pg.time.get_ticks() - self.logo.inst_time > 4500:
                 self.logo_appearance = True
 
     def update(self, dt):
