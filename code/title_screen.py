@@ -18,8 +18,22 @@ class TitleScreen:
         self.clouds = pg.sprite.Group()
         self.cloud_numb = 1
         Cloud(group=self.clouds, cloud_numb=self.cloud_numb)
+        self.logo = Logo(self.screen)
+        self.logo_appearance = False
+
+        # music
+        self.music = pg.mixer.Sound("../audio/music/Walk_the_Dinosaur_(GXSCC_Gameboy_Mix).wav")
+        self.music.play(loops=-1)
+
+    def check_logo_appearance(self):
+        if not self.logo_appearance:
+            if pg.time.get_ticks() - self.logo.inst_time > 1500:
+                self.logo_appearance = True
 
     def update(self, dt):
+
+        self.check_logo_appearance()
+
         self.dinohattan.update(dt)
         self.koopahari_desert.update(dt)
 
@@ -29,6 +43,9 @@ class TitleScreen:
 
         for cloud in self.clouds:
             cloud.update(dt)
+
+        if self.logo_appearance:
+            self.logo.update(dt)
 
         self.draw()
 
@@ -42,6 +59,9 @@ class TitleScreen:
 
         self.dinohattan.draw()
         self.koopahari_desert.draw()
+
+        if self.logo_appearance:
+            self.logo.draw()
 
 
 
@@ -145,4 +165,28 @@ class Cloud(pg.sprite.Sprite):
 
     def update(self, dt):
         self.move(dt)
+
+class Logo:
+    def __init__(self, screen):
+        self.screen = screen
+        self.image = pg.image.load("../graphics/title_screen/logo.png").convert_alpha()
+        self.xy_pos = pg.math.Vector2(x=166, y=-193)
+        self.rect = self.image.get_rect(topleft = self.xy_pos)
+
+        self.inst_time = pg.time.get_ticks()
+
+        # float based movement
+        self.direction = pg.math.Vector2(x=0, y=1)
+        self.speed = 100
+
+    def move(self, dt):
+        if self.xy_pos.y < 68:
+            self.xy_pos.y += self.direction.y * self.speed * dt
+            self.rect.y = round(self.xy_pos.y)
+
+    def update(self, dt):
+        self.move(dt)
+
+    def draw(self):
+        self.screen.blit(self.image, self.rect)
 

@@ -34,7 +34,6 @@ class Game:
 
 
             self.title_screen.update(dt)
-            # self.title_screen.draw()
 
 
 
