@@ -6,6 +6,7 @@ class TitleScreen:
     def __init__(self, event_loop):
         self.screen = pg.display.get_surface()
 
+        # event loop - adding a custom event
         self.event_loop = event_loop
         clouds_timer = pg.event.custom_type()
         pg.time.set_timer(clouds_timer, 12 * 1000)
@@ -20,6 +21,10 @@ class TitleScreen:
         Cloud(group=self.clouds, cloud_numb=self.cloud_numb)
         self.logo = Logo(self.screen)
         self.logo_appearance = False
+        self.press_start = PressStart(self.screen)
+
+        self.button_pressed = False
+        self.button_pressed_timestamp = None
 
         # music
         self.music = pg.mixer.Sound("../audio/music/Walk_the_Dinosaur_(GXSCC_Gameboy_Mix).ogg")
@@ -30,7 +35,28 @@ class TitleScreen:
             if pg.time.get_ticks() - self.logo.inst_time > 4500:
                 self.logo_appearance = True
 
+    def input(self):
+
+        if not self.button_pressed:
+            keys = pg.key.get_pressed()
+
+            if keys[pg.K_SPACE] or keys[pg.K_RETURN]:
+                if not self.logo_appearance:
+                    self.logo_appearance = True
+                if self.logo.xy_pos.y < 68:
+                    self.logo.xy_pos.y = 68
+                    self.logo.rect.y = round(self.logo.xy_pos.y)
+                else:
+                    print("Let's start the game!!!")
+                self.button_pressed = True
+                self.button_pressed_timestamp = pg.time.get_ticks()
+        else:
+            if pg.time.get_ticks() - self.button_pressed_timestamp > 300:
+                self.button_pressed = False
+
     def update(self, dt):
+
+        self.input()
 
         self.check_logo_appearance()
 
@@ -62,6 +88,9 @@ class TitleScreen:
 
         if self.logo_appearance:
             self.logo.draw()
+
+        if self.logo.xy_pos.y >= 68:
+            self.press_start.draw()
 
 
 
@@ -190,3 +219,24 @@ class Logo:
     def draw(self):
         self.screen.blit(self.image, self.rect)
 
+
+class PressStart:
+    def __init__(self, screen):
+        self.screen = screen
+        font = pg.font.Font("../graphics/fonts/masheen/masheen_bold.ttf", 30)
+        text = "PRESS START"
+        self.text_surf =  font.render(text, True, (244, 244, 244))
+        self.text_rect = self.text_surf.get_rect(center = (400, 510))
+
+        self.blink_value = -1
+
+    def slow_blink(self):
+        self.blink_value += 0.06
+        if self.blink_value > 1: self.blink_value = -1
+
+        if self.blink_value >= 0: return True
+        else: return False
+
+    def draw(self):
+        if self.slow_blink():
+            self.screen.blit(self.text_surf, self.text_rect)

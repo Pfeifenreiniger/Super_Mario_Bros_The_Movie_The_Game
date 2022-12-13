@@ -4,7 +4,7 @@ import pygame as pg
 from settings import *
 from events import EventLoop
 
-from title_screen import TitleScreen
+from _00_title_screen.title_screen import TitleScreen
 
 
 class Game:
