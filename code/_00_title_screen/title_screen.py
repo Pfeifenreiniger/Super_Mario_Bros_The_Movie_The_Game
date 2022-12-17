@@ -1,12 +1,14 @@
 
 import pygame as pg
+import sys
 
 from fonts import FONT_MASHEEN_BOLD_30, FONT_PRESS_START_20
 
 
 class TitleScreen:
-    def __init__(self, event_loop):
+    def __init__(self, event_loop, settings):
         self.screen = pg.display.get_surface()
+        self.settings = settings
 
         # event loop - adding a custom event
         self.event_loop = event_loop
@@ -24,26 +26,46 @@ class TitleScreen:
         self.logo = Logo(self.screen)
         self.logo_appearance = False
         self.press_start = PressStart(self.screen)
-        self.menu_pane = MenuPane(self.screen)
+        self.menu_pane = MenuPane(self.screen, settings)
         self.show_pane = False
 
         self.button_pressed = False
         self.button_pressed_timestamp = None
 
         # music
+        self.music_volume = self.settings.music_volume
         self.music = pg.mixer.Sound("../audio/music/Walk_the_Dinosaur_(GXSCC_Gameboy_Mix).ogg")
+        self.music.set_volume(self.music_volume)
         self.music.play(loops=-1)
+
+        # sfx
+        self.sfx_volume = self.settings.sfx_volume
+        self.press_start_sfx = pg.mixer.Sound("../audio/sfx/menu/king_koopa_kill_that_plumber.mp3")
+        self.press_start_sfx.set_volume(self.sfx_volume)
 
         # easter egg - Konami Code
         self.its_a_me_sfx = pg.mixer.Sound("../audio/sfx/menu/sm64_mario_its__a_me.wav")
-        self.its_a_me_sfx.set_volume(0.8)
+        self.its_a_me_sfx.set_volume(self.sfx_volume)
         self.correct_code = ["U", "U", "D", "D", "L", "R", "L", "R", "B", "A"]
         self.code_keys = []
         self.code_done = False
 
+        # set inst_time attribute to logo object
+        self.logo.inst_time = pg.time.get_ticks()
+
+    def check_setting_updates(self):
+        if self.music_volume != self.settings.music_volume:
+            self.music_volume = self.settings.music_volume
+            self.music.set_volume(self.music_volume)
+
+        if self.sfx_volume != self.settings.sfx_volume:
+            self.sfx_volume = self.settings.sfx_volume
+            self.its_a_me_sfx.set_volume(self.sfx_volume)
+            self.press_start_sfx.set_volume(self.sfx_volume)
+
     def check_logo_appearance(self):
         if not self.logo_appearance and hasattr(self, "logo"):
-            if pg.time.get_ticks() - self.logo.inst_time > 4500:
+            if pg.time.get_ticks() - self.logo.inst_time > 1500:
                 self.logo_appearance = True
 
     def input(self):
@@ -68,6 +90,7 @@ class TitleScreen:
                         self.logo.xy_pos.y = 68
                         self.logo.rect.y = round(self.logo.xy_pos.y)
                     else:
+                        self.press_start_sfx.play()
                         self.show_pane = True
                         self.logo_appearance = False
                         del self.logo
@@ -161,6 +184,8 @@ class TitleScreen:
 
         if self.show_pane:
             self.menu_pane.update(dt)
+
+        self.check_setting_updates()
 
         self.draw()
 
@@ -293,8 +318,6 @@ class Logo:
         self.xy_pos = pg.math.Vector2(x=166, y=-193)
         self.rect = self.image.get_rect(topleft = self.xy_pos)
 
-        self.inst_time = pg.time.get_ticks()
-
         # float based movement
         self.direction = pg.math.Vector2(x=0, y=1)
         self.speed = 100
@@ -333,14 +356,16 @@ class PressStart:
             self.screen.blit(self.text_surf, self.text_rect)
 
 class MenuPane:
-    def __init__(self, screen):
+    def __init__(self, screen, settings):
         self.screen = screen
+        self.settings = settings
 
         # sfx
+        self.sfx_volume = self.settings.sfx_volume
         self.sfx_menu_move = pg.mixer.Sound("../audio/sfx/menu/menu_move.wav")
-        self.sfx_menu_move.set_volume(0.5)
+        self.sfx_menu_move.set_volume(self.sfx_volume)
         self.sfx_menu_pane_closing = pg.mixer.Sound("../audio/sfx/menu/screen_done.wav")
-        self.sfx_menu_pane_closing.set_volume(0.6)
+        self.sfx_menu_pane_closing.set_volume(self.sfx_volume)
 
         # pane graphic
         self.pane_width = 650
@@ -363,6 +388,12 @@ class MenuPane:
         self.key_pressed_timestamp = pg.time.get_ticks()
         self.curr_menu_point = [0, "NEW GAME"] # starting at main menu > new_game
 
+    def check_setting_updates(self):
+        if self.sfx_volume != self.settings.sfx_volume:
+            self.sfx_volume = self.settings.sfx_volume
+            self.sfx_menu_move.set_volume(self.sfx_volume)
+            self.sfx_menu_pane_closing.set_volume(self.sfx_volume)
+
     def load_fonts(self):
         # basic setup
         self.font = FONT_PRESS_START_20
@@ -372,11 +403,13 @@ class MenuPane:
         # menus
         # main menu (0)
         font_surf_new_game = self.font.render("NEW GAME", False, self.font_color_white)
-        font_rect_new_game = font_surf_new_game.get_rect(center = (400, self.xy_pos_pane.y + round((self.pane_height_end / 4) * 1)))
+        font_rect_new_game = font_surf_new_game.get_rect(center = (400, self.xy_pos_pane.y + round((self.pane_height_end / 5) * 1)))
         font_surf_load_game = self.font.render("LOAD GAME", False, self.font_color_white)
-        font_rect_load_game = font_surf_load_game.get_rect(center = (400, self.xy_pos_pane.y + round((self.pane_height_end / 4) * 2)))
+        font_rect_load_game = font_surf_load_game.get_rect(center = (400, self.xy_pos_pane.y + round((self.pane_height_end / 5) * 2)))
         font_surf_settings = self.font.render("SETTINGS", False, self.font_color_white)
-        font_rect_settings = font_surf_settings.get_rect(center = (400, self.xy_pos_pane.y + round((self.pane_height_end / 4) * 3)))
+        font_rect_settings = font_surf_settings.get_rect(center = (400, self.xy_pos_pane.y + round((self.pane_height_end / 5) * 3)))
+        font_surf_quit = self.font.render("QUIT", False, self.font_color_white)
+        font_rect_quit = font_surf_quit.get_rect(center = (400, self.xy_pos_pane.y + round((self.pane_height_end / 5) * 4)))
 
         # new game menu (1)
         # ...
@@ -385,13 +418,21 @@ class MenuPane:
         # ...
 
         # settings menu (3)
-        # ...
+        font_surf_music_vol = self.font.render(f"MUSIC VOL.: {int(self.settings.music_volume * 100)}%", False, self.font_color_white)
+        font_rect_music_vol = font_surf_music_vol.get_rect(center = (400, self.xy_pos_pane.y + round((self.pane_height_end / 5) * 1)))
+        font_surf_sfx_vol = self.font.render(f"SFX VOL.: {int(self.settings.sfx_volume * 100)}%", False, self.font_color_white)
+        font_rect_sfx_vol = font_surf_sfx_vol.get_rect(center = (400, self.xy_pos_pane.y + round((self.pane_height_end / 5) * 2)))
+        font_surf_screen_mode = self.font.render(f"{self.settings.screen_mode}", False, self.font_color_white)
+        font_rect_screen_mode = font_surf_screen_mode.get_rect(center = (400, self.xy_pos_pane.y + round((self.pane_height_end / 5) * 3)))
+        font_surf_back = self.font.render("BACK", False, self.font_color_white)
+        font_rect_back = font_surf_back.get_rect(center = (400, self.xy_pos_pane.y + round((self.pane_height_end / 5) * 4)))
 
         self.fonts =  {
             0 : { # main menu
                 "NEW GAME" : [font_surf_new_game, font_rect_new_game],
                 "LOAD GAME" : [font_surf_load_game, font_rect_load_game],
-                "SETTINGS" : [font_surf_settings, font_rect_settings]
+                "SETTINGS" : [font_surf_settings, font_rect_settings],
+                "QUIT" : [font_surf_quit, font_rect_quit]
             },
             1 : { # new game
 
@@ -400,7 +441,10 @@ class MenuPane:
 
             },
             3 : { # settings
-
+                f"MUSIC VOL.: {int(self.settings.music_volume * 100)}%" : [font_surf_music_vol, font_rect_music_vol],
+                f"SFX VOL.: {int(self.settings.sfx_volume * 100)}%" : [font_surf_sfx_vol, font_rect_sfx_vol],
+                f"{self.settings.screen_mode}" : [font_surf_screen_mode, font_rect_screen_mode],
+                "BACK" : [font_surf_back, font_rect_back]
             }
         }
 
@@ -439,16 +483,35 @@ class MenuPane:
 
             keys = pg.key.get_pressed()
 
-            if keys[pg.K_SPACE] or keys[pg.K_RETURN]:
+            if keys[pg.K_SPACE] or keys[pg.K_RETURN] or keys[pg.K_KP_ENTER]:
 
-                key_pressed()
+                if self.curr_menu_point[0] == 0 or (self.curr_menu_point[0] == 3 and self.curr_menu_point[1] == "BACK"):
 
-                self.direction.y = -1 # decreases pane height
-                self.show_fonts = False
+                    key_pressed()
 
-                if self.curr_menu_point[0] == 0: # main menu
+                    self.direction.y = -1 # decreases pane height
                     self.sfx_menu_pane_closing.play()
-                    print(f"LET'S A GO TO {self.curr_menu_point[1]}")
+                    self.show_fonts = False
+
+                    if self.curr_menu_point[0] == 0: # main menu
+                        print(f"LET'S A GO TO {self.curr_menu_point[1]}")
+
+                        if self.curr_menu_point[1] == "QUIT":
+                            pg.quit()
+                            sys.exit()
+                        elif self.curr_menu_point[1] == "SETTINGS":
+                            self.curr_menu_point[0] = 3
+                            self.curr_menu_point[1] = list(self.fonts[3].keys())[0]
+
+                    elif self.curr_menu_point[0] == 1: # new game
+                        pass
+
+                    elif self.curr_menu_point[0] == 2: # load game
+                        pass
+
+                    elif self.curr_menu_point[0] == 3: # settings
+                        self.curr_menu_point[0] = 0
+                        self.curr_menu_point[1] = "SETTINGS"
 
             elif keys[pg.K_DOWN] or keys[pg.K_s]:
 
@@ -461,7 +524,25 @@ class MenuPane:
                     match self.curr_menu_point[1]:
                         case "NEW GAME" : self.curr_menu_point[1] = "LOAD GAME"
                         case "LOAD GAME" : self.curr_menu_point[1] = "SETTINGS"
-                        case "SETTINGS" : self.curr_menu_point[1] = "NEW GAME"
+                        case "SETTINGS" : self.curr_menu_point[1] = "QUIT"
+                        case "QUIT" : self.curr_menu_point[1] = "NEW GAME"
+
+                elif self.curr_menu_point[0] == 1: # new game
+                    pass
+
+                elif self.curr_menu_point[0] == 2: # load game
+                    pass
+
+                elif self.curr_menu_point[0] == 3: # settings
+
+                    if self.curr_menu_point[1].startswith("MUSIC VOL."):
+                        self.curr_menu_point[1] = list(self.fonts[3].keys())[1]
+                    elif self.curr_menu_point[1].startswith("SFX VOL."):
+                        self.curr_menu_point[1] = list(self.fonts[3].keys())[2]
+                    elif self.curr_menu_point[1] == "WINDOW" or self.curr_menu_point[1] == "FULL SCREEN":
+                        self.curr_menu_point[1] = list(self.fonts[3].keys())[3]
+                    elif self.curr_menu_point[1] == "BACK":
+                        self.curr_menu_point[1] = list(self.fonts[3].keys())[0]
 
             elif keys[pg.K_UP] or keys[pg.K_w]:
 
@@ -472,9 +553,86 @@ class MenuPane:
                 if self.curr_menu_point[0] == 0: # main menu
 
                     match self.curr_menu_point[1]:
-                        case "NEW GAME" : self.curr_menu_point[1] = "SETTINGS"
+                        case "NEW GAME" : self.curr_menu_point[1] = "QUIT"
                         case "LOAD GAME" : self.curr_menu_point[1] = "NEW GAME"
                         case "SETTINGS" : self.curr_menu_point[1] = "LOAD GAME"
+                        case "QUIT" : self.curr_menu_point[1] = "SETTINGS"
+
+                elif self.curr_menu_point[0] == 1:  # new game
+                    pass
+
+                elif self.curr_menu_point[0] == 2:  # load game
+                    pass
+
+                elif self.curr_menu_point[0] == 3:  # settings
+
+                    if self.curr_menu_point[1].startswith("MUSIC VOL."):
+                        self.curr_menu_point[1] = list(self.fonts[3].keys())[3]
+                    elif self.curr_menu_point[1].startswith("SFX VOL."):
+                        self.curr_menu_point[1] = list(self.fonts[3].keys())[0]
+                    elif self.curr_menu_point[1] == "WINDOW" or self.curr_menu_point[1] == "FULL SCREEN":
+                        self.curr_menu_point[1] = list(self.fonts[3].keys())[1]
+                    elif self.curr_menu_point[1] == "BACK":
+                        self.curr_menu_point[1] = list(self.fonts[3].keys())[2]
+
+            elif keys[pg.K_LEFT] or keys[pg.K_a]:
+
+                if self.curr_menu_point[0] == 3 and self.curr_menu_point[1] != "BACK": # settings
+                    key_pressed()
+
+                    self.sfx_menu_move.play()
+
+                    if self.curr_menu_point[1].startswith("MUSIC VOL."):
+                        self.settings.decrease_volume(music_or_sfx="music")
+                        self.curr_menu_point[1] = f"MUSIC VOL.: {int(self.settings.music_volume * 100)}%"
+                        self.load_fonts()
+
+                    elif self.curr_menu_point[1].startswith("SFX VOL."):
+                        self.settings.decrease_volume(music_or_sfx="sfx")
+                        self.curr_menu_point[1] = f"SFX VOL.: {int(self.settings.sfx_volume * 100)}%"
+                        self.load_fonts()
+
+                    elif self.curr_menu_point[1] == "WINDOW":
+                        self.settings.screen_mode = "FULL SCREEN"
+                        self.curr_menu_point[1] = self.settings.screen_mode
+                        self.load_fonts()
+                        self.screen = pg.display.set_mode((self.settings.WINDOW_WIDTH, self.settings.WINDOW_HEIGHT), pg.FULLSCREEN | pg.SCALED)
+
+                    elif self.curr_menu_point[1] == "FULL SCREEN":
+                        self.settings.screen_mode = "WINDOW"
+                        self.curr_menu_point[1] = self.settings.screen_mode
+                        self.load_fonts()
+                        self.screen = pg.display.set_mode((self.settings.WINDOW_WIDTH, self.settings.WINDOW_HEIGHT))
+
+            elif keys[pg.K_RIGHT] or keys[pg.K_d]:
+
+                if self.curr_menu_point[0] == 3 and self.curr_menu_point[1] != "BACK": # settings
+                    key_pressed()
+
+                    self.sfx_menu_move.play()
+
+                    if self.curr_menu_point[1].startswith("MUSIC VOL."):
+                        self.settings.increase_volume(music_or_sfx="music")
+                        self.curr_menu_point[1] = f"MUSIC VOL.: {int(self.settings.music_volume * 100)}%"
+                        self.load_fonts()
+
+                    elif self.curr_menu_point[1].startswith("SFX VOL."):
+                        self.settings.increase_volume(music_or_sfx="sfx")
+                        self.curr_menu_point[1] = f"SFX VOL.: {int(self.settings.sfx_volume * 100)}%"
+                        self.load_fonts()
+
+                    elif self.curr_menu_point[1] == "WINDOW":
+                        self.settings.screen_mode = "FULL SCREEN"
+                        self.curr_menu_point[1] = self.settings.screen_mode
+                        self.load_fonts()
+                        self.screen = pg.display.set_mode((self.settings.WINDOW_WIDTH, self.settings.WINDOW_HEIGHT), pg.FULLSCREEN | pg.SCALED)
+
+                    elif self.curr_menu_point[1] == "FULL SCREEN":
+                        self.settings.screen_mode = "WINDOW"
+                        self.curr_menu_point[1] = self.settings.screen_mode
+                        self.load_fonts()
+                        self.screen = pg.display.set_mode((self.settings.WINDOW_WIDTH, self.settings.WINDOW_HEIGHT))
+
         else:
             if pg.time.get_ticks() - self.key_pressed_timestamp >= 400:
                 self.key_pressed = False
@@ -483,6 +641,7 @@ class MenuPane:
         self.input()
         self.animate_pane(dt)
         self.load_pane()
+        self.check_setting_updates()
 
     def draw_fonts(self):
         if self.show_fonts:

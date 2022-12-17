@@ -1,7 +1,7 @@
 
 import pygame as pg
 
-from settings import *
+from settings import Settings
 from events import EventLoop
 
 from _00_title_screen.title_screen import TitleScreen
@@ -12,7 +12,9 @@ class Game:
         # basic setup
         pg.init()
         self.event_loop = EventLoop()
-        self.resolution = (WINDOW_WIDTH, WINDOW_HEIGHT)
+        self.settings = Settings()
+        self.resolution = (self.settings.WINDOW_WIDTH, self.settings.WINDOW_HEIGHT)
+        # self.SCREEN = pg.display.set_mode(self.resolution, pg.FULLSCREEN|pg.SCALED)
         self.SCREEN = pg.display.set_mode(self.resolution)
         self.clock = pg.time.Clock()
         self.FPS = 30
@@ -21,7 +23,7 @@ class Game:
         self.setup()
 
     def setup(self):
-        self.title_screen = TitleScreen(event_loop=self.event_loop)
+        self.title_screen = TitleScreen(event_loop=self.event_loop, settings=self.settings)
 
     def game_loop(self):
 
