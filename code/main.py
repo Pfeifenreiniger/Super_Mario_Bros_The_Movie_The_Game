@@ -5,6 +5,7 @@ from settings import Settings
 from events import EventLoop
 
 from _00_title_screen.title_screen import TitleScreen
+from _01_level.level import _01_Main
 
 
 class Game:
@@ -23,7 +24,8 @@ class Game:
         self.setup()
 
     def setup(self):
-        self.title_screen = TitleScreen(event_loop=self.event_loop, settings=self.settings)
+        # self.title_screen = TitleScreen(event_loop=self.event_loop, settings=self.settings)
+        self._01_level = _01_Main(event_loop=self.event_loop, settings=self.settings)
 
     def game_loop(self):
 
@@ -35,7 +37,8 @@ class Game:
             dt = self.clock.tick(self.FPS) / 1000
 
 
-            self.title_screen.update(dt)
+            # self.title_screen.update(dt)
+            self._01_level.update(dt)
 
 
 
