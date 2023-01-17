@@ -4,12 +4,13 @@ import pygame as pg
 from layers import LAYERS
 
 class Player(pg.sprite.Sprite):
-    def __init__(self, groups, pos, collision_sprites):
+    def __init__(self, groups, pos, collision_sprites, map_width):
         super().__init__(groups)
 
         self.image = pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         self.xy_pos = pg.math.Vector2(self.rect.topleft)
+        self.start_xy_pos = self.xy_pos
         self.z = LAYERS['MG']
         self.direction = pg.math.Vector2(x=0, y=0)
         self.speed = 250
@@ -21,6 +22,8 @@ class Player(pg.sprite.Sprite):
 
         # collision
         self.collision_sprites = collision_sprites
+
+        self.map_width = map_width
 
 
     def check_floor_contact(self):
@@ -77,8 +80,13 @@ class Player(pg.sprite.Sprite):
     def move(self, dt):
 
         # horizontal movement
-        self.xy_pos.x += self.direction.x * self.speed * dt
+        x_movement = self.direction.x * self.speed * dt
+
+        if self.xy_pos.x + x_movement > 0 and self.xy_pos.x + x_movement < self.map_width - self.rect.width:
+            self.xy_pos.x += x_movement
+
         self.rect.x = round(self.xy_pos.x)
+
 
         # vertical movement
         if not self.on_floor:
@@ -91,5 +99,7 @@ class Player(pg.sprite.Sprite):
         self.check_floor_contact()
         self.input()
         self.move(dt)
+        # print("current rect", self.rect.left)
+        # print("old rect", self.old_rect.left)
 
 

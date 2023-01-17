@@ -7,7 +7,7 @@ from fonts import FONT_MASHEEN_BOLD_30, FONT_PRESS_START_20
 
 class TitleScreen:
     def __init__(self, event_loop, settings):
-        self.screen = pg.display.get_surface()
+        self.SCREEN = pg.display.get_surface()
         self.settings = settings
 
         # event loop - adding a custom event
@@ -17,16 +17,16 @@ class TitleScreen:
         self.event_loop.add_event(clouds_timer)
 
         # inst objects
-        self.sky = Sky(self.screen)
-        self.dinohattan = Dinohattan(self.screen)
-        self.koopahari_desert = KoopahariDesert(self.screen)
+        self.sky = Sky(self.SCREEN)
+        self.dinohattan = Dinohattan(self.SCREEN)
+        self.koopahari_desert = KoopahariDesert(self.SCREEN)
         self.clouds = pg.sprite.Group()
         self.cloud_numb = 1
         Cloud(group=self.clouds, cloud_numb=self.cloud_numb)
-        self.logo = Logo(self.screen)
+        self.logo = Logo(self.SCREEN)
         self.logo_appearance = False
-        self.press_start = PressStart(self.screen)
-        self.menu_pane = MenuPane(self.screen, settings)
+        self.press_start = PressStart(self.SCREEN)
+        self.menu_pane = MenuPane(self.SCREEN, settings)
         self.show_pane = False
 
         self.button_pressed = False
@@ -194,7 +194,7 @@ class TitleScreen:
         self.sky.draw()
 
         for cloud in self.clouds:
-            self.screen.blit(cloud.image, cloud.rect)
+            self.SCREEN.blit(cloud.image, cloud.rect)
 
 
         self.dinohattan.draw()
@@ -212,7 +212,7 @@ class TitleScreen:
 
 class KoopahariDesert:
     def __init__(self, screen):
-        self.screen = screen
+        self.SCREEN = screen
         self.image = pg.image.load("../graphics/title_screen/koopahari_desert.png").convert_alpha()
         self.xy_pos = pg.math.Vector2(x=0, y=80)
         self.rect = self.image.get_rect(topleft = self.xy_pos)
@@ -235,11 +235,11 @@ class KoopahariDesert:
         self.move(dt)
 
     def draw(self):
-        self.screen.blit(self.image, self.rect)
+        self.SCREEN.blit(self.image, self.rect)
 
 class Dinohattan:
     def __init__(self, screen):
-        self.screen = screen
+        self.SCREEN = screen
         self.image_front = pg.image.load("../graphics/title_screen/dinohattan_front.png").convert_alpha()
         self.xy_front = pg.math.Vector2(x=0, y=64)
         self.rect_front = self.image_front.get_rect(topleft = self.xy_front)
@@ -277,18 +277,18 @@ class Dinohattan:
         self.move(dt)
 
     def draw(self):
-        self.screen.blit(self.image_back, self.rect_back)
-        self.screen.blit(self.image_front, self.rect_front)
+        self.SCREEN.blit(self.image_back, self.rect_back)
+        self.SCREEN.blit(self.image_front, self.rect_front)
 
 class Sky:
     def __init__(self, screen):
-        self.screen = screen
+        self.SCREEN = screen
         self.image = pg.image.load("../graphics/title_screen/sky.png").convert()
         self.xy_pos = pg.math.Vector2(x=0, y=0)
         self.rect = self.image.get_rect(topleft=self.xy_pos)
 
     def draw(self):
-        self.screen.blit(self.image, self.rect)
+        self.SCREEN.blit(self.image, self.rect)
 
 class Cloud(pg.sprite.Sprite):
     def __init__(self, group, cloud_numb:int):
@@ -313,7 +313,7 @@ class Cloud(pg.sprite.Sprite):
 
 class Logo:
     def __init__(self, screen):
-        self.screen = screen
+        self.SCREEN = screen
         self.image = pg.image.load("../graphics/title_screen/logo.png").convert_alpha()
         self.xy_pos = pg.math.Vector2(x=166, y=-193)
         self.rect = self.image.get_rect(topleft = self.xy_pos)
@@ -331,12 +331,12 @@ class Logo:
         self.move(dt)
 
     def draw(self):
-        self.screen.blit(self.image, self.rect)
+        self.SCREEN.blit(self.image, self.rect)
 
 
 class PressStart:
     def __init__(self, screen):
-        self.screen = screen
+        self.SCREEN = screen
         font = FONT_MASHEEN_BOLD_30
         text = "PRESS START"
         self.text_surf =  font.render(text, True, (244, 244, 244))
@@ -353,11 +353,11 @@ class PressStart:
 
     def draw(self):
         if self.slow_blink():
-            self.screen.blit(self.text_surf, self.text_rect)
+            self.SCREEN.blit(self.text_surf, self.text_rect)
 
 class MenuPane:
     def __init__(self, screen, settings):
-        self.screen = screen
+        self.SCREEN = screen
         self.settings = settings
 
         # sfx
@@ -596,13 +596,13 @@ class MenuPane:
                         self.settings.screen_mode = "FULL SCREEN"
                         self.curr_menu_point[1] = self.settings.screen_mode
                         self.load_fonts()
-                        self.screen = pg.display.set_mode((self.settings.WINDOW_WIDTH, self.settings.WINDOW_HEIGHT), pg.FULLSCREEN | pg.SCALED)
+                        self.SCREEN = pg.display.set_mode((self.settings.WINDOW_WIDTH, self.settings.WINDOW_HEIGHT), pg.FULLSCREEN | pg.SCALED)
 
                     elif self.curr_menu_point[1] == "FULL SCREEN":
                         self.settings.screen_mode = "WINDOW"
                         self.curr_menu_point[1] = self.settings.screen_mode
                         self.load_fonts()
-                        self.screen = pg.display.set_mode((self.settings.WINDOW_WIDTH, self.settings.WINDOW_HEIGHT))
+                        self.SCREEN = pg.display.set_mode((self.settings.WINDOW_WIDTH, self.settings.WINDOW_HEIGHT))
 
             elif keys[pg.K_RIGHT] or keys[pg.K_d]:
 
@@ -625,13 +625,13 @@ class MenuPane:
                         self.settings.screen_mode = "FULL SCREEN"
                         self.curr_menu_point[1] = self.settings.screen_mode
                         self.load_fonts()
-                        self.screen = pg.display.set_mode((self.settings.WINDOW_WIDTH, self.settings.WINDOW_HEIGHT), pg.FULLSCREEN | pg.SCALED)
+                        self.SCREEN = pg.display.set_mode((self.settings.WINDOW_WIDTH, self.settings.WINDOW_HEIGHT), pg.FULLSCREEN | pg.SCALED)
 
                     elif self.curr_menu_point[1] == "FULL SCREEN":
                         self.settings.screen_mode = "WINDOW"
                         self.curr_menu_point[1] = self.settings.screen_mode
                         self.load_fonts()
-                        self.screen = pg.display.set_mode((self.settings.WINDOW_WIDTH, self.settings.WINDOW_HEIGHT))
+                        self.SCREEN = pg.display.set_mode((self.settings.WINDOW_WIDTH, self.settings.WINDOW_HEIGHT))
 
         else:
             if pg.time.get_ticks() - self.key_pressed_timestamp >= 400:
@@ -654,8 +654,8 @@ class MenuPane:
             self.fonts[self.curr_menu_point[0]][self.curr_menu_point[1]][0] = self.font.render(self.curr_menu_point[1], False, self.font_color_red)
 
             for font in self.fonts[self.curr_menu_point[0]].values():
-                self.screen.blit(font[0], font[1])
+                self.SCREEN.blit(font[0], font[1])
 
     def draw(self):
-        self.screen.blit(self.menu_pane_surf, self.menu_pane_rect)
+        self.SCREEN.blit(self.menu_pane_surf, self.menu_pane_rect)
         self.draw_fonts()
