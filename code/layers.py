@@ -1,6 +1,8 @@
 
 LAYERS = {
     'BG' : 0,
-    'MG' : 1,
-    'FG' : 2
+    'BG_Objects': 1,
+    'MG' : 2,
+    'FG_Objects' : 3,
+    'FG_Tiles': 4
 }

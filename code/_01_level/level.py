@@ -4,6 +4,7 @@ import pygame as pg
 
 from pytmx.util_pygame import load_pygame
 from _01_level.player import Player
+from _01_level.lamp import Lamp
 from tile import Tile, CollisionTile
 from layers import LAYERS
 
@@ -23,7 +24,7 @@ class AllSprites(pg.sprite.Group):
             self.offset.x = player.rect.centerx - self.settings.WINDOW_WIDTH // 2
         else:
             self.offset.x = 0 if player.rect.centerx <= 400 else self.map_width - self.settings.WINDOW_WIDTH
-        self.offset.y = player.rect.centery - self.settings.WINDOW_HEIGHT // 2
+        self.offset.y = player.rect.centery - self.settings.WINDOW_HEIGHT // 1.8
 
         self.offset_rect = sprite.image.get_rect(center=sprite.rect.center)
         self.offset_rect.center -= self.offset
@@ -67,21 +68,34 @@ class _01_Main:
                  z=LAYERS['MG'],
                  player=self.player)
 
-        # objects: Background
-        for obj in self.tmx_map.get_layer_by_name('BG'):
+        # objects: Background large tiles
+        for obj in self.tmx_map.get_layer_by_name('BG_LargeTiles'):
             Tile(groups=self.all_sprites,
                  pos=(obj.x, obj.y),
                  surf=obj.image,
                  z=LAYERS['BG'],
                  player=self.player)
 
-        # objects: Foreground
-        for obj in self.tmx_map.get_layer_by_name('FG'):
+        # objects: Background details
+        for obj in self.tmx_map.get_layer_by_name('BG_Objects'):
             Tile(groups=self.all_sprites,
                  pos=(obj.x, obj.y),
                  surf=obj.image,
-                 z=LAYERS['FG'],
+                 z=LAYERS['BG_Objects'],
                  player=self.player)
+
+        # objects: Foreground
+        for obj in self.tmx_map.get_layer_by_name('FG_Objects'):
+            if obj.name == "Lamp":
+                self.lamp = Lamp(groups=self.all_sprites,
+                                 pos=(obj.x, obj.y),
+                                 player=self.player)
+            else:
+                Tile(groups=self.all_sprites,
+                     pos=(obj.x, obj.y),
+                     surf=obj.image,
+                     z=LAYERS['FG_Objects'],
+                     player=self.player)
 
     def update(self, dt):
 
@@ -89,6 +103,10 @@ class _01_Main:
 
             if sprite.__class__.__name__ == "Tile" or sprite.__class__.__name__ == "CollisionTile":
                 if sprite.check_distance_to_player(1150):
+                    self.all_sprites.draw(sprite=sprite, player=self.player)
+            elif sprite.__class__.__name__ == "Lamp":
+                if sprite.check_distance_to_player(800):
+                    self.lamp.update(dt)
                     self.all_sprites.draw(sprite=sprite, player=self.player)
             elif sprite.__class__.__name__ == "Player":
                 self.player.update(dt)
