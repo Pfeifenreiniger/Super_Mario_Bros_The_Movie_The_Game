@@ -4,7 +4,7 @@ import pygame as pg
 from layers import LAYERS
 
 class Player(pg.sprite.Sprite):
-    def __init__(self, groups, pos, collision_sprites, map_width):
+    def __init__(self, groups, pos, collision_sprites, map_width, death_zones):
         super().__init__(groups)
 
         self.image = pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha()
@@ -25,6 +25,13 @@ class Player(pg.sprite.Sprite):
 
         self.map_width = map_width
 
+        self.death_zones = death_zones
+
+    def check_fall_death(self):
+
+        if self.rect.collidelist(self.death_zones) >= 0:
+            self.xy_pos = self.start_xy_pos
+            self.rect.topleft = self.xy_pos
 
     def check_floor_contact(self):
 
@@ -70,7 +77,7 @@ class Player(pg.sprite.Sprite):
             else:
                 self.direction.x = 0
 
-        if not self.jumped:
+        if self.on_floor and not self.jumped:
             # vertical input (jumping)
             if keys[pg.K_UP] or keys[pg.K_SPACE]:
                 self.direction.y -= self.jump_speed
@@ -96,6 +103,7 @@ class Player(pg.sprite.Sprite):
 
     def update(self, dt):
         self.old_rect = self.rect.copy()
+        self.check_fall_death()
         self.check_floor_contact()
         self.input()
         self.move(dt)
