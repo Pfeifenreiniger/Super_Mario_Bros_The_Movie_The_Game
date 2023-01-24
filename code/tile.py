@@ -27,6 +27,6 @@ class CollisionTile(Tile):
                          z=z,
                          player=player)
 
-        self.old_rect = self.rect.copy()
+        # self.old_rect = self.rect.copy()
 
 

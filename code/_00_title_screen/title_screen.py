@@ -596,13 +596,13 @@ class MenuPane:
                         self.settings.screen_mode = "FULL SCREEN"
                         self.curr_menu_point[1] = self.settings.screen_mode
                         self.load_fonts()
-                        self.SCREEN = pg.display.set_mode((self.settings.WINDOW_WIDTH, self.settings.WINDOW_HEIGHT), pg.FULLSCREEN | pg.SCALED)
+                        self.SCREEN = self.settings.get_display_screen()
 
                     elif self.curr_menu_point[1] == "FULL SCREEN":
                         self.settings.screen_mode = "WINDOW"
                         self.curr_menu_point[1] = self.settings.screen_mode
                         self.load_fonts()
-                        self.SCREEN = pg.display.set_mode((self.settings.WINDOW_WIDTH, self.settings.WINDOW_HEIGHT))
+                        self.SCREEN = self.settings.get_display_screen()
 
             elif keys[pg.K_RIGHT] or keys[pg.K_d]:
 
@@ -625,13 +625,13 @@ class MenuPane:
                         self.settings.screen_mode = "FULL SCREEN"
                         self.curr_menu_point[1] = self.settings.screen_mode
                         self.load_fonts()
-                        self.SCREEN = pg.display.set_mode((self.settings.WINDOW_WIDTH, self.settings.WINDOW_HEIGHT), pg.FULLSCREEN | pg.SCALED)
+                        self.SCREEN = self.settings.get_display_screen()
 
                     elif self.curr_menu_point[1] == "FULL SCREEN":
                         self.settings.screen_mode = "WINDOW"
                         self.curr_menu_point[1] = self.settings.screen_mode
                         self.load_fonts()
-                        self.SCREEN = pg.display.set_mode((self.settings.WINDOW_WIDTH, self.settings.WINDOW_HEIGHT))
+                        self.SCREEN = self.settings.get_display_screen()
 
         else:
             if pg.time.get_ticks() - self.key_pressed_timestamp >= 400:

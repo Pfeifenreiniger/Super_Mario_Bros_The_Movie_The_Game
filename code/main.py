@@ -1,22 +1,20 @@
 
 import pygame as pg
+pg.init()
 
 from settings import Settings
 from events import EventLoop
 
 from _00_title_screen.title_screen import TitleScreen
-from _01_level.level import _01_Main
+from _01_level._01_main import _01_Main
 
 
 class Game:
     def __init__(self):
         # basic setup
-        pg.init()
         self.event_loop = EventLoop()
         self.settings = Settings()
-        self.resolution = (self.settings.WINDOW_WIDTH, self.settings.WINDOW_HEIGHT)
-        # self.SCREEN = pg.display.set_mode(self.resolution, pg.FULLSCREEN|pg.SCALED)
-        self.SCREEN = pg.display.set_mode(self.resolution)
+        self.SCREEN = self.settings.get_display_screen()
         self.clock = pg.time.Clock()
         self.FPS = 30
         pg.display.set_caption("SUPER MARIO BROS. THE MOVIE: THE GAME")
@@ -29,7 +27,7 @@ class Game:
 
     def game_loop(self):
 
-        while True:
+        while 1:
 
             self.event_loop.loop_events()
 
