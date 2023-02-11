@@ -10,9 +10,8 @@ class Settings:
         self.WINDOW_HEIGHT = 600
         self.resolution = (self.WINDOW_WIDTH, self.WINDOW_HEIGHT)
         self.screen_mode = "WINDOW"
-
-        self.flags_window = pg.DOUBLEBUF
-        self.flags_fullscreen = pg.FULLSCREEN|pg.SCALED|pg.DOUBLEBUF
+        self.flags_window = pg.HWSURFACE|pg.DOUBLEBUF
+        self.flags_fullscreen = pg.FULLSCREEN|pg.SCALED|pg.HWSURFACE|pg.DOUBLEBUF
 
         # audio settings
         self.music_volume = 1

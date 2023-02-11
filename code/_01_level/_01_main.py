@@ -150,7 +150,7 @@ class _01_Main:
             if sprite.__class__.__name__ == "Player":
                 self.all_sprites.draw(sprite=sprite, player=self.player)
             else:
-                if sprite.check_distance_to_player(900):
+                if sprite.check_distance_to_player(1200):
                     if sprite.__class__.__name__ == "Tile" or sprite.__class__.__name__ == "CollisionTile":
                         self.all_sprites.draw(sprite=sprite, player=self.player)
                     elif sprite.__class__.__name__ == "Lamp":

@@ -7,7 +7,38 @@ class Player(pg.sprite.Sprite):
     def __init__(self, groups, pos, collision_sprites, map_width, death_zones):
         super().__init__(groups)
 
-        self.image = pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha()
+        self.sprites = {
+            "stand_left" : (pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha(),
+                            pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha()),
+            "stand_right" : (pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha(),
+                             pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha()),
+            "run_left" : (pg.image.load("../graphics/01_excavation_site/entities/player/run_left/player_run_left_f1.png").convert_alpha(),
+                          pg.image.load("../graphics/01_excavation_site/entities/player/run_left/player_run_left_f2.png").convert_alpha(),
+                          pg.image.load("../graphics/01_excavation_site/entities/player/run_left/player_run_left_f3.png").convert_alpha(),
+                          pg.image.load("../graphics/01_excavation_site/entities/player/run_left/player_run_left_f4.png").convert_alpha(),
+                          pg.image.load("../graphics/01_excavation_site/entities/player/run_left/player_run_left_f5.png").convert_alpha(),
+                          pg.image.load("../graphics/01_excavation_site/entities/player/run_left/player_run_left_f6.png").convert_alpha(),
+                          pg.image.load("../graphics/01_excavation_site/entities/player/run_left/player_run_left_f7.png").convert_alpha(),
+                          pg.image.load("../graphics/01_excavation_site/entities/player/run_left/player_run_left_f8.png").convert_alpha()),
+            "run_right" : (pg.image.load("../graphics/01_excavation_site/entities/player/run_right/player_run_right_f1.png").convert_alpha(),
+                           pg.image.load("../graphics/01_excavation_site/entities/player/run_right/player_run_right_f2.png").convert_alpha(),
+                           pg.image.load("../graphics/01_excavation_site/entities/player/run_right/player_run_right_f3.png").convert_alpha(),
+                           pg.image.load("../graphics/01_excavation_site/entities/player/run_right/player_run_right_f4.png").convert_alpha(),
+                           pg.image.load("../graphics/01_excavation_site/entities/player/run_right/player_run_right_f5.png").convert_alpha(),
+                           pg.image.load("../graphics/01_excavation_site/entities/player/run_right/player_run_right_f6.png").convert_alpha(),
+                           pg.image.load("../graphics/01_excavation_site/entities/player/run_right/player_run_right_f7.png").convert_alpha(),
+                           pg.image.load("../graphics/01_excavation_site/entities/player/run_right/player_run_right_f8.png").convert_alpha()),
+            "jump_left" : (pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha(),
+                           pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha()),
+            "jump_right" : (pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha(),
+                            pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha())
+        }
+        self.frame_index = 0
+        self.run_frame_direction = 1
+        self.animation_status = "stand_right"
+        self.old_animation_status = self.animation_status
+
+        self.image = self.sprites[self.animation_status][self.frame_index]
         self.rect = self.image.get_rect(topleft=pos)
         self.xy_pos = pg.math.Vector2(self.rect.topleft)
         self.start_xy_pos = tuple(self.xy_pos)
@@ -40,8 +71,8 @@ class Player(pg.sprite.Sprite):
 
         for sprite in self.collision_sprites.sprites():
 
-            # check for tiles in 200 pixels distance to player
-            if sprite.check_distance_to_player(60):
+            # check for tiles in 90 pixels distance to player
+            if sprite.check_distance_to_player(90):
 
                 # contact between player and floor
                 if sprite.rect.colliderect(self.rect):
@@ -63,39 +94,53 @@ class Player(pg.sprite.Sprite):
                         # bottom collision
                         if self.rect.bottom >= sprite.rect.top:
                             self.rect.bottom = sprite.rect.top
+                            contact = True
+                            self.on_floor = True
+                            if self.jumped:
+                                self.jumped = False
                         self.xy_pos.y = self.rect.y
                         self.direction.y = 0
-                        contact = True
-                        self.on_floor = True
-                        if self.jumped:
-                            self.jumped = False
-                else:
-                    contact = True
 
         # no contact between player and floor and not jumping -> falling
         if not contact and not self.jumped:
             self.on_floor = False
-            self.direction.x = 0
 
     def input(self):
 
         keys = pg.key.get_pressed()
 
-        if self.on_floor or self.jumped:
-            # horizontal input
-            if keys[pg.K_RIGHT]:
-                self.direction.x = 1
-            elif keys[pg.K_LEFT]:
-                self.direction.x = -1
-            else:
-                self.direction.x = 0
+        if len(keys) > 0:
+            if self.on_floor or self.jumped:
+                # horizontal input
+                if keys[pg.K_RIGHT]:
+                    self.direction.x = 1
+                    if not self.jumped:
+                        self.animation_status = "run_right"
+                    else:
+                        self.animation_status = "jump_right"
+                elif keys[pg.K_LEFT]:
+                    self.direction.x = -1
+                    if not self.jumped:
+                        self.animation_status = "run_left"
+                    else:
+                        self.animation_status = "jump_left"
+                else:
+                    self.direction.x = 0
 
-        if self.on_floor and not self.jumped:
-            # vertical input (jumping)
-            if keys[pg.K_UP] or keys[pg.K_SPACE]:
-                self.direction.y -= self.jump_speed
-                self.on_floor = False
-                self.jumped = True
+            if self.on_floor and not self.jumped:
+                # vertical input (jumping)
+                if keys[pg.K_UP] or keys[pg.K_SPACE]:
+                    self.direction.y -= self.jump_speed
+                    self.on_floor = False
+                    self.jumped = True
+
+                    # initial jump animation
+                    if "right" in self.animation_status:
+                        self.animation_status = "jump_right"
+                    else:
+                        self.animation_status = "jump_left"
+
+
 
     def move(self, dt):
 
@@ -117,10 +162,49 @@ class Player(pg.sprite.Sprite):
         self.rect.y = round(self.xy_pos.y)
         self.check_collision('vertical')
 
+        # no movement to any direction and on floor = standing (idle) animation
+        if self.direction.x == 0 and self.direction.y == 0 and self.on_floor:
+            if "right" in self.animation_status:
+                self.animation_status = "stand_right"
+            else:
+                self.animation_status = "stand_left"
+
+    def animate(self, dt):
+
+        if self.animation_status != self.old_animation_status:
+            self.frame_index = 0
+            if "run" in self.animation_status:
+                self.run_frame_direction = 1
+
+        if "run" in self.animation_status:
+            if self.run_frame_direction > 0: # going forwards through tuple
+                self.frame_index += 7 * dt
+                if self.frame_index >= len(self.sprites[self.animation_status]):
+                    self.frame_index = len(self.sprites[self.animation_status]) - 1
+                    self.run_frame_direction = -1
+            else: # going backwards through tuple
+                self.frame_index -= 7 * dt
+                if self.frame_index < 0:
+                    self.frame_index = 0
+                    self.run_frame_direction = 1
+        elif "jump" in self.animation_status:
+            self.frame_index += 7 * dt
+            if self.frame_index >= len(self.sprites[self.animation_status]):
+                self.frame_index = len(self.sprites[self.animation_status]) - 1
+        else:
+            self.frame_index += 7 * dt
+            if self.frame_index >= len(self.sprites[self.animation_status]):
+                self.frame_index = 0
+
+        self.image = self.sprites[self.animation_status][int(self.frame_index)]
+
+
     def update(self, dt):
         self.old_rect = self.rect.copy()
+        self.old_animation_status = self.animation_status
         self.input()
         self.move(dt)
+        self.animate(dt)
         self.check_fall_death()
         # print(self.xy_pos)
         # print("current rect", self.rect.left)

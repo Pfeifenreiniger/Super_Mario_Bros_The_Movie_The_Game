@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="280" height="60" tilewidth="20" tileheight="20" infinite="0" nextlayerid="16" nextobjectid="186">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="280" height="60" tilewidth="20" tileheight="20" infinite="0" nextlayerid="16" nextobjectid="190">
  <tileset firstgid="1" source="01_tiles_bg.tsx"/>
  <tileset firstgid="481" source="01_tiles_mg.tsx"/>
  <tileset firstgid="855" source="01_objects_bg.tsx"/>
@@ -293,6 +293,10 @@
  <objectgroup id="14" name="FG_Objects" locked="1">
   <object id="141" gid="947" x="2872.67" y="967" width="383" height="809"/>
   <object id="143" gid="948" x="2947" y="1201" width="151" height="279"/>
+  <object id="186" gid="949" x="4351" y="580.667" width="283" height="419"/>
+  <object id="187" gid="950" x="2208" y="961.333" width="312" height="760"/>
+  <object id="188" gid="951" x="1222.67" y="577" width="320" height="378"/>
+  <object id="189" gid="952" x="3951.67" y="908.333" width="379" height="406"/>
  </objectgroup>
  <objectgroup id="12" name="DEATH_ZONES" locked="1">
   <object id="99" name="Fall" x="920" y="1180.25" width="139.75" height="19.25"/>

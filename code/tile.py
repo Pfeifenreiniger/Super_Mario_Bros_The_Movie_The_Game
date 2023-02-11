@@ -14,7 +14,7 @@ class Tile(pg.sprite.Sprite):
 
     def check_distance_to_player(self, max_distance:int) -> bool:
         "max_distance in pixels"
-        if math.dist(self.player.rect.midbottom, self.rect.center) < max_distance:
+        if math.dist(self.player.rect.center, self.rect.center) < max_distance:
             return True
         else:
             return False
