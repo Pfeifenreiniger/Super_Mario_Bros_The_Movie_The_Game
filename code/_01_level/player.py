@@ -8,10 +8,14 @@ class Player(pg.sprite.Sprite):
         super().__init__(groups)
 
         self.sprites = {
-            "stand_left" : (pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha(),
-                            pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha()),
-            "stand_right" : (pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha(),
-                             pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha()),
+            "stand_left" : (pg.image.load("../graphics/01_excavation_site/entities/player/stand_left/player_stand_left_f1.png").convert_alpha(),
+                            pg.image.load("../graphics/01_excavation_site/entities/player/stand_left/player_stand_left_f2.png").convert_alpha(),
+                            pg.image.load("../graphics/01_excavation_site/entities/player/stand_left/player_stand_left_f3.png").convert_alpha(),
+                            pg.image.load("../graphics/01_excavation_site/entities/player/stand_left/player_stand_left_f4.png").convert_alpha()),
+            "stand_right" : (pg.image.load("../graphics/01_excavation_site/entities/player/stand_right/player_stand_right_f1.png").convert_alpha(),
+                             pg.image.load("../graphics/01_excavation_site/entities/player/stand_right/player_stand_right_f2.png").convert_alpha(),
+                             pg.image.load("../graphics/01_excavation_site/entities/player/stand_right/player_stand_right_f3.png").convert_alpha(),
+                             pg.image.load("../graphics/01_excavation_site/entities/player/stand_right/player_stand_right_f4.png").convert_alpha(),),
             "run_left" : (pg.image.load("../graphics/01_excavation_site/entities/player/run_left/player_run_left_f1.png").convert_alpha(),
                           pg.image.load("../graphics/01_excavation_site/entities/player/run_left/player_run_left_f2.png").convert_alpha(),
                           pg.image.load("../graphics/01_excavation_site/entities/player/run_left/player_run_left_f3.png").convert_alpha(),
@@ -31,6 +35,10 @@ class Player(pg.sprite.Sprite):
             "jump_left" : (pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha(),
                            pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha()),
             "jump_right" : (pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha(),
+                            pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha()),
+            "duck_left" : (pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha(),
+                           pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha()),
+            "duck_right" : (pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha(),
                             pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha())
         }
         self.frame_index = 0
@@ -109,38 +117,41 @@ class Player(pg.sprite.Sprite):
 
         keys = pg.key.get_pressed()
 
-        if len(keys) > 0:
-            if self.on_floor or self.jumped:
-                # horizontal input
-                if keys[pg.K_RIGHT]:
-                    self.direction.x = 1
-                    if not self.jumped:
-                        self.animation_status = "run_right"
-                    else:
-                        self.animation_status = "jump_right"
-                elif keys[pg.K_LEFT]:
-                    self.direction.x = -1
-                    if not self.jumped:
-                        self.animation_status = "run_left"
-                    else:
-                        self.animation_status = "jump_left"
+        if self.on_floor or self.jumped:
+            # horizontal input
+            if keys[pg.K_RIGHT]:
+                self.direction.x = 1
+                if not self.jumped:
+                    self.animation_status = "run_right"
                 else:
-                    self.direction.x = 0
+                    self.animation_status = "jump_right"
+            elif keys[pg.K_LEFT]:
+                self.direction.x = -1
+                if not self.jumped:
+                    self.animation_status = "run_left"
+                else:
+                    self.animation_status = "jump_left"
+            else:
+                self.direction.x = 0
 
-            if self.on_floor and not self.jumped:
-                # vertical input (jumping)
-                if keys[pg.K_UP] or keys[pg.K_SPACE]:
-                    self.direction.y -= self.jump_speed
-                    self.on_floor = False
-                    self.jumped = True
+        if self.on_floor and not self.jumped:
+            # vertical input
+            if keys[pg.K_UP]:
+                self.direction.y -= self.jump_speed
+                self.on_floor = False
+                self.jumped = True
 
-                    # initial jump animation
-                    if "right" in self.animation_status:
-                        self.animation_status = "jump_right"
-                    else:
-                        self.animation_status = "jump_left"
-
-
+                # initial jump animation
+                if "right" in self.animation_status:
+                    self.animation_status = "jump_right"
+                else:
+                    self.animation_status = "jump_left"
+            elif keys[pg.K_DOWN]:
+                self.direction.x = 0
+                self.animation_status = f"duck_{'right' if 'right' in self.animation_status else 'left'}"
+            else:
+                if self.direction.x == 0:
+                    self.animation_status = f"stand_{'right' if 'right' in self.animation_status else 'left'}"
 
     def move(self, dt):
 
@@ -161,13 +172,6 @@ class Player(pg.sprite.Sprite):
         self.xy_pos.y += self.direction.y * dt
         self.rect.y = round(self.xy_pos.y)
         self.check_collision('vertical')
-
-        # no movement to any direction and on floor = standing (idle) animation
-        if self.direction.x == 0 and self.direction.y == 0 and self.on_floor:
-            if "right" in self.animation_status:
-                self.animation_status = "stand_right"
-            else:
-                self.animation_status = "stand_left"
 
     def animate(self, dt):
 

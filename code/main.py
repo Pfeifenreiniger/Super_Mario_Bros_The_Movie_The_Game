@@ -34,7 +34,7 @@ class Game:
             # delta time
             dt = self.clock.tick(self.FPS) / 1000
 
-            self.SCREEN.fill('black')
+            # self.SCREEN.fill('black')
             # self.title_screen.update(dt)
             self._01_level.update(dt)
 
