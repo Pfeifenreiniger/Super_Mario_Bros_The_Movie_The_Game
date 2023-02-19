@@ -32,10 +32,14 @@ class Player(pg.sprite.Sprite):
                            pg.image.load("../graphics/01_excavation_site/entities/player/run_right/player_run_right_f6.png").convert_alpha(),
                            pg.image.load("../graphics/01_excavation_site/entities/player/run_right/player_run_right_f7.png").convert_alpha(),
                            pg.image.load("../graphics/01_excavation_site/entities/player/run_right/player_run_right_f8.png").convert_alpha()),
-            "jump_left" : (pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha(),
-                           pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha()),
-            "jump_right" : (pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha(),
-                            pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha()),
+            "jump_left" : (pg.image.load("../graphics/01_excavation_site/entities/player/jump_left/player_jump_left_f1.png").convert_alpha(),
+                           pg.image.load("../graphics/01_excavation_site/entities/player/jump_left/player_jump_left_f2.png").convert_alpha(),
+                           pg.image.load("../graphics/01_excavation_site/entities/player/jump_left/player_jump_left_f3.png").convert_alpha(),
+                           pg.image.load("../graphics/01_excavation_site/entities/player/jump_left/player_jump_left_f4.png").convert_alpha()),
+            "jump_right" : (pg.image.load("../graphics/01_excavation_site/entities/player/jump_right/player_jump_right_f1.png").convert_alpha(),
+                            pg.image.load("../graphics/01_excavation_site/entities/player/jump_right/player_jump_right_f2.png").convert_alpha(),
+                            pg.image.load("../graphics/01_excavation_site/entities/player/jump_right/player_jump_right_f3.png").convert_alpha(),
+                            pg.image.load("../graphics/01_excavation_site/entities/player/jump_right/player_jump_right_f4.png").convert_alpha()),
             "duck_left" : (pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha(),
                            pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha()),
             "duck_right" : (pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha(),
@@ -180,7 +184,10 @@ class Player(pg.sprite.Sprite):
             if "run" in self.animation_status:
                 self.run_frame_direction = 1
 
-        if "run" in self.animation_status:
+        if self.direction.y > 0 and not self.jumped:  # falling -> last sprite of jumping sprites
+            self.animation_status = f"jump_{'right' if 'right' in self.animation_status else 'left'}"
+            self.frame_index = len(self.sprites[self.animation_status]) - 1
+        elif "run" in self.animation_status:
             if self.run_frame_direction > 0: # going forwards through tuple
                 self.frame_index += 7 * dt
                 if self.frame_index >= len(self.sprites[self.animation_status]):
@@ -192,8 +199,13 @@ class Player(pg.sprite.Sprite):
                     self.frame_index = 0
                     self.run_frame_direction = 1
         elif "jump" in self.animation_status:
-            self.frame_index += 7 * dt
-            if self.frame_index >= len(self.sprites[self.animation_status]):
+            # self.frame_index += 7 * dt
+            if self.direction.y < 0:
+                if self.frame_index + (7*dt) > len(self.sprites[self.animation_status]) - 1:
+                    self.frame_index = len(self.sprites[self.animation_status]) - 2
+                else:
+                    self.frame_index += 7 * dt
+            else:
                 self.frame_index = len(self.sprites[self.animation_status]) - 1
         else:
             self.frame_index += 7 * dt
