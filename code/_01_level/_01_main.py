@@ -159,5 +159,3 @@ class _01_Main:
                     elif sprite.__class__.__name__ == "Player":
                         self.all_sprites.draw(sprite=sprite, player=self.player)
 
-
-

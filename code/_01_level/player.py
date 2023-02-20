@@ -40,18 +40,19 @@ class Player(pg.sprite.Sprite):
                             pg.image.load("../graphics/01_excavation_site/entities/player/jump_right/player_jump_right_f2.png").convert_alpha(),
                             pg.image.load("../graphics/01_excavation_site/entities/player/jump_right/player_jump_right_f3.png").convert_alpha(),
                             pg.image.load("../graphics/01_excavation_site/entities/player/jump_right/player_jump_right_f4.png").convert_alpha()),
-            "duck_left" : (pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha(),
-                           pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha()),
-            "duck_right" : (pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha(),
-                            pg.image.load("../graphics/01_excavation_site/entities/player/player_test.png").convert_alpha())
+            "duck_left" : (pg.image.load("../graphics/01_excavation_site/entities/player/duck_left/player_duck_left_f1.png").convert_alpha(),
+                           pg.image.load("../graphics/01_excavation_site/entities/player/duck_left/player_duck_left_f2.png").convert_alpha()),
+            "duck_right" : (pg.image.load("../graphics/01_excavation_site/entities/player/duck_right/player_duck_right_f1.png").convert_alpha(),
+                            pg.image.load("../graphics/01_excavation_site/entities/player/duck_right/player_duck_right_f2.png").convert_alpha())
         }
+
         self.frame_index = 0
         self.run_frame_direction = 1
         self.animation_status = "stand_right"
         self.old_animation_status = self.animation_status
 
         self.image = self.sprites[self.animation_status][self.frame_index]
-        self.rect = self.image.get_rect(topleft=pos)
+        self.set_hitbox(pos)
         self.xy_pos = pg.math.Vector2(self.rect.topleft)
         self.start_xy_pos = tuple(self.xy_pos)
         self.z = LAYERS['MG']
@@ -69,6 +70,19 @@ class Player(pg.sprite.Sprite):
 
         self.death_zones = death_zones
 
+    def set_hitbox(self, pos):
+        """generates rect object and adjust its size to be the hitbox"""
+
+        self.rect = self.image.get_rect(topleft=pos)
+
+        hitbox_margin = (self.rect.width / 3.2)
+        hitbox_left = self.rect.left + hitbox_margin
+
+        self.rect = pg.Rect((hitbox_left,  # left
+                               self.rect.top), # top
+                              (self.rect.width - (2 * hitbox_margin),  # width
+                               self.rect.height)) # height
+
     def check_fall_death(self):
 
         if self.rect.collidelist(self.death_zones) >= 0:
@@ -77,8 +91,6 @@ class Player(pg.sprite.Sprite):
 
     def check_collision(self, direction):
 
-        bottom_rect = pg.Rect(self.rect.left, self.rect.bottom, self.rect.width, 40)
-
         contact = False
 
         for sprite in self.collision_sprites.sprites():
@@ -86,7 +98,7 @@ class Player(pg.sprite.Sprite):
             # check for tiles in 90 pixels distance to player
             if sprite.check_distance_to_player(90):
 
-                # contact between player and floor
+                # contact between player rect and floor, ceiling, and walls
                 if sprite.rect.colliderect(self.rect):
 
                     if direction == "horizontal":
@@ -95,21 +107,24 @@ class Player(pg.sprite.Sprite):
                             if self.rect.left <= sprite.rect.right:
                                 self.rect.left = sprite.rect.right
                         # right collision
-                        else:
+                        elif self.direction.x > 0:
                             if self.rect.right >= sprite.rect.left:
                                 self.rect.right = sprite.rect.left
                         self.xy_pos.x = self.rect.x
-                    else:
+                    elif direction == "vertical":
                         # top collision
                         if self.rect.top <= sprite.rect.bottom:
-                            self.rect.top = sprite.rect.bottom
+                            if self.direction.y < 0:
+                                self.rect.top = sprite.rect.bottom
+                                self.rect.top = sprite.rect.bottom
                         # bottom collision
                         if self.rect.bottom >= sprite.rect.top:
-                            self.rect.bottom = sprite.rect.top
-                            contact = True
-                            self.on_floor = True
-                            if self.jumped:
-                                self.jumped = False
+                            if self.direction.y >= 0:
+                                self.rect.bottom = sprite.rect.top
+                                contact = True
+                                self.on_floor = True
+                                if self.jumped:
+                                    self.jumped = False
                         self.xy_pos.y = self.rect.y
                         self.direction.y = 0
 
@@ -179,6 +194,13 @@ class Player(pg.sprite.Sprite):
 
     def animate(self, dt):
 
+        if "duck" in self.animation_status:
+            frame_rotation_power = 2
+        elif "run" in self.animation_status:
+            frame_rotation_power = 9
+        else:
+            frame_rotation_power = 7
+
         if self.animation_status != self.old_animation_status:
             self.frame_index = 0
             if "run" in self.animation_status:
@@ -189,26 +211,25 @@ class Player(pg.sprite.Sprite):
             self.frame_index = len(self.sprites[self.animation_status]) - 1
         elif "run" in self.animation_status:
             if self.run_frame_direction > 0: # going forwards through tuple
-                self.frame_index += 7 * dt
+                self.frame_index += frame_rotation_power * dt
                 if self.frame_index >= len(self.sprites[self.animation_status]):
                     self.frame_index = len(self.sprites[self.animation_status]) - 1
                     self.run_frame_direction = -1
             else: # going backwards through tuple
-                self.frame_index -= 7 * dt
+                self.frame_index -= frame_rotation_power * dt
                 if self.frame_index < 0:
                     self.frame_index = 0
                     self.run_frame_direction = 1
         elif "jump" in self.animation_status:
-            # self.frame_index += 7 * dt
             if self.direction.y < 0:
-                if self.frame_index + (7*dt) > len(self.sprites[self.animation_status]) - 1:
+                if self.frame_index + (frame_rotation_power * dt) > len(self.sprites[self.animation_status]) - 1:
                     self.frame_index = len(self.sprites[self.animation_status]) - 2
                 else:
-                    self.frame_index += 7 * dt
+                    self.frame_index += frame_rotation_power * dt
             else:
                 self.frame_index = len(self.sprites[self.animation_status]) - 1
         else:
-            self.frame_index += 7 * dt
+            self.frame_index += frame_rotation_power * dt
             if self.frame_index >= len(self.sprites[self.animation_status]):
                 self.frame_index = 0
 
@@ -222,6 +243,11 @@ class Player(pg.sprite.Sprite):
         self.move(dt)
         self.animate(dt)
         self.check_fall_death()
+
+        # print(f"RECT: {self.rect.top}")
+        # print(f"HITBOX: {self.hitbox.top}")
+        # print(f"XY: {self.xy_pos.y}")
+
         # print(self.xy_pos)
         # print("current rect", self.rect.left)
         # print("old rect", self.old_rect.left)
