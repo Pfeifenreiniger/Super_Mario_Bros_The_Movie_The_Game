@@ -5,7 +5,7 @@ import math
 from layers import LAYERS
 
 class Lamp(pg.sprite.Sprite):
-    def __init__(self, groups, pos, player):
+    def __init__(self, groups, pos, player, distance_to_player_method):
         super().__init__(groups)
         self.player = player
 
@@ -21,12 +21,8 @@ class Lamp(pg.sprite.Sprite):
         self.animation_speed = 5
         self.animation_forward = True
 
-    def check_distance_to_player(self, max_distance:int) -> bool:
-        "max_distance in pixels"
-        if math.dist(self.player.rect.midbottom, self.rect.center) < max_distance:
-            return True
-        else:
-            return False
+        self.check_distance_to_player = distance_to_player_method
+
 
     def animate(self, dt):
 

@@ -1,6 +1,6 @@
 
 import pygame as pg
-
+import math
 
 from pytmx.util_pygame import load_pygame
 from _01_level.player import Player
@@ -73,73 +73,100 @@ class _01_Main:
         # entities
         for obj in self.tmx_map.get_layer_by_name('ENTITIES'):
             if obj.name == 'Player':
-                self.player = Player(groups=self.all_sprites,
-                                     pos=(obj.x, obj.y),
-                                     collision_sprites=self.collision_sprites,
-                                     map_width=self.map_width,
-                                     death_zones=self.death_zones)
-
-        # # tiles: background
-        # for x, y, surf in self.tmx_map.get_layer_by_name('BG').tiles():
-        #     Tile(groups=self.all_sprites,
-        #          pos=(x * 20, y * 20),
-        #          surf=surf,
-        #          z=LAYERS['BG'],
-        #          player=self.player)
+                self.player = Player(
+                                groups=self.all_sprites,
+                                pos=(obj.x, obj.y),
+                                collision_sprites=self.collision_sprites,
+                                map_width=self.map_width,
+                                death_zones=self.death_zones
+                                )
 
         # tiles: collision tiles (mainground)
         for x, y, surf in self.tmx_map.get_layer_by_name('MG').tiles():
-            CollisionTile(groups=[self.all_sprites, self.collision_sprites],
-                 pos=(x * 20, y * 20),
-                 surf=surf,
-                 z=LAYERS['MG'],
-                 player=self.player)
+            CollisionTile(
+                groups=[self.all_sprites, self.collision_sprites],
+                pos=(x * 20, y * 20),
+                surf=surf,
+                z=LAYERS['MG'],
+                player=self.player,
+                distance_to_player_method=self.check_distance_to_player
+                )
 
         # objects: mainground
         for obj in self.tmx_map.get_layer_by_name('MG_Objects'):
             if obj.name == "Lamp":
-                self.lamp = Lamp(groups=self.all_sprites,
-                                 pos=(obj.x, obj.y),
-                                 player=self.player)
+                self.lamp = Lamp(
+                                groups=self.all_sprites,
+                                pos=(obj.x, obj.y),
+                                player=self.player,
+                                distance_to_player_method=self.check_distance_to_player
+                                )
             else:
-                Tile(groups=self.all_sprites,
-                     pos=(obj.x, obj.y),
-                     surf=obj.image,
-                     z=LAYERS['MG_Objects'],
-                     player=self.player)
+                Tile(
+                    groups=self.all_sprites,
+                    pos=(obj.x, obj.y),
+                    surf=obj.image,
+                    z=LAYERS['MG_Objects'],
+                    player=self.player,
+                    distance_to_player_method=self.check_distance_to_player
+                    )
 
         # tiles: forground
         for x, y, surf in self.tmx_map.get_layer_by_name('FG_Tiles').tiles():
-            Tile(groups=self.all_sprites,
-                 pos=(x * 20, y * 20),
-                 surf=surf,
-                 z=LAYERS['FG_Tiles'],
-                 player=self.player)
+            Tile(
+                groups=self.all_sprites,
+                pos=(x * 20, y * 20),
+                surf=surf,
+                z=LAYERS['FG_Tiles'],
+                player=self.player,
+                distance_to_player_method=self.check_distance_to_player
+                )
 
         # objects: foreground objects
         for obj in self.tmx_map.get_layer_by_name('FG_Objects'):
-            Tile(groups=self.all_sprites,
-                 pos=(obj.x, obj.y),
-                 surf=obj.image,
-                 z=LAYERS['FG_Objects'],
-                 player=self.player)
+            Tile(
+                groups=self.all_sprites,
+                pos=(obj.x, obj.y),
+                surf=obj.image,
+                z=LAYERS['FG_Objects'],
+                player=self.player,
+                distance_to_player_method=self.check_distance_to_player
+                )
 
         # objects: background large tiles
         for obj in self.tmx_map.get_layer_by_name('BG_LargeTiles'):
-            Tile(groups=self.all_sprites,
-                 pos=(obj.x, obj.y),
-                 surf=obj.image,
-                 z=LAYERS['BG'],
-                 player=self.player)
+            Tile(
+                groups=self.all_sprites,
+                pos=(obj.x, obj.y),
+                surf=obj.image,
+                z=LAYERS['BG'],
+                player=self.player,
+                distance_to_player_method=self.check_distance_to_player
+                )
 
         # objects: background details
         for obj in self.tmx_map.get_layer_by_name('BG_Objects'):
-            Tile(groups=self.all_sprites,
-                 pos=(obj.x, obj.y),
-                 surf=obj.image,
-                 z=LAYERS['BG_Objects'],
-                 player=self.player)
+            Tile(
+                groups=self.all_sprites,
+                pos=(obj.x, obj.y),
+                surf=obj.image,
+                z=LAYERS['BG_Objects'],
+                player=self.player,
+                distance_to_player_method=self.check_distance_to_player
+                )
 
+    def check_distance_to_player(self, rect, max_distance:int) -> bool:
+        """Method to pass to any graphical objects except the player.
+        It will calculate the distance between said objects and the player's current position in pixels.
+        The object's rectangle has to be passed to the parameter 'rect='.
+        If the distance between the player's rectangle center position and those of the passed object's rectangle
+        center position exceeds the set maximum (parameter 'max_distance=') a boolean false will be returned,
+        otherwise true."""
+
+        if math.dist(self.player.rect.center, rect.center) < max_distance:
+            return True
+        else:
+            return False
 
     def update(self, dt):
 
@@ -150,7 +177,7 @@ class _01_Main:
             if sprite.__class__.__name__ == "Player":
                 self.all_sprites.draw(sprite=sprite, player=self.player)
             else:
-                if sprite.check_distance_to_player(1200):
+                if sprite.check_distance_to_player(sprite.rect, 1200):
                     if sprite.__class__.__name__ == "Tile" or sprite.__class__.__name__ == "CollisionTile":
                         self.all_sprites.draw(sprite=sprite, player=self.player)
                     elif sprite.__class__.__name__ == "Lamp":

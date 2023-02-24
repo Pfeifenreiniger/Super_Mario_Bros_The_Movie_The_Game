@@ -96,7 +96,7 @@ class Player(pg.sprite.Sprite):
         for sprite in self.collision_sprites.sprites():
 
             # check for tiles in 90 pixels distance to player
-            if sprite.check_distance_to_player(90):
+            if sprite.check_distance_to_player(sprite.rect, 90):
 
                 # contact between player rect and floor, ceiling, and walls
                 if sprite.rect.colliderect(self.rect):
