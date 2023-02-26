@@ -80,8 +80,8 @@ class Player(pg.sprite.Sprite):
 
         self.death_zones = death_zones
 
-        self.button_pressed = False
-        self.button_pressed_timestamp = None
+        self.menu_pressed = False
+        self.menu_pressed_timestamp = None
 
     def set_sfx_volume(self):
         for sfx in self.sfx.values():
@@ -191,15 +191,18 @@ class Player(pg.sprite.Sprite):
                     if self.direction.x == 0:
                         self.animation_status = f"stand_{'right' if 'right' in self.animation_status else 'left'}"
 
-            # activate menu pane (pause menu)
-            if keys[pg.K_ESCAPE] and not self.button_pressed:
-                self.menu_pane.active = True
-                self.button_pressed = True
-                self.button_pressed_timestamp = pg.time.get_ticks()
+                # activate menu pane
+                if keys[pg.K_ESCAPE] and not self.menu_pressed:
+                    self.direction.x = 0
+                    self.animation_status = f"stand_{'right' if 'right' in self.animation_status else 'left'}"
+                    self.menu_pane.active = True
+                    self.menu_pressed = True
+                    self.menu_pressed_timestamp = pg.time.get_ticks()
 
-            if self.button_pressed:
-                if pg.time.get_ticks() - self.button_pressed_timestamp > 300:
-                    self.button_pressed = False
+                if self.menu_pressed:
+                    if pg.time.get_ticks() - self.menu_pressed_timestamp > 300:
+                        self.menu_pressed = False
+
 
     def move(self, dt):
 

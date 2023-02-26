@@ -173,6 +173,18 @@ class MenuPane:
                 self.xy_pos_pane.y -= size_change / 2
             else:
                 self.direction.y = 1
+
+                if self.curr_menu_point[0] == 0:
+                    if self.locator.current_location == 0:
+                        if self.curr_menu_point[1] == "NEW GAME":
+                            self.active = False
+                            self.locator.current_location = 1
+                    else:
+                        if self.curr_menu_point[1] == "QUIT":
+                            self.active = False
+                            self.locator.current_location = 0
+                        elif self.curr_menu_point[1] == "CONTINUE":
+                            self.active = False
         else:
             self.xy_pos_pane.y = 125
             self.show_fonts = True
@@ -202,18 +214,12 @@ class MenuPane:
                         if self.curr_menu_point[0] == 0: # main menu
                             print(f"LET'S A GO TO {self.curr_menu_point[1]}")
 
-                            if self.curr_menu_point[1] == "NEW GAME":
-                                self.active = False
-                                self.locator.current_location = 1
-                            elif self.curr_menu_point[1] == "QUIT":
+                            if self.curr_menu_point[1] == "QUIT":
                                 pg.quit()
                                 sys.exit()
                             elif self.curr_menu_point[1] == "SETTINGS":
                                 self.curr_menu_point[0] = 3
                                 self.curr_menu_point[1] = list(self.fonts[3].keys())[0]
-
-                        elif self.curr_menu_point[0] == 1: # new game
-                            pass
 
                         elif self.curr_menu_point[0] == 2: # load game
                             pass
@@ -235,13 +241,7 @@ class MenuPane:
 
                         if self.curr_menu_point[0] == 0:
 
-                            if self.curr_menu_point[1] == "CONTINUE":
-                                self.active = False
-
-                            elif self.curr_menu_point[1] == "QUIT":
-                                self.locator.current_location = 0
-
-                            elif self.curr_menu_point[1] == "SETTINGS":
+                            if self.curr_menu_point[1] == "SETTINGS":
                                 self.curr_menu_point[0] = 1
                                 self.curr_menu_point[1] = list(self.fonts[1].keys())[0]
 
