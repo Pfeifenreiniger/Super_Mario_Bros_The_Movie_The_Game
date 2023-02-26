@@ -306,7 +306,7 @@
   <object id="103" name="Fall" x="520.667" y="1178.67" width="138" height="20.6667"/>
  </objectgroup>
  <objectgroup id="6" name="ENTITIES" locked="1">
-  <object id="1" name="Player" x="88" y="627.5">
+  <object id="1" name="Player" x="88" y="575.5">
    <point/>
   </object>
  </objectgroup>

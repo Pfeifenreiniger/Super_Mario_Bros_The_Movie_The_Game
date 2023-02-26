@@ -3,6 +3,7 @@ import pygame as pg
 import math
 
 from pytmx.util_pygame import load_pygame
+from menu_pane import MenuPane
 from _01_level.player import Player
 from _01_level.lamp import Lamp
 from tile import Tile, CollisionTile
@@ -48,13 +49,23 @@ class AllSprites(pg.sprite.Group):
 
 
 class _01_Main:
-    def __init__(self, event_loop, settings):
+    def __init__(self, event_loop, settings, locator):
         self.event_loop = event_loop
         self.settings = settings
+        self.locator = locator
+
+        SCREEN = self.settings.get_display_screen()
+        self.menu_pane = MenuPane(screen=SCREEN, settings=self.settings, locator=locator)
 
         self.tmx_map = load_pygame("../data/01_excavation_site/01_map.tmx")
         self.map_width = self.tmx_map.tilewidth * self.tmx_map.width
         self.map_height = self.tmx_map.tileheight * self.tmx_map.height
+
+        # music
+        self.music_volume = self.settings.music_volume
+        self.music = pg.mixer.Sound("../audio/music/Valmont - Old Sewers (Demake Dead Cells Soundtrack).mp3")
+        self.music.set_volume(self.music_volume)
+        self.music.play(loops=-1)
 
         # groups
         self.all_sprites = AllSprites(settings=self.settings, map_width=self.map_width, map_height=self.map_height)
@@ -78,7 +89,9 @@ class _01_Main:
                                 pos=(obj.x, obj.y),
                                 collision_sprites=self.collision_sprites,
                                 map_width=self.map_width,
-                                death_zones=self.death_zones
+                                death_zones=self.death_zones,
+                                settings=self.settings,
+                                menu_pane=self.menu_pane
                                 )
 
         # tiles: collision tiles (mainground)
@@ -155,7 +168,7 @@ class _01_Main:
                 distance_to_player_method=self.check_distance_to_player
                 )
 
-    def check_distance_to_player(self, rect, max_distance:int) -> bool:
+    def check_distance_to_player(self, rect:pg.Rect, max_distance:int) -> bool:
         """Method to pass to any graphical objects except the player.
         It will calculate the distance between said objects and the player's current position in pixels.
         The object's rectangle has to be passed to the parameter 'rect='.
@@ -167,6 +180,17 @@ class _01_Main:
             return True
         else:
             return False
+
+    def check_settings_updates(self):
+        # bg music
+        if self.music_volume != self.settings.music_volume:
+            self.music_volume = self.settings.music_volume
+            self.music.set_volume(self.music_volume)
+
+        # player sfx
+        if self.player.old_sfx_volume != self.settings.sfx_volume:
+            self.player.old_sfx_volume = self.settings.sfx_volume
+            self.player.set_sfx_volume()
 
     def update(self, dt):
 
@@ -185,4 +209,14 @@ class _01_Main:
                         self.all_sprites.draw(sprite=sprite, player=self.player)
                     elif sprite.__class__.__name__ == "Player":
                         self.all_sprites.draw(sprite=sprite, player=self.player)
+
+        # pause menu in front if active
+        if self.menu_pane.active:
+            self.menu_pane.update(dt)
+            self.menu_pane.draw()
+
+            self.check_settings_updates()
+
+        if self.locator.current_location != 1:
+            self.music.stop()
 

@@ -4,8 +4,11 @@ import pygame as pg
 from layers import LAYERS
 
 class Player(pg.sprite.Sprite):
-    def __init__(self, groups, pos, collision_sprites, map_width, death_zones):
+    def __init__(self, groups, pos, collision_sprites, map_width, death_zones, settings, menu_pane):
         super().__init__(groups)
+
+        self.settings = settings
+        self.menu_pane = menu_pane
 
         self.sprites = {
             "stand_left" : (pg.image.load("../graphics/01_excavation_site/entities/player/stand_left/player_stand_left_f1.png").convert_alpha(),
@@ -52,6 +55,13 @@ class Player(pg.sprite.Sprite):
         self.old_animation_status = self.animation_status
 
         self.image = self.sprites[self.animation_status][self.frame_index]
+
+        self.sfx = {
+            "jump" : pg.mixer.Sound("../audio/sfx/player/jump.mp3")
+        }
+        self.old_sfx_volume = self.settings.sfx_volume
+        self.set_sfx_volume()
+
         self.set_hitbox(pos)
         self.xy_pos = pg.math.Vector2(self.rect.topleft)
         self.start_xy_pos = tuple(self.xy_pos)
@@ -69,6 +79,13 @@ class Player(pg.sprite.Sprite):
         self.map_width = map_width
 
         self.death_zones = death_zones
+
+        self.button_pressed = False
+        self.button_pressed_timestamp = None
+
+    def set_sfx_volume(self):
+        for sfx in self.sfx.values():
+            sfx.set_volume(self.settings.sfx_volume)
 
     def set_hitbox(self, pos):
         """generates rect object and adjust its size to be the hitbox"""
@@ -134,43 +151,55 @@ class Player(pg.sprite.Sprite):
 
     def input(self):
 
-        keys = pg.key.get_pressed()
+        if not self.menu_pane.active:
+            keys = pg.key.get_pressed()
 
-        if self.on_floor or self.jumped:
-            # horizontal input
-            if keys[pg.K_RIGHT]:
-                self.direction.x = 1
-                if not self.jumped:
-                    self.animation_status = "run_right"
+            if self.on_floor or self.jumped:
+                # horizontal input
+                if keys[pg.K_RIGHT]:
+                    self.direction.x = 1
+                    if not self.jumped:
+                        self.animation_status = "run_right"
+                    else:
+                        self.animation_status = "jump_right"
+                elif keys[pg.K_LEFT]:
+                    self.direction.x = -1
+                    if not self.jumped:
+                        self.animation_status = "run_left"
+                    else:
+                        self.animation_status = "jump_left"
                 else:
-                    self.animation_status = "jump_right"
-            elif keys[pg.K_LEFT]:
-                self.direction.x = -1
-                if not self.jumped:
-                    self.animation_status = "run_left"
-                else:
-                    self.animation_status = "jump_left"
-            else:
-                self.direction.x = 0
+                    self.direction.x = 0
 
-        if self.on_floor and not self.jumped:
-            # vertical input
-            if keys[pg.K_UP]:
-                self.direction.y -= self.jump_speed
-                self.on_floor = False
-                self.jumped = True
+            if self.on_floor and not self.jumped:
+                # vertical input
+                if keys[pg.K_UP]:
+                    self.direction.y -= self.jump_speed
+                    self.sfx["jump"].play()
+                    self.on_floor = False
+                    self.jumped = True
 
-                # initial jump animation
-                if "right" in self.animation_status:
-                    self.animation_status = "jump_right"
+                    # initial jump animation
+                    if "right" in self.animation_status:
+                        self.animation_status = "jump_right"
+                    else:
+                        self.animation_status = "jump_left"
+                elif keys[pg.K_DOWN]:
+                    self.direction.x = 0
+                    self.animation_status = f"duck_{'right' if 'right' in self.animation_status else 'left'}"
                 else:
-                    self.animation_status = "jump_left"
-            elif keys[pg.K_DOWN]:
-                self.direction.x = 0
-                self.animation_status = f"duck_{'right' if 'right' in self.animation_status else 'left'}"
-            else:
-                if self.direction.x == 0:
-                    self.animation_status = f"stand_{'right' if 'right' in self.animation_status else 'left'}"
+                    if self.direction.x == 0:
+                        self.animation_status = f"stand_{'right' if 'right' in self.animation_status else 'left'}"
+
+            # activate menu pane (pause menu)
+            if keys[pg.K_ESCAPE] and not self.button_pressed:
+                self.menu_pane.active = True
+                self.button_pressed = True
+                self.button_pressed_timestamp = pg.time.get_ticks()
+
+            if self.button_pressed:
+                if pg.time.get_ticks() - self.button_pressed_timestamp > 300:
+                    self.button_pressed = False
 
     def move(self, dt):
 
