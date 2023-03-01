@@ -46,7 +46,16 @@ class Player(pg.sprite.Sprite):
             "duck_left" : (pg.image.load("../graphics/01_excavation_site/entities/player/duck_left/player_duck_left_f1.png").convert_alpha(),
                            pg.image.load("../graphics/01_excavation_site/entities/player/duck_left/player_duck_left_f2.png").convert_alpha()),
             "duck_right" : (pg.image.load("../graphics/01_excavation_site/entities/player/duck_right/player_duck_right_f1.png").convert_alpha(),
-                            pg.image.load("../graphics/01_excavation_site/entities/player/duck_right/player_duck_right_f2.png").convert_alpha())
+                            pg.image.load("../graphics/01_excavation_site/entities/player/duck_right/player_duck_right_f2.png").convert_alpha()),
+            "stand_attack_right" : (pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_right/player_stand_attack_right_f1.png").convert_alpha(),
+                                    pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_right/player_stand_attack_right_f2.png").convert_alpha(),
+                                    pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_right/player_stand_attack_right_f3.png").convert_alpha(),
+                                    pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_right/player_stand_attack_right_f4.png").convert_alpha(),
+                                    pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_right/player_stand_attack_right_f5.png").convert_alpha(),
+                                    pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_right/player_stand_attack_right_f6.png").convert_alpha(),
+                                    pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_right/player_stand_attack_right_f7.png").convert_alpha(),
+                                    pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_right/player_stand_attack_right_f8.png").convert_alpha(),
+                                    pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_right/player_stand_attack_right_f9.png").convert_alpha())
         }
 
         self.frame_index = 0
@@ -154,7 +163,7 @@ class Player(pg.sprite.Sprite):
         if not self.menu_pane.active:
             keys = pg.key.get_pressed()
 
-            if self.on_floor or self.jumped:
+            if (self.on_floor or self.jumped) and not 'attack' in self.animation_status:
                 # horizontal input
                 if keys[pg.K_RIGHT]:
                     self.direction.x = 1
@@ -184,11 +193,14 @@ class Player(pg.sprite.Sprite):
                         self.animation_status = "jump_right"
                     else:
                         self.animation_status = "jump_left"
+                elif keys[pg.K_SPACE] and not 'attack' in self.animation_status:
+                    self.animation_status = f"{'stand' if 'stand' or 'run' in self.animation_status else 'duck'}_attack_{'right' if 'right' in self.animation_status else 'left'}"
                 elif keys[pg.K_DOWN]:
-                    self.direction.x = 0
-                    self.animation_status = f"duck_{'right' if 'right' in self.animation_status else 'left'}"
+                    if not "attack" in self.animation_status:
+                        self.direction.x = 0
+                        self.animation_status = f"duck_{'right' if 'right' in self.animation_status else 'left'}"
                 else:
-                    if self.direction.x == 0:
+                    if self.direction.x == 0 and not 'attack' in self.animation_status:
                         self.animation_status = f"stand_{'right' if 'right' in self.animation_status else 'left'}"
 
                 # activate menu pane
@@ -230,6 +242,8 @@ class Player(pg.sprite.Sprite):
             frame_rotation_power = 2
         elif "run" in self.animation_status:
             frame_rotation_power = 9
+        elif "attack" in self.animation_status:
+            frame_rotation_power = 14
         else:
             frame_rotation_power = 7
 
@@ -241,6 +255,7 @@ class Player(pg.sprite.Sprite):
         if self.direction.y > 0 and not self.jumped:  # falling -> last sprite of jumping sprites
             self.animation_status = f"jump_{'right' if 'right' in self.animation_status else 'left'}"
             self.frame_index = len(self.sprites[self.animation_status]) - 1
+
         elif "run" in self.animation_status:
             if self.run_frame_direction > 0: # going forwards through tuple
                 self.frame_index += frame_rotation_power * dt
@@ -252,6 +267,7 @@ class Player(pg.sprite.Sprite):
                 if self.frame_index < 0:
                     self.frame_index = 0
                     self.run_frame_direction = 1
+
         elif "jump" in self.animation_status:
             if self.direction.y < 0:
                 if self.frame_index + (frame_rotation_power * dt) > len(self.sprites[self.animation_status]) - 1:
@@ -260,6 +276,16 @@ class Player(pg.sprite.Sprite):
                     self.frame_index += frame_rotation_power * dt
             else:
                 self.frame_index = len(self.sprites[self.animation_status]) - 1
+
+        elif "attack" in self.animation_status:
+            self.direction.x = 0
+            self.frame_index += frame_rotation_power * dt
+            if int(self.frame_index) >= 2 and int(self.frame_index) <= 7:
+                print("HIT!")
+            elif self.frame_index > len(self.sprites[self.animation_status]):
+                self.animation_status = f"stand_{'right' if 'right' in self.animation_status else 'left'}"
+                self.frame_index = 0
+
         else:
             self.frame_index += frame_rotation_power * dt
             if self.frame_index >= len(self.sprites[self.animation_status]):
