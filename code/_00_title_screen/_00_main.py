@@ -6,7 +6,7 @@ from menu_pane import MenuPane
 from fonts import FONT_MASHEEN_BOLD_30, FONT_PRESS_START_20
 
 
-class TitleScreen:
+class _00_Main:
     def __init__(self, event_loop, settings, locator):
         self.settings = settings
         self.SCREEN = self.settings.get_display_screen()
