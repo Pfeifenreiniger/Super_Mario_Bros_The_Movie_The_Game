@@ -26,10 +26,24 @@ class Game:
         self.setup()
 
     def setup(self):
+        """loads the current level or main title screen"""
+
+        self.garbage_cleanup()
+
         if self.locator.current_location == 0:
-            self.title_screen = _00_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator)
+            self._00_screen = _00_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator)
         elif self.locator.current_location == 1:
             self._01_level = _01_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator)
+
+    def garbage_cleanup(self):
+        """get rid of currently not used levels"""
+
+        if self.locator.current_location == 0:
+            if hasattr(self, '_01_level'):
+                del self._01_level
+        elif self.locator.current_location == 1:
+            if hasattr(self, '_00_screen'):
+                del self._00_screen
 
     def game_loop(self):
 
@@ -45,9 +59,15 @@ class Game:
                 self.setup()
 
             if self.locator.current_location == 0:
-                self.title_screen.update(dt)
+                if self._00_screen.loaded:
+                    self._00_screen.update(dt)
+                else:
+                    self._00_screen.check_loading_progression()
             elif self.locator.current_location == 1:
-                self._01_level.update(dt)
+                if self._01_level.loaded:
+                    self._01_level.update(dt)
+                else:
+                    self._01_level.check_loading_progression()
 
 
 

@@ -8,6 +8,9 @@ from fonts import FONT_MASHEEN_BOLD_30, FONT_PRESS_START_20
 
 class _00_Main:
     def __init__(self, event_loop, settings, locator):
+
+        self.loaded = False
+
         self.settings = settings
         self.SCREEN = self.settings.get_display_screen()
         self.locator = locator
@@ -54,6 +57,10 @@ class _00_Main:
 
         # set inst_time attribute to logo object
         self.logo.inst_time = pg.time.get_ticks()
+
+    def check_loading_progression(self):
+        if not isinstance(self, type(None)):
+            self.loaded = True
 
     def check_setting_updates(self):
         if self.music_volume != self.settings.music_volume:
@@ -221,7 +228,7 @@ class _00_Main:
 class KoopahariDesert:
     def __init__(self, screen):
         self.SCREEN = screen
-        self.image = pg.image.load("../graphics/title_screen/koopahari_desert.png").convert_alpha()
+        self.image = pg.image.load("../graphics/00_title_screen/koopahari_desert.png").convert_alpha()
         self.xy_pos = pg.math.Vector2(x=0, y=80)
         self.rect = self.image.get_rect(topleft = self.xy_pos)
 
@@ -248,10 +255,10 @@ class KoopahariDesert:
 class Dinohattan:
     def __init__(self, screen):
         self.SCREEN = screen
-        self.image_front = pg.image.load("../graphics/title_screen/dinohattan_front.png").convert_alpha()
+        self.image_front = pg.image.load("../graphics/00_title_screen/dinohattan_front.png").convert_alpha()
         self.xy_front = pg.math.Vector2(x=0, y=64)
         self.rect_front = self.image_front.get_rect(topleft = self.xy_front)
-        self.image_back = pg.image.load("../graphics/title_screen/dinohattan_back.png").convert_alpha()
+        self.image_back = pg.image.load("../graphics/00_title_screen/dinohattan_back.png").convert_alpha()
         self.xy_back = pg.math.Vector2(x=0, y=251)
         self.rect_back = self.image_back.get_rect(topleft = self.xy_back)
 
@@ -291,7 +298,7 @@ class Dinohattan:
 class Sky:
     def __init__(self, screen):
         self.SCREEN = screen
-        self.image = pg.image.load("../graphics/title_screen/sky.png").convert()
+        self.image = pg.image.load("../graphics/00_title_screen/sky.png").convert()
         self.xy_pos = pg.math.Vector2(x=0, y=0)
         self.rect = self.image.get_rect(topleft=self.xy_pos)
 
@@ -301,7 +308,7 @@ class Sky:
 class Cloud(pg.sprite.Sprite):
     def __init__(self, group, cloud_numb:int):
         super().__init__(group)
-        self.image = pg.image.load(f"../graphics/title_screen/clouds_{cloud_numb}.png").convert_alpha()
+        self.image = pg.image.load(f"../graphics/00_title_screen/clouds_{cloud_numb}.png").convert_alpha()
         self.xy_pos = pg.math.Vector2(x=800, y=87) if cloud_numb == 1 else pg.math.Vector2(x=800, y=93)
         self.rect = self.image.get_rect(topleft = self.xy_pos)
 
@@ -322,7 +329,7 @@ class Cloud(pg.sprite.Sprite):
 class Logo:
     def __init__(self, screen):
         self.SCREEN = screen
-        self.image = pg.image.load("../graphics/title_screen/logo.png").convert_alpha()
+        self.image = pg.image.load("../graphics/00_title_screen/logo.png").convert_alpha()
         self.xy_pos = pg.math.Vector2(x=166, y=-193)
         self.rect = self.image.get_rect(topleft = self.xy_pos)
 

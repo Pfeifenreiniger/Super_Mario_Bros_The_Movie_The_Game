@@ -50,6 +50,9 @@ class AllSprites(pg.sprite.Group):
 
 class _01_Main:
     def __init__(self, event_loop, settings, locator):
+
+        self.loaded = False
+
         self.event_loop = event_loop
         self.settings = settings
         self.locator = locator
@@ -72,6 +75,8 @@ class _01_Main:
         self.collision_sprites = pg.sprite.Group()
 
         self.setup()
+
+
 
     def setup(self):
 
@@ -168,6 +173,10 @@ class _01_Main:
                 distance_to_player_method=self.check_distance_to_player
                 )
 
+    def check_loading_progression(self):
+        if not isinstance(self, type(None)):
+            self.loaded = True
+
     def check_distance_to_player(self, rect:pg.Rect, max_distance:int) -> bool:
         """Method to pass to any graphical objects except the player.
         It will calculate the distance between said objects and the player's current position in pixels.
@@ -192,10 +201,7 @@ class _01_Main:
             self.player.old_sfx_volume = self.settings.sfx_volume
             self.player.set_sfx_volume()
 
-    def update(self, dt):
-
-        self.player.update(dt)
-
+    def update_sprites(self, dt):
         for sprite in sorted(self.all_sprites.sprites(), key=lambda sprite: sprite.z):
 
             if sprite.__class__.__name__ == "Player":
@@ -210,13 +216,23 @@ class _01_Main:
                     elif sprite.__class__.__name__ == "Player":
                         self.all_sprites.draw(sprite=sprite, player=self.player)
 
-        # pause menu in front if active
-        if self.menu_pane.active:
-            self.menu_pane.update(dt)
-            self.menu_pane.draw()
+    def update(self, dt):
 
-            self.check_settings_updates()
+        if self.player.loaded:
 
-        if self.locator.current_location != 1:
-            self.music.stop()
+            self.player.update(dt)
+
+            self.update_sprites(dt)
+
+            # pause menu in front if active
+            if self.menu_pane.active:
+                self.menu_pane.update(dt)
+                self.menu_pane.draw()
+
+                self.check_settings_updates()
+
+            if self.locator.current_location != 1:
+                self.music.stop()
+        else:
+            self.player.check_loading_progression()
 

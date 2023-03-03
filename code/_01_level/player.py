@@ -7,6 +7,8 @@ class Player(pg.sprite.Sprite):
     def __init__(self, groups, pos, collision_sprites, map_width, death_zones, settings, menu_pane):
         super().__init__(groups)
 
+        self.loaded = False
+
         self.settings = settings
         self.menu_pane = menu_pane
 
@@ -55,7 +57,34 @@ class Player(pg.sprite.Sprite):
                                     pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_right/player_stand_attack_right_f6.png").convert_alpha(),
                                     pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_right/player_stand_attack_right_f7.png").convert_alpha(),
                                     pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_right/player_stand_attack_right_f8.png").convert_alpha(),
-                                    pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_right/player_stand_attack_right_f9.png").convert_alpha())
+                                    pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_right/player_stand_attack_right_f9.png").convert_alpha()),
+            "stand_attack_left" : (pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_left/player_stand_attack_left_f1.png").convert_alpha(),
+                                   pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_left/player_stand_attack_left_f2.png").convert_alpha(),
+                                   pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_left/player_stand_attack_left_f3.png").convert_alpha(),
+                                   pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_left/player_stand_attack_left_f4.png").convert_alpha(),
+                                   pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_left/player_stand_attack_left_f5.png").convert_alpha(),
+                                   pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_left/player_stand_attack_left_f6.png").convert_alpha(),
+                                   pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_left/player_stand_attack_left_f7.png").convert_alpha(),
+                                   pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_left/player_stand_attack_left_f8.png").convert_alpha(),
+                                   pg.image.load("../graphics/01_excavation_site/entities/player/stand_attack_left/player_stand_attack_left_f9.png").convert_alpha()),
+            "duck_attack_right" : (pg.image.load("../graphics/01_excavation_site/entities/player/duck_attack_right/player_duck_attack_right_f1.png").convert_alpha(),
+                                   pg.image.load("../graphics/01_excavation_site/entities/player/duck_attack_right/player_duck_attack_right_f2.png").convert_alpha(),
+                                   pg.image.load("../graphics/01_excavation_site/entities/player/duck_attack_right/player_duck_attack_right_f3.png").convert_alpha(),
+                                   pg.image.load("../graphics/01_excavation_site/entities/player/duck_attack_right/player_duck_attack_right_f4.png").convert_alpha(),
+                                   pg.image.load("../graphics/01_excavation_site/entities/player/duck_attack_right/player_duck_attack_right_f5.png").convert_alpha(),
+                                   pg.image.load("../graphics/01_excavation_site/entities/player/duck_attack_right/player_duck_attack_right_f6.png").convert_alpha(),
+                                   pg.image.load("../graphics/01_excavation_site/entities/player/duck_attack_right/player_duck_attack_right_f7.png").convert_alpha(),
+                                   pg.image.load("../graphics/01_excavation_site/entities/player/duck_attack_right/player_duck_attack_right_f8.png").convert_alpha(),
+                                   pg.image.load("../graphics/01_excavation_site/entities/player/duck_attack_right/player_duck_attack_right_f9.png").convert_alpha()),
+            "duck_attack_left" : (pg.image.load("../graphics/01_excavation_site/entities/player/duck_attack_left/player_duck_attack_left_f1.png").convert_alpha(),
+                                  pg.image.load("../graphics/01_excavation_site/entities/player/duck_attack_left/player_duck_attack_left_f2.png").convert_alpha(),
+                                  pg.image.load("../graphics/01_excavation_site/entities/player/duck_attack_left/player_duck_attack_left_f3.png").convert_alpha(),
+                                  pg.image.load("../graphics/01_excavation_site/entities/player/duck_attack_left/player_duck_attack_left_f4.png").convert_alpha(),
+                                  pg.image.load("../graphics/01_excavation_site/entities/player/duck_attack_left/player_duck_attack_left_f5.png").convert_alpha(),
+                                  pg.image.load("../graphics/01_excavation_site/entities/player/duck_attack_left/player_duck_attack_left_f6.png").convert_alpha(),
+                                  pg.image.load("../graphics/01_excavation_site/entities/player/duck_attack_left/player_duck_attack_left_f7.png").convert_alpha(),
+                                  pg.image.load("../graphics/01_excavation_site/entities/player/duck_attack_left/player_duck_attack_left_f8.png").convert_alpha(),
+                                  pg.image.load("../graphics/01_excavation_site/entities/player/duck_attack_left/player_duck_attack_left_f9.png").convert_alpha())
         }
 
         self.frame_index = 0
@@ -66,7 +95,9 @@ class Player(pg.sprite.Sprite):
         self.image = self.sprites[self.animation_status][self.frame_index]
 
         self.sfx = {
-            "jump" : pg.mixer.Sound("../audio/sfx/player/jump.mp3")
+            "jump" : pg.mixer.Sound("../audio/sfx/player/jump.mp3"),
+            "crowbar_swing" : pg.mixer.Sound("../audio/sfx/player/crowbar_swing.wav"),
+            "crowbar_hit" : pg.mixer.Sound("../audio/sfx/player/crowbar_hit.mp3")
         }
         self.old_sfx_volume = self.settings.sfx_volume
         self.set_sfx_volume()
@@ -91,6 +122,7 @@ class Player(pg.sprite.Sprite):
 
         self.menu_pressed = False
         self.menu_pressed_timestamp = None
+
 
     def set_sfx_volume(self):
         for sfx in self.sfx.values():
@@ -194,7 +226,12 @@ class Player(pg.sprite.Sprite):
                     else:
                         self.animation_status = "jump_left"
                 elif keys[pg.K_SPACE] and not 'attack' in self.animation_status:
-                    self.animation_status = f"{'stand' if 'stand' or 'run' in self.animation_status else 'duck'}_attack_{'right' if 'right' in self.animation_status else 'left'}"
+                    self.sfx["crowbar_swing"].play()
+                    if 'stand' in self.animation_status or 'run' in self.animation_status:
+                        position = 'stand'
+                    else:
+                        position = 'duck'
+                    self.animation_status = f"{position}_attack_{'right' if 'right' in self.animation_status else 'left'}"
                 elif keys[pg.K_DOWN]:
                     if not "attack" in self.animation_status:
                         self.direction.x = 0
@@ -238,14 +275,17 @@ class Player(pg.sprite.Sprite):
 
     def animate(self, dt):
 
-        if "duck" in self.animation_status:
-            frame_rotation_power = 2
-        elif "run" in self.animation_status:
-            frame_rotation_power = 9
-        elif "attack" in self.animation_status:
-            frame_rotation_power = 14
-        else:
-            frame_rotation_power = 7
+        def return_frame_rotation_power() -> int:
+            if "attack" in self.animation_status:
+                return 15
+            elif "duck" in self.animation_status:
+                return 2
+            elif "run" in self.animation_status:
+                return 9
+            else:
+                return 7
+
+        frame_rotation_power = return_frame_rotation_power()
 
         if self.animation_status != self.old_animation_status:
             self.frame_index = 0
@@ -282,17 +322,28 @@ class Player(pg.sprite.Sprite):
             self.frame_index += frame_rotation_power * dt
             if int(self.frame_index) >= 2 and int(self.frame_index) <= 7:
                 print("HIT!")
-            elif self.frame_index > len(self.sprites[self.animation_status]):
-                self.animation_status = f"stand_{'right' if 'right' in self.animation_status else 'left'}"
+            elif int(self.frame_index) > len(self.sprites[self.animation_status]) - 1:
+                if 'stand' in self.animation_status:
+                    position = 'stand'
+                else:
+                    position = 'duck'
+                self.animation_status = f"{position}_{'right' if 'right' in self.animation_status else 'left'}"
                 self.frame_index = 0
+                frame_rotation_power = return_frame_rotation_power()
 
         else:
             self.frame_index += frame_rotation_power * dt
-            if self.frame_index >= len(self.sprites[self.animation_status]):
+            if int(self.frame_index) >= len(self.sprites[self.animation_status]) - 1:
                 self.frame_index = 0
+
+        if self.animation_status != self.old_animation_status:
+            self.frame_index = 0
 
         self.image = self.sprites[self.animation_status][int(self.frame_index)]
 
+    def check_loading_progression(self):
+        if not isinstance(self, type(None)):
+            self.loaded = True
 
     def update(self, dt):
         self.old_rect = self.rect.copy()
