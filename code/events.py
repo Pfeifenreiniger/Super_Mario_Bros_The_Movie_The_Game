@@ -3,9 +3,11 @@ import pygame as pg
 import sys
 
 class EventLoop:
-    def __init__(self):
+    def __init__(self, settings):
         self.events = [pg.QUIT]
         pg.event.set_allowed(self.events)
+
+        self.settings = settings
 
     def add_event(self, event):
         if event not in self.events:
@@ -28,6 +30,7 @@ class EventLoop:
 
                     # pg.QUIT
                     if my_event == 256:
+                        self.settings.db.close()
                         pg.quit()
                         sys.exit()
 

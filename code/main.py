@@ -2,6 +2,9 @@
 import pygame as pg
 pg.init()
 
+from logger import Logger
+import logging
+
 from settings import Settings
 from events import EventLoop
 from locator import Locator
@@ -13,8 +16,8 @@ from _01_level._01_main import _01_Main
 class Game:
     def __init__(self):
         # basic setup
-        self.event_loop = EventLoop()
         self.settings = Settings()
+        self.event_loop = EventLoop(self.settings)
         self.SCREEN = self.settings.get_display_screen()
         self.clock = pg.time.Clock()
         self.FPS = 30
@@ -77,5 +80,10 @@ class Game:
 
 
 if __name__ == "__main__":
-    game = Game()
-    game.game_loop()
+    try:
+        game = Game()
+        game.game_loop()
+    except Exception as e:
+        Logger()
+        logging.exception(e)
+        raise Exception(e)

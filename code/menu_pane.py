@@ -215,9 +215,11 @@ class MenuPane:
                             print(f"LET'S A GO TO {self.curr_menu_point[1]}")
 
                             if self.curr_menu_point[1] == "QUIT":
+                                self.settings.db.close()
                                 pg.quit()
                                 sys.exit()
                             elif self.curr_menu_point[1] == "SETTINGS":
+                                self.settings.get_settings()
                                 self.curr_menu_point[0] = 3
                                 self.curr_menu_point[1] = list(self.fonts[3].keys())[0]
 
@@ -225,6 +227,7 @@ class MenuPane:
                             pass
 
                         elif self.curr_menu_point[0] == 3: # settings
+                            self.settings.save_changes_to_db()
                             self.curr_menu_point[0] = 0
                             self.curr_menu_point[1] = "SETTINGS"
 
@@ -242,10 +245,12 @@ class MenuPane:
                         if self.curr_menu_point[0] == 0:
 
                             if self.curr_menu_point[1] == "SETTINGS":
+                                self.settings.get_settings()
                                 self.curr_menu_point[0] = 1
                                 self.curr_menu_point[1] = list(self.fonts[1].keys())[0]
 
                         elif self.curr_menu_point[0] == 1:
+                            self.settings.save_changes_to_db()
                             self.curr_menu_point[0] = 0
                             self.curr_menu_point[1] = "SETTINGS"
 

@@ -141,6 +141,26 @@ class Player(pg.sprite.Sprite):
                               (self.rect.width - (2 * hitbox_margin),  # width
                                self.rect.height)) # height
 
+    def set_attackbox(self):
+        if "stand" in self.animation_status:
+
+            attackbox_margin_lower = self.rect.height // 2
+            attackbox_margin_left = (self.rect.width // 2) if "right" in self.animation_status else 0
+
+            self.attackbox = pg.Rect((self.rect.left + attackbox_margin_left, # left
+                                      self.rect.top), # top
+                                     (self.rect.width - (self.rect.width // 2), # width
+                                      attackbox_margin_lower)) # height
+        else:
+
+            attachbox_margin_upper = self.rect.height // 4
+            attackbox_margin_left = (self.rect.width // 2) if "right" in self.animation_status else 0
+
+            self.attackbox = pg.Rect((self.rect.left + attackbox_margin_left, # left
+                                      self.rect.top - attachbox_margin_upper), # top
+                                     (self.rect.width - (self.rect.width // 2), # width
+                                      attachbox_margin_upper * 3)) # height
+
     def check_fall_death(self):
 
         if self.rect.collidelist(self.death_zones) >= 0:
@@ -321,8 +341,14 @@ class Player(pg.sprite.Sprite):
             self.direction.x = 0
             self.frame_index += frame_rotation_power * dt
             if int(self.frame_index) >= 2 and int(self.frame_index) <= 7:
-                print("HIT!")
+                if not hasattr(self, 'attackbox'):
+                    self.set_attackbox()
+
             elif int(self.frame_index) > len(self.sprites[self.animation_status]) - 1:
+
+                if hasattr(self, 'attackbox'):
+                    del self.attackbox
+
                 if 'stand' in self.animation_status:
                     position = 'stand'
                 else:

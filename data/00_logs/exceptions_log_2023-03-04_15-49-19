@@ -1,0 +1,15 @@
+2023-03-04 15:49:19,970 ERROR near "SET": syntax error
+Traceback (most recent call last):
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\main.py", line 85, in <module>
+    game.game_loop()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\main.py", line 66, in game_loop
+    self._00_screen.update(dt)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_00_title_screen\_00_main.py", line 199, in update
+    self.menu_pane.update(dt)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\menu_pane.py", line 426, in update
+    self.input()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\menu_pane.py", line 229, in input
+    self.settings.save_changes_to_db()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\settings.py", line 85, in save_changes_to_db
+    cursor.execute(query)
+sqlite3.OperationalError: near "SET": syntax error

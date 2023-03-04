@@ -233,6 +233,7 @@ class _01_Main:
 
             if self.locator.current_location != 1:
                 self.music.stop()
+
         else:
             self.player.check_loading_progression()
 

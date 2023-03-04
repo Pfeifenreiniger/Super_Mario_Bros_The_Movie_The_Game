@@ -1,0 +1,14 @@
+2023-03-04 15:42:15,215 ERROR NDFrame.get() missing 1 required positional argument: 'key'
+Traceback (most recent call last):
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\main.py", line 84, in <module>
+    game = Game()
+           ^^^^^^
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\main.py", line 20, in __init__
+    self.settings = Settings()
+                    ^^^^^^^^^^
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\settings.py", line 15, in __init__
+    self.get_settings()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\settings.py", line 41, in get_settings
+    self.screen_mode = settings['screen_mode'].get()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: NDFrame.get() missing 1 required positional argument: 'key'
