@@ -3,11 +3,11 @@ import pygame as pg
 import math
 
 from pytmx.util_pygame import load_pygame
-from menu_pane import MenuPane
-from _01_level.player import Player
-from _01_level.lamp import Lamp
-from tile import Tile, CollisionTile
-from layers import LAYERS
+from code.menu_pane import MenuPane
+from code._01_level.player import Player
+from code._01_level.lamp import Lamp
+from code.tile import Tile, CollisionTile
+from code._01_level.layers import LAYERS
 
 
 class AllSprites(pg.sprite.Group):
@@ -60,13 +60,13 @@ class _01_Main:
         SCREEN = self.settings.get_display_screen()
         self.menu_pane = MenuPane(screen=SCREEN, settings=self.settings, locator=locator)
 
-        self.tmx_map = load_pygame("../data/01_excavation_site/01_map.tmx")
+        self.tmx_map = load_pygame("data/01_excavation_site/01_map.tmx")
         self.map_width = self.tmx_map.tilewidth * self.tmx_map.width
         self.map_height = self.tmx_map.tileheight * self.tmx_map.height
 
         # music
         self.music_volume = self.settings.music_volume
-        self.music = pg.mixer.Sound("../audio/music/Valmont - Old Sewers (Demake Dead Cells Soundtrack).mp3")
+        self.music = pg.mixer.Sound("audio/music/Valmont - Old Sewers (Demake Dead Cells Soundtrack).mp3")
         self.music.set_volume(self.music_volume)
         self.music.play(loops=-1)
 

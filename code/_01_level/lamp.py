@@ -2,16 +2,16 @@
 import pygame as pg
 import math
 
-from layers import LAYERS
+from code._01_level.layers import LAYERS
 
 class Lamp(pg.sprite.Sprite):
     def __init__(self, groups, pos, player, distance_to_player_method):
         super().__init__(groups)
         self.player = player
 
-        self.images = [pg.image.load("../graphics/01_excavation_site/tilesets/objects/lamp/01_object_lamp_f1.png").convert_alpha(),
-                       pg.image.load("../graphics/01_excavation_site/tilesets/objects/lamp/01_object_lamp_f2.png").convert_alpha(),
-                       pg.image.load("../graphics/01_excavation_site/tilesets/objects/lamp/01_object_lamp_f3.png").convert_alpha()]
+        self.images = [pg.image.load("graphics/01_excavation_site/tilesets/objects/lamp/01_object_lamp_f1.png").convert_alpha(),
+                       pg.image.load("graphics/01_excavation_site/tilesets/objects/lamp/01_object_lamp_f2.png").convert_alpha(),
+                       pg.image.load("graphics/01_excavation_site/tilesets/objects/lamp/01_object_lamp_f3.png").convert_alpha()]
         self.frame = 0
         self.image = self.images[self.frame]
         self.rect = self.image.get_rect(topleft=pos)

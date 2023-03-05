@@ -34,7 +34,7 @@ class EventLoop:
                         pg.quit()
                         sys.exit()
 
-                    # title screen clouds_timer
+                    # _00_title_screen clouds_timer
                     if my_event == 32851:
                         return "spawn_cloud"
 

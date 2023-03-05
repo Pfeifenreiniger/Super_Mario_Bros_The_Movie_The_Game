@@ -2,7 +2,7 @@
 import pygame as pg
 import sys
 
-from fonts import FONT_MASHEEN_BOLD_30, FONT_PRESS_START_20
+from code.fonts import FONT_MASHEEN_BOLD_30, FONT_PRESS_START_20
 
 class MenuPane:
     def __init__(self, screen, settings, locator):
@@ -14,9 +14,9 @@ class MenuPane:
 
         # sfx
         self.sfx_volume = self.settings.sfx_volume
-        self.sfx_menu_move = pg.mixer.Sound("../audio/sfx/menu/menu_move.wav")
+        self.sfx_menu_move = pg.mixer.Sound("audio/sfx/menu/menu_move.wav")
         self.sfx_menu_move.set_volume(self.sfx_volume)
-        self.sfx_menu_pane_closing = pg.mixer.Sound("../audio/sfx/menu/screen_done.wav")
+        self.sfx_menu_pane_closing = pg.mixer.Sound("audio/sfx/menu/screen_done.wav")
         self.sfx_menu_pane_closing.set_volume(self.sfx_volume)
 
         # pane graphic

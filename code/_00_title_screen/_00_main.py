@@ -2,8 +2,8 @@
 import pygame as pg
 import sys
 
-from menu_pane import MenuPane
-from fonts import FONT_MASHEEN_BOLD_30, FONT_PRESS_START_20
+from code.menu_pane import MenuPane
+from code.fonts import FONT_MASHEEN_BOLD_30, FONT_PRESS_START_20
 
 
 class _00_Main:
@@ -39,17 +39,17 @@ class _00_Main:
 
         # music
         self.music_volume = self.settings.music_volume
-        self.music = pg.mixer.Sound("../audio/music/Walk_the_Dinosaur_(GXSCC_Gameboy_Mix).mp3")
+        self.music = pg.mixer.Sound("audio/music/Walk_the_Dinosaur_(GXSCC_Gameboy_Mix).mp3")
         self.music.set_volume(self.music_volume)
         self.music.play(loops=-1)
 
         # sfx
         self.sfx_volume = self.settings.sfx_volume
-        self.press_start_sfx = pg.mixer.Sound("../audio/sfx/menu/king_koopa_kill_that_plumber.mp3")
+        self.press_start_sfx = pg.mixer.Sound("audio/sfx/menu/king_koopa_kill_that_plumber.mp3")
         self.press_start_sfx.set_volume(self.sfx_volume)
 
         # easter egg - Konami Code
-        self.its_a_me_sfx = pg.mixer.Sound("../audio/sfx/menu/sm64_mario_its__a_me.wav")
+        self.its_a_me_sfx = pg.mixer.Sound("audio/sfx/menu/sm64_mario_its__a_me.wav")
         self.its_a_me_sfx.set_volume(self.sfx_volume)
         self.correct_code = ["U", "U", "D", "D", "L", "R", "L", "R", "B", "A"]
         self.code_keys = []
@@ -228,7 +228,7 @@ class _00_Main:
 class KoopahariDesert:
     def __init__(self, screen):
         self.SCREEN = screen
-        self.image = pg.image.load("../graphics/00_title_screen/koopahari_desert.png").convert_alpha()
+        self.image = pg.image.load("graphics/00_title_screen/koopahari_desert.png").convert_alpha()
         self.xy_pos = pg.math.Vector2(x=0, y=80)
         self.rect = self.image.get_rect(topleft = self.xy_pos)
 
@@ -255,10 +255,10 @@ class KoopahariDesert:
 class Dinohattan:
     def __init__(self, screen):
         self.SCREEN = screen
-        self.image_front = pg.image.load("../graphics/00_title_screen/dinohattan_front.png").convert_alpha()
+        self.image_front = pg.image.load("graphics/00_title_screen/dinohattan_front.png").convert_alpha()
         self.xy_front = pg.math.Vector2(x=0, y=64)
         self.rect_front = self.image_front.get_rect(topleft = self.xy_front)
-        self.image_back = pg.image.load("../graphics/00_title_screen/dinohattan_back.png").convert_alpha()
+        self.image_back = pg.image.load("graphics/00_title_screen/dinohattan_back.png").convert_alpha()
         self.xy_back = pg.math.Vector2(x=0, y=251)
         self.rect_back = self.image_back.get_rect(topleft = self.xy_back)
 
@@ -298,7 +298,7 @@ class Dinohattan:
 class Sky:
     def __init__(self, screen):
         self.SCREEN = screen
-        self.image = pg.image.load("../graphics/00_title_screen/sky.png").convert()
+        self.image = pg.image.load("graphics/00_title_screen/sky.png").convert()
         self.xy_pos = pg.math.Vector2(x=0, y=0)
         self.rect = self.image.get_rect(topleft=self.xy_pos)
 
@@ -308,7 +308,7 @@ class Sky:
 class Cloud(pg.sprite.Sprite):
     def __init__(self, group, cloud_numb:int):
         super().__init__(group)
-        self.image = pg.image.load(f"../graphics/00_title_screen/clouds_{cloud_numb}.png").convert_alpha()
+        self.image = pg.image.load(f"graphics/00_title_screen/clouds_{cloud_numb}.png").convert_alpha()
         self.xy_pos = pg.math.Vector2(x=800, y=87) if cloud_numb == 1 else pg.math.Vector2(x=800, y=93)
         self.rect = self.image.get_rect(topleft = self.xy_pos)
 
@@ -329,7 +329,7 @@ class Cloud(pg.sprite.Sprite):
 class Logo:
     def __init__(self, screen):
         self.SCREEN = screen
-        self.image = pg.image.load("../graphics/00_title_screen/logo.png").convert_alpha()
+        self.image = pg.image.load("graphics/00_title_screen/logo.png").convert_alpha()
         self.xy_pos = pg.math.Vector2(x=166, y=-193)
         self.rect = self.image.get_rect(topleft = self.xy_pos)
 

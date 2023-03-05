@@ -135,10 +135,10 @@ class SettingsDB:
         while tries <= 3:
             try:
                 # checks if 00_settings folder is present
-                if "00_settings" not in os.listdir('../data/'):
-                    os.mkdir('../data/00_settings/')
+                if "00_settings" not in os.listdir('data/'):
+                    os.mkdir('data/00_settings/')
 
-                settings_db = sqlite3.connect('../data/00_settings/settings.db')
+                settings_db = sqlite3.connect('data/00_settings/settings.db')
 
                 cursor_t = settings_db.cursor()
                 cursor_t.close()

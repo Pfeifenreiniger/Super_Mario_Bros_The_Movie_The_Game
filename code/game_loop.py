@@ -2,18 +2,16 @@
 import pygame as pg
 pg.init()
 
-from logger import Logger
-import logging
 
-from settings import Settings
-from events import EventLoop
-from locator import Locator
+from code.settings import Settings
+from code.event_loop import EventLoop
+from code.locator import Locator
 
-from _00_title_screen._00_main import _00_Main
-from _01_level._01_main import _01_Main
+from code._00_title_screen._00_main import _00_Main
+from code._01_level._01_main import _01_Main
 
 
-class Game:
+class GameLoop:
     def __init__(self):
         # basic setup
         self.settings = Settings()
@@ -48,7 +46,7 @@ class Game:
             if hasattr(self, '_00_screen'):
                 del self._00_screen
 
-    def game_loop(self):
+    def looping(self):
 
         while 1:
 
@@ -77,13 +75,3 @@ class Game:
             # frame draw
             pg.display.set_caption(f"SUPER MARIO BROS. THE MOVIE: THE GAME | {round(self.clock.get_fps())} FPS")
             pg.display.update()
-
-
-if __name__ == "__main__":
-    try:
-        game = Game()
-        game.game_loop()
-    except Exception as e:
-        Logger()
-        logging.exception(e)
-        raise Exception(e)
