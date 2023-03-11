@@ -5,9 +5,11 @@ import math
 from code._01_level.layers import LAYERS
 
 class Lamp(pg.sprite.Sprite):
-    def __init__(self, groups, pos, player, distance_to_player_method):
+    def __init__(self, groups, pos, player, distance_between_rects_method):
         super().__init__(groups)
         self.player = player
+
+        self.loaded = False
 
         self.images = [pg.image.load("graphics/01_excavation_site/tilesets/objects/lamp/01_object_lamp_f1.png").convert_alpha(),
                        pg.image.load("graphics/01_excavation_site/tilesets/objects/lamp/01_object_lamp_f2.png").convert_alpha(),
@@ -21,8 +23,11 @@ class Lamp(pg.sprite.Sprite):
         self.animation_speed = 5
         self.animation_forward = True
 
-        self.check_distance_to_player = distance_to_player_method
+        self.check_distance_between_rects = distance_between_rects_method
 
+    def check_loading_progression(self):
+        if not isinstance(self, type(None)):
+            self.loaded = True
 
     def animate(self, dt):
 

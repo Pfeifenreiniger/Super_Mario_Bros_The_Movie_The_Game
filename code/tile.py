@@ -3,8 +3,10 @@ import pygame as pg
 import math
 
 class Tile(pg.sprite.Sprite):
-    def __init__(self, groups, pos, surf, z, player, distance_to_player_method):
+    def __init__(self, groups, pos, surf, z, player, distance_between_rects_method):
         super().__init__(groups)
+
+        self.loaded = False
 
         self.image = surf
         self.rect = self.image.get_rect(topleft=pos)
@@ -12,17 +14,21 @@ class Tile(pg.sprite.Sprite):
 
         self.player = player
 
-        self.check_distance_to_player = distance_to_player_method
+        self.check_distance_between_rects = distance_between_rects_method
+
+    def check_loading_progression(self):
+        if not isinstance(self, type(None)):
+            self.loaded = True
 
 
 class CollisionTile(Tile):
-    def __init__(self, groups, pos, surf, z, player, distance_to_player_method):
+    def __init__(self, groups, pos, surf, z, player, distance_between_rects_method):
         super().__init__(groups=groups,
                          pos=pos,
                          surf=surf,
                          z=z,
                          player=player,
-                         distance_to_player_method=distance_to_player_method)
+                         distance_between_rects_method=distance_between_rects_method)
 
         # self.old_rect = self.rect.copy()
 

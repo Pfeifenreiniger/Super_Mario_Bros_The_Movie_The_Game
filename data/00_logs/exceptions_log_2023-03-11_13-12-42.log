@@ -1,0 +1,12 @@
+2023-03-11 13:12:42,755 ERROR _01_Main.check_distance_to_player() missing 1 required positional argument: 'max_distance'
+Traceback (most recent call last):
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\game.py", line 9, in <module>
+    game_loop.looping()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 69, in looping
+    self._01_level.update(dt)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_01_level\_01_main.py", line 225, in update
+    self.update_sprites(dt)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_01_level\_01_main.py", line 210, in update_sprites
+    if sprite.check_distance_to_player(sprite.rect, 1200):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: _01_Main.check_distance_to_player() missing 1 required positional argument: 'max_distance'

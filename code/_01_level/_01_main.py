@@ -5,6 +5,7 @@ import math
 from pytmx.util_pygame import load_pygame
 from code.menu_pane import MenuPane
 from code._01_level.player import Player
+from code._01_level.rat import Rat
 from code._01_level.lamp import Lamp
 from code.tile import Tile, CollisionTile
 from code._01_level.layers import LAYERS
@@ -52,6 +53,7 @@ class _01_Main:
     def __init__(self, event_loop, settings, locator):
 
         self.loaded = False
+        self.all_sprites_loaded = False
 
         self.event_loop = event_loop
         self.settings = settings
@@ -96,8 +98,21 @@ class _01_Main:
                                 map_width=self.map_width,
                                 death_zones=self.death_zones,
                                 settings=self.settings,
-                                menu_pane=self.menu_pane
+                                menu_pane=self.menu_pane,
+                                distance_between_rects_method=self.check_distance_between_rects
                                 )
+
+            elif obj.name == 'Rat':
+                Rat(
+                    groups=self.all_sprites,
+                    pos=(obj.x, obj.y),
+                    collision_sprites=self.collision_sprites,
+                    map_width=self.map_width,
+                    death_zones=self.death_zones,
+                    settings=self.settings,
+                    player=self.player,
+                    distance_between_rects_method=self.check_distance_between_rects
+                )
 
         # tiles: collision tiles (mainground)
         for x, y, surf in self.tmx_map.get_layer_by_name('MG').tiles():
@@ -107,7 +122,7 @@ class _01_Main:
                 surf=surf,
                 z=LAYERS['MG'],
                 player=self.player,
-                distance_to_player_method=self.check_distance_to_player
+                distance_between_rects_method=self.check_distance_between_rects
                 )
 
         # objects: mainground
@@ -117,7 +132,7 @@ class _01_Main:
                                 groups=self.all_sprites,
                                 pos=(obj.x, obj.y),
                                 player=self.player,
-                                distance_to_player_method=self.check_distance_to_player
+                                distance_between_rects_method=self.check_distance_between_rects
                                 )
             else:
                 Tile(
@@ -126,7 +141,7 @@ class _01_Main:
                     surf=obj.image,
                     z=LAYERS['MG_Objects'],
                     player=self.player,
-                    distance_to_player_method=self.check_distance_to_player
+                    distance_between_rects_method=self.check_distance_between_rects
                     )
 
         # tiles: forground
@@ -137,7 +152,7 @@ class _01_Main:
                 surf=surf,
                 z=LAYERS['FG_Tiles'],
                 player=self.player,
-                distance_to_player_method=self.check_distance_to_player
+                distance_between_rects_method=self.check_distance_between_rects
                 )
 
         # objects: foreground objects
@@ -148,7 +163,7 @@ class _01_Main:
                 surf=obj.image,
                 z=LAYERS['FG_Objects'],
                 player=self.player,
-                distance_to_player_method=self.check_distance_to_player
+                distance_between_rects_method=self.check_distance_between_rects
                 )
 
         # objects: background large tiles
@@ -159,7 +174,7 @@ class _01_Main:
                 surf=obj.image,
                 z=LAYERS['BG'],
                 player=self.player,
-                distance_to_player_method=self.check_distance_to_player
+                distance_between_rects_method=self.check_distance_between_rects
                 )
 
         # objects: background details
@@ -170,14 +185,14 @@ class _01_Main:
                 surf=obj.image,
                 z=LAYERS['BG_Objects'],
                 player=self.player,
-                distance_to_player_method=self.check_distance_to_player
+                distance_between_rects_method=self.check_distance_between_rects
                 )
 
     def check_loading_progression(self):
         if not isinstance(self, type(None)):
             self.loaded = True
 
-    def check_distance_to_player(self, rect:pg.Rect, max_distance:int) -> bool:
+    def check_distance_between_rects(self, rect1:pg.Rect, rect2:pg.Rect, max_distance:int) -> bool:
         """Method to pass to any graphical objects except the player.
         It will calculate the distance between said objects and the player's current position in pixels.
         The object's rectangle has to be passed to the parameter 'rect='.
@@ -185,7 +200,7 @@ class _01_Main:
         center position exceeds the set maximum (parameter 'max_distance=') a boolean false will be returned,
         otherwise true."""
 
-        if math.dist(self.player.rect.center, rect.center) < max_distance:
+        if math.dist(rect1.center, rect2.center) < max_distance:
             return True
         else:
             return False
@@ -207,18 +222,18 @@ class _01_Main:
             if sprite.__class__.__name__ == "Player":
                 self.all_sprites.draw(sprite=sprite, player=self.player)
             else:
-                if sprite.check_distance_to_player(sprite.rect, 1200):
+                if sprite.check_distance_between_rects(rect1=self.player.rect, rect2=sprite.rect, max_distance=1200):
                     if sprite.__class__.__name__ == "Tile" or sprite.__class__.__name__ == "CollisionTile":
                         self.all_sprites.draw(sprite=sprite, player=self.player)
                     elif sprite.__class__.__name__ == "Lamp":
                         self.lamp.update(dt)
                         self.all_sprites.draw(sprite=sprite, player=self.player)
-                    elif sprite.__class__.__name__ == "Player":
+                    elif sprite.__class__.__name__ == "Rat":
+                        sprite.update(dt)
                         self.all_sprites.draw(sprite=sprite, player=self.player)
-
     def update(self, dt):
 
-        if self.player.loaded:
+        if self.all_sprites_loaded:
 
             self.player.update(dt)
 
@@ -235,5 +250,12 @@ class _01_Main:
                 self.music.stop()
 
         else:
-            self.player.check_loading_progression()
-
+            while not self.all_sprites_loaded:
+                all_true = True
+                for sprite in self.all_sprites:
+                    sprite.check_loading_progression()
+                    if not sprite.loaded:
+                        all_true = False
+                        break
+                if all_true:
+                    self.all_sprites_loaded = True

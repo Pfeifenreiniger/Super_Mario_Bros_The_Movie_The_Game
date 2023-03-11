@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="280" height="60" tilewidth="20" tileheight="20" infinite="0" nextlayerid="16" nextobjectid="190">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="280" height="60" tilewidth="20" tileheight="20" infinite="0" nextlayerid="16" nextobjectid="192">
  <tileset firstgid="1" source="01_tiles_bg.tsx"/>
  <tileset firstgid="481" source="01_tiles_mg.tsx"/>
  <tileset firstgid="855" source="01_objects_bg.tsx"/>
@@ -307,6 +307,12 @@
  </objectgroup>
  <objectgroup id="6" name="ENTITIES" locked="1">
   <object id="1" name="Player" x="88" y="575.5">
+   <point/>
+  </object>
+  <object id="190" name="Rat" x="2302" y="628">
+   <point/>
+  </object>
+  <object id="191" name="Rat" x="1742" y="640">
    <point/>
   </object>
  </objectgroup>

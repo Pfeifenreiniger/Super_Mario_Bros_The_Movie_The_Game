@@ -1,15 +1,12 @@
 
 import pygame as pg
 
-from code._01_level.layers import LAYERS
+from code._01_level.entity import Entity
 
-class Player(pg.sprite.Sprite):
-    def __init__(self, groups, pos, collision_sprites, map_width, death_zones, settings, menu_pane):
-        super().__init__(groups)
+class Player(Entity):
+    def __init__(self, groups, pos, collision_sprites, map_width, death_zones, settings, menu_pane, distance_between_rects_method):
+        super().__init__(groups, pos, collision_sprites, death_zones, settings, map_width, distance_between_rects_method)
 
-        self.loaded = False
-
-        self.settings = settings
         self.menu_pane = menu_pane
 
         self.sprites = {
@@ -87,46 +84,27 @@ class Player(pg.sprite.Sprite):
                                   pg.image.load("graphics/01_excavation_site/entities/player/duck_attack_left/player_duck_attack_left_f9.png").convert_alpha())
         }
 
-        self.frame_index = 0
-        self.run_frame_direction = 1
-        self.animation_status = "stand_right"
-        self.old_animation_status = self.animation_status
-
         self.image = self.sprites[self.animation_status][self.frame_index]
+        self.set_hitbox(pos)
+        self.xy_pos = pg.math.Vector2(self.rect.topleft)
+        self.start_xy_pos = tuple(self.xy_pos)
 
         self.sfx = {
             "jump" : pg.mixer.Sound("audio/sfx/player/jump.mp3"),
             "crowbar_swing" : pg.mixer.Sound("audio/sfx/player/crowbar_swing.wav"),
             "crowbar_hit" : pg.mixer.Sound("audio/sfx/player/crowbar_hit.mp3")
         }
-        self.old_sfx_volume = self.settings.sfx_volume
         self.set_sfx_volume()
 
-        self.set_hitbox(pos)
-        self.xy_pos = pg.math.Vector2(self.rect.topleft)
-        self.start_xy_pos = tuple(self.xy_pos)
-        self.z = LAYERS['MG']
-        self.direction = pg.math.Vector2(x=0, y=0)
+
         self.speed = 250
         self.jump_speed = 600
-        self.gravity = 50
         self.on_floor = False
         self.jumped = False
-
-        # collision
-        self.collision_sprites = collision_sprites
-
-        self.map_width = map_width
-
-        self.death_zones = death_zones
 
         self.menu_pressed = False
         self.menu_pressed_timestamp = None
 
-
-    def set_sfx_volume(self):
-        for sfx in self.sfx.values():
-            sfx.set_volume(self.settings.sfx_volume)
 
     def set_hitbox(self, pos):
         """generates rect object and adjust its size to be the hitbox"""
@@ -174,7 +152,7 @@ class Player(pg.sprite.Sprite):
         for sprite in self.collision_sprites.sprites():
 
             # check for tiles in 90 pixels distance to player
-            if sprite.check_distance_to_player(sprite.rect, 90):
+            if sprite.check_distance_between_rects(rect1=self.rect, rect2=sprite.rect, max_distance=90):
 
                 # contact between player rect and floor, ceiling, and walls
                 if sprite.rect.colliderect(self.rect):
@@ -273,26 +251,6 @@ class Player(pg.sprite.Sprite):
                         self.menu_pressed = False
 
 
-    def move(self, dt):
-
-        # horizontal movement
-        x_movement = self.direction.x * self.speed * dt
-
-        # horizontal movement only possible between outer level edges
-        if self.xy_pos.x + x_movement > 0 and self.xy_pos.x + x_movement < self.map_width - self.rect.width:
-            self.xy_pos.x += x_movement
-
-        self.rect.x = round(self.xy_pos.x)
-        self.check_collision('horizontal')
-
-
-        # vertical movement
-        if not self.on_floor:
-            self.direction.y += self.gravity
-        self.xy_pos.y += self.direction.y * dt
-        self.rect.y = round(self.xy_pos.y)
-        self.check_collision('vertical')
-
     def animate(self, dt):
 
         def return_frame_rotation_power() -> int:
@@ -367,12 +325,8 @@ class Player(pg.sprite.Sprite):
 
         self.image = self.sprites[self.animation_status][int(self.frame_index)]
 
-    def check_loading_progression(self):
-        if not isinstance(self, type(None)):
-            self.loaded = True
 
     def update(self, dt):
-        self.old_rect = self.rect.copy()
         self.old_animation_status = self.animation_status
         self.input()
         self.move(dt)

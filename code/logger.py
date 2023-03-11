@@ -30,7 +30,7 @@ class Logger:
         for log in os.listdir(log_root):
 
             # transforms last modification date into datetime-object
-            last_mod = time.localtime(os.stat(log).st_mtime)
+            last_mod = time.localtime(os.stat(log_root + log).st_mtime)
             last_mod = f"{last_mod.tm_year}-{'%02d' % (last_mod.tm_mon,)}-{'%02d' % (last_mod.tm_mday,)}"
             last_mod = dt.date.fromisoformat(last_mod)
 
