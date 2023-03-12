@@ -317,7 +317,7 @@ class Player(Entity):
 
         else:
             self.frame_index += frame_rotation_power * dt
-            if int(self.frame_index) >= len(self.sprites[self.animation_status]) - 1:
+            if int(self.frame_index) >= len(self.sprites[self.animation_status]):
                 self.frame_index = 0
 
         if self.animation_status != self.old_animation_status:
