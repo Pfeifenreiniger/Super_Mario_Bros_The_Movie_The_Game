@@ -17,7 +17,7 @@ class Player(Entity):
             "stand_right" : (pg.image.load("graphics/01_excavation_site/entities/player/stand_right/player_stand_right_f1.png").convert_alpha(),
                              pg.image.load("graphics/01_excavation_site/entities/player/stand_right/player_stand_right_f2.png").convert_alpha(),
                              pg.image.load("graphics/01_excavation_site/entities/player/stand_right/player_stand_right_f3.png").convert_alpha(),
-                             pg.image.load("graphics/01_excavation_site/entities/player/stand_right/player_stand_right_f4.png").convert_alpha(),),
+                             pg.image.load("graphics/01_excavation_site/entities/player/stand_right/player_stand_right_f4.png").convert_alpha()),
             "run_left" : (pg.image.load("graphics/01_excavation_site/entities/player/run_left/player_run_left_f1.png").convert_alpha(),
                           pg.image.load("graphics/01_excavation_site/entities/player/run_left/player_run_left_f2.png").convert_alpha(),
                           pg.image.load("graphics/01_excavation_site/entities/player/run_left/player_run_left_f3.png").convert_alpha(),
