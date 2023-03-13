@@ -88,6 +88,12 @@ class _01_Main:
             death_zones.append(pg.Rect(obj.x, obj.y, obj.width, obj.height))
         self.death_zones = tuple(death_zones)
 
+        # objects: ledges
+        ledges = []
+        for obj in self.tmx_map.get_layer_by_name('LEDGES'):
+            ledges.append(pg.Rect(obj.x, obj.y, obj.width, obj.height))
+        self.ledges = tuple(ledges)
+
         # entities
         for obj in self.tmx_map.get_layer_by_name('ENTITIES'):
             if obj.name == 'Player':
@@ -109,6 +115,7 @@ class _01_Main:
                     collision_sprites=self.collision_sprites,
                     map_width=self.map_width,
                     death_zones=self.death_zones,
+                    ledges=self.ledges,
                     settings=self.settings,
                     player=self.player,
                     distance_between_rects_method=self.check_distance_between_rects
@@ -231,6 +238,11 @@ class _01_Main:
                     elif sprite.__class__.__name__ == "Rat":
                         sprite.update(dt)
                         self.all_sprites.draw(sprite=sprite, player=self.player)
+                else:
+                    # reset enemy positions if distance between player and enemy are too far away
+                    if sprite.__class__.__name__ == "Rat":
+                        sprite.xy_pos = pg.math.Vector2(sprite.start_xy_pos)
+
     def update(self, dt):
 
         if self.all_sprites_loaded:

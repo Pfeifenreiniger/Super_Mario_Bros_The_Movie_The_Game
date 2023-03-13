@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="280" height="60" tilewidth="20" tileheight="20" infinite="0" nextlayerid="16" nextobjectid="192">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="280" height="60" tilewidth="20" tileheight="20" infinite="0" nextlayerid="17" nextobjectid="203">
  <tileset firstgid="1" source="01_tiles_bg.tsx"/>
  <tileset firstgid="481" source="01_tiles_mg.tsx"/>
  <tileset firstgid="855" source="01_objects_bg.tsx"/>
@@ -304,6 +304,16 @@
   <object id="101" name="Fall" x="1500.25" y="1179.75" width="119.5" height="20"/>
   <object id="102" name="Fall" x="2620" y="1179.75" width="139.75" height="19.75"/>
   <object id="103" name="Fall" x="520.667" y="1178.67" width="138" height="20.6667"/>
+ </objectgroup>
+ <objectgroup id="16" name="LEDGES" locked="1">
+  <object id="194" name="Ledge" x="638.5" y="600" width="40" height="180"/>
+  <object id="195" name="Ledge" x="500.5" y="599" width="40" height="180"/>
+  <object id="196" name="Ledge" x="901.5" y="599" width="40" height="180"/>
+  <object id="198" name="Ledge" x="1275" y="599.5" width="40" height="180"/>
+  <object id="199" name="Ledge" x="1480.5" y="599" width="40" height="180"/>
+  <object id="200" name="Ledge" x="1599.5" y="539" width="40" height="180"/>
+  <object id="201" name="Ledge" x="2600" y="539" width="40" height="180"/>
+  <object id="202" name="Ledge" x="2739" y="499" width="40" height="180"/>
  </objectgroup>
  <objectgroup id="6" name="ENTITIES" locked="1">
   <object id="1" name="Player" x="88" y="575.5">

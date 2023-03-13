@@ -2,13 +2,15 @@
 from code._01_level.entity import Entity
 
 class Enemy(Entity):
-    def __init__(self, groups, pos, collision_sprites, death_zones, settings, map_width, player, distance_between_rects_method):
+    def __init__(self, groups, pos, collision_sprites, death_zones, ledges, settings, map_width, player, distance_between_rects_method):
         super().__init__(groups, pos, collision_sprites, death_zones, settings, map_width, distance_between_rects_method)
 
         self.player = player
 
         self.aggro_range_x = 300
         self.aggro_range_y = 50
+
+        self.ledges = ledges
 
     def check_collision(self, direction):
 
@@ -57,12 +59,27 @@ class Enemy(Entity):
         else:
             self.animation_status = f"{'stand' if 'stand' in self.animation_status else 'run'}_left"
 
+    def check_if_ledge(self) -> bool:
+
+        for ledge in self.ledges:
+            if self.rect.colliderect(ledge):
+                # facing left at a ledge to the left
+                if ledge.right >= self.rect.left and ledge.left <= self.rect.left and "left" in self.animation_status:
+                    return True
+                # facing right at a ledge to the right
+                elif ledge.left <= self.rect.right and ledge.right >= self.rect.right and "right" in self.animation_status:
+                    return True
+                else:
+                    return False
+        return False
+
+
     def run_to_player(self):
 
         if "left" in self.animation_status: # player's x lower than enemy's
             if (self.rect.centerx - self.player.rect.centerx <= self.aggro_range_x) \
             and abs(self.rect.centery - self.player.rect.centery <= self.aggro_range_y) \
-            and self.rect.left >= self.player.rect.right:
+            and self.rect.left >= self.player.rect.right and not self.check_if_ledge():
                 self.animation_status = "run_left"
                 self.direction.x = -1
             else:
@@ -71,7 +88,7 @@ class Enemy(Entity):
         else:
             if (self.player.rect.centerx - self.rect.centerx <= self.aggro_range_x) \
             and abs(self.rect.centery - self.player.rect.centery <= self.aggro_range_y) \
-            and self.rect.right <= self.player.rect.left:
+            and self.rect.right <= self.player.rect.left and not self.check_if_ledge():
                 self.animation_status = "run_right"
                 self.direction.x = 1
             else:
@@ -84,7 +101,7 @@ class Enemy(Entity):
             if "attack" in self.animation_status:
                 return 15
             elif "run" in self.animation_status:
-                return 16
+                return 20
             else:
                 return 3
 

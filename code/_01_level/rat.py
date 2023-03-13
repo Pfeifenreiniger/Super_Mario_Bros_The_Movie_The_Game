@@ -3,8 +3,8 @@ import pygame as pg
 from code._01_level.enemy import Enemy
 
 class Rat(Enemy):
-    def __init__(self, groups, pos, collision_sprites, map_width, death_zones, settings, player, distance_between_rects_method):
-        super().__init__(groups, pos, collision_sprites, death_zones, settings, map_width, player, distance_between_rects_method)
+    def __init__(self, groups, pos, collision_sprites, map_width, death_zones, ledges, settings, player, distance_between_rects_method):
+        super().__init__(groups, pos, collision_sprites, death_zones, ledges, settings, map_width, player, distance_between_rects_method)
 
         self.sprites = {
             "stand_left" : (pg.image.load("graphics/01_excavation_site/entities/enemies/rat/stand_left/rat_stand_left_f1.png").convert_alpha(),
@@ -32,7 +32,7 @@ class Rat(Enemy):
         self.xy_pos = pg.math.Vector2(self.rect.topleft)
         self.start_xy_pos = tuple(self.xy_pos)
 
-        self.speed = 120
+        self.speed = 150
 
 
     def set_hitbox(self, pos):
