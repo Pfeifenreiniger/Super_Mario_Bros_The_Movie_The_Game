@@ -4,7 +4,6 @@ from code._01_level.enemy import Enemy
 
 class Rat(Enemy):
     def __init__(self, groups, pos, collision_sprites, map_width, death_zones, ledges, settings, player, distance_between_rects_method):
-        super().__init__(groups, pos, collision_sprites, death_zones, ledges, settings, map_width, player, distance_between_rects_method)
 
         self.sprites = {
             "stand_left" : (pg.image.load("graphics/01_excavation_site/entities/enemies/rat/stand_left/rat_stand_left_f1.png").convert_alpha(),
@@ -27,11 +26,13 @@ class Rat(Enemy):
                            pg.image.load("graphics/01_excavation_site/entities/enemies/rat/run_right/rat_run_right_f7.png").convert_alpha())
         }
 
-        self.image = self.sprites[self.animation_status][self.frame_index]
-        self.set_hitbox(pos)
-        self.xy_pos = pg.math.Vector2(self.rect.topleft)
-        self.start_xy_pos = tuple(self.xy_pos)
+        self.image = self.sprites["stand_left"][0]
 
+        super().__init__(groups, pos, collision_sprites, death_zones, ledges, settings, map_width, player, distance_between_rects_method)
+
+        self.set_sfx_volume()
+
+        self.health = 30
         self.speed = 150
 
 
@@ -63,5 +64,7 @@ class Rat(Enemy):
         self.run_to_player()
         self.move(dt)
         self.animate(dt)
+        self.deal_damage()
+        self.get_damage()
         self.check_fall_death()
 

@@ -1,4 +1,6 @@
 
+import pygame as pg
+
 from code._01_level.entity import Entity
 
 class Enemy(Entity):
@@ -11,6 +13,13 @@ class Enemy(Entity):
         self.aggro_range_y = 50
 
         self.ledges = ledges
+
+        if self.__class__.__name__ == "Rat":
+            dying_sfx = pg.mixer.Sound("audio/sfx/enemies/rat/rat_squeak_sfx.mp3")
+
+        self.sfx = {
+            "dying" : dying_sfx
+        }
 
     def check_collision(self, direction):
 
@@ -52,6 +61,12 @@ class Enemy(Entity):
         # no contact between rat and floor -> falling
         if not contact:
             self.on_floor = False
+
+    def check_fall_death(self):
+
+        if self.rect.collidelist(self.death_zones) >= 0:
+            self.sfx["dying"].play()
+            self.kill()
 
     def face_player(self):
         if self.rect.centerx < self.player.rect.centerx:
@@ -95,6 +110,33 @@ class Enemy(Entity):
                 self.animation_status = "stand_right"
                 self.direction.x = 0
 
+    def deal_damage(self):
+
+        # when enemy's hitbox touches player's hitbox and player is not currently attacking -> player gets damage
+        if self.rect.colliderect(self.player.rect) and not 'attack' in self.player.animation_status:
+            self.player.get_damage(amount=self.attack_power)
+
+    def get_damage(self):
+
+        # if player attacks and has a attackbox which collides with the enemy's hitbox -> enemy receives damage
+        if 'attack' in self.player.animation_status:
+            if hasattr(self.player, 'attackbox'):
+                if self.player.attackbox.colliderect(self.rect):
+                    self.player.sfx["crowbar_swing"].stop()
+                    self.player.sfx["crowbar_hit"].play()
+                    self.health -= self.player.attack_power
+                    del self.player.attackbox
+
+                    if self.health <= 0:
+                        self.sfx["dying"].play()
+                        self.kill()
+                    # if not dead, enemy will be knocked back by player's attack
+                    else:
+                        if "left" in self.animation_status:
+                            self.xy_pos.x += 10 * self.player.attack_power
+                        else:
+                            self.xy_pos.x -= 10 * self.attack_power
+
     def animate(self, dt):
 
         def return_frame_rotation_power() -> int:
@@ -133,3 +175,13 @@ class Enemy(Entity):
             self.frame_index = 0
 
         self.image = self.sprites[self.animation_status][int(self.frame_index)]
+
+    def update(self, dt):
+        self.old_animation_status = self.animation_status
+        self.face_player()
+        self.run_to_player()
+        self.move(dt)
+        self.animate(dt)
+        self.deal_damage()
+        self.get_damage()
+        self.check_fall_death()

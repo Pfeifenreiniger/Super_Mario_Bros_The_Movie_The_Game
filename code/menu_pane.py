@@ -23,8 +23,9 @@ class MenuPane:
         self.pane_width = 650
         self.pane_height_start = 2
         self.pane_height_end = 350
-        self.pane_height_curr = self.pane_height_end
-        self.xy_pos_pane = pg.math.Vector2(75, 125)
+        self.pane_height_curr = self.pane_height_start
+        self.xy_pos_pane = pg.math.Vector2(75, 288)
+        self.pane_y_edge = 125
         self.load_pane()
 
         # font
@@ -61,16 +62,16 @@ class MenuPane:
         if self.locator.current_location == 0: # title menu
             # main menu (0)
             font_surf_new_game = self.font.render("NEW GAME", False, self.font_color_white)
-            font_rect_new_game = font_surf_new_game.get_rect(center = (400, self.xy_pos_pane.y + round((self.pane_height_end / 5) * 1)))
+            font_rect_new_game = font_surf_new_game.get_rect(center = (400, self.pane_y_edge + round((self.pane_height_end / 5) * 1)))
 
             font_surf_load_game = self.font.render("LOAD GAME", False, self.font_color_white)
-            font_rect_load_game = font_surf_load_game.get_rect(center = (400, self.xy_pos_pane.y + round((self.pane_height_end / 5) * 2)))
+            font_rect_load_game = font_surf_load_game.get_rect(center = (400, self.pane_y_edge + round((self.pane_height_end / 5) * 2)))
 
             font_surf_settings = self.font.render("SETTINGS", False, self.font_color_white)
-            font_rect_settings = font_surf_settings.get_rect(center = (400, self.xy_pos_pane.y + round((self.pane_height_end / 5) * 3)))
+            font_rect_settings = font_surf_settings.get_rect(center = (400, self.pane_y_edge + round((self.pane_height_end / 5) * 3)))
 
             font_surf_quit = self.font.render("QUIT", False, self.font_color_white)
-            font_rect_quit = font_surf_quit.get_rect(center = (400, self.xy_pos_pane.y + round((self.pane_height_end / 5) * 4)))
+            font_rect_quit = font_surf_quit.get_rect(center = (400, self.pane_y_edge + round((self.pane_height_end / 5) * 4)))
 
             # new game menu (1)
             # ...
@@ -80,16 +81,16 @@ class MenuPane:
 
             # settings menu (3)
             font_surf_music_vol = self.font.render(f"MUSIC VOL.: {int(self.settings.music_volume * 100)}%", False, self.font_color_white)
-            font_rect_music_vol = font_surf_music_vol.get_rect(center = (400, self.xy_pos_pane.y + round((self.pane_height_end / 5) * 1)))
+            font_rect_music_vol = font_surf_music_vol.get_rect(center = (400, self.pane_y_edge + round((self.pane_height_end / 5) * 1)))
 
             font_surf_sfx_vol = self.font.render(f"SFX VOL.: {int(self.settings.sfx_volume * 100)}%", False, self.font_color_white)
-            font_rect_sfx_vol = font_surf_sfx_vol.get_rect(center = (400, self.xy_pos_pane.y + round((self.pane_height_end / 5) * 2)))
+            font_rect_sfx_vol = font_surf_sfx_vol.get_rect(center = (400, self.pane_y_edge + round((self.pane_height_end / 5) * 2)))
 
             font_surf_screen_mode = self.font.render(f"{self.settings.screen_mode}", False, self.font_color_white)
-            font_rect_screen_mode = font_surf_screen_mode.get_rect(center = (400, self.xy_pos_pane.y + round((self.pane_height_end / 5) * 3)))
+            font_rect_screen_mode = font_surf_screen_mode.get_rect(center = (400, self.pane_y_edge + round((self.pane_height_end / 5) * 3)))
 
             font_surf_back = self.font.render("BACK", False, self.font_color_white)
-            font_rect_back = font_surf_back.get_rect(center = (400, self.xy_pos_pane.y + round((self.pane_height_end / 5) * 4)))
+            font_rect_back = font_surf_back.get_rect(center = (400, self.pane_y_edge + round((self.pane_height_end / 5) * 4)))
 
             self.fonts =  {
                 0 : { # main menu
@@ -116,26 +117,26 @@ class MenuPane:
 
             # main menu (0)
             font_surf_continue = self.font.render("CONTINUE", False, self.font_color_white)
-            font_rect_continue = font_surf_continue.get_rect(center=(400, self.xy_pos_pane.y + round((self.pane_height_end / 4) * 1)))
+            font_rect_continue = font_surf_continue.get_rect(center=(400, self.pane_y_edge + round((self.pane_height_end / 4) * 1)))
 
             font_surf_quit = self.font.render("QUIT", False, self.font_color_white)
-            font_rect_quit = font_surf_quit.get_rect(center=(400, self.xy_pos_pane.y + round((self.pane_height_end / 4) * 2)))
+            font_rect_quit = font_surf_quit.get_rect(center=(400, self.pane_y_edge + round((self.pane_height_end / 4) * 2)))
 
             font_surf_settings = self.font.render("SETTINGS", False, self.font_color_white)
-            font_rect_settings = font_surf_settings.get_rect(center=(400, self.xy_pos_pane.y + round((self.pane_height_end / 4) * 3)))
+            font_rect_settings = font_surf_settings.get_rect(center=(400, self.pane_y_edge + round((self.pane_height_end / 4) * 3)))
 
             # settings menu (1)
             font_surf_music_vol = self.font.render(f"MUSIC VOL.: {int(self.settings.music_volume * 100)}%", False, self.font_color_white)
-            font_rect_music_vol = font_surf_music_vol.get_rect(center=(400, self.xy_pos_pane.y + round((self.pane_height_end / 5) * 1)))
+            font_rect_music_vol = font_surf_music_vol.get_rect(center=(400, self.pane_y_edge + round((self.pane_height_end / 5) * 1)))
 
             font_surf_sfx_vol = self.font.render(f"SFX VOL.: {int(self.settings.sfx_volume * 100)}%", False, self.font_color_white)
-            font_rect_sfx_vol = font_surf_sfx_vol.get_rect(center=(400, self.xy_pos_pane.y + round((self.pane_height_end / 5) * 2)))
+            font_rect_sfx_vol = font_surf_sfx_vol.get_rect(center=(400, self.pane_y_edge + round((self.pane_height_end / 5) * 2)))
 
             font_surf_screen_mode = self.font.render(f"{self.settings.screen_mode}", False, self.font_color_white)
-            font_rect_screen_mode = font_surf_screen_mode.get_rect(center=(400, self.xy_pos_pane.y + round((self.pane_height_end / 5) * 3)))
+            font_rect_screen_mode = font_surf_screen_mode.get_rect(center=(400, self.pane_y_edge + round((self.pane_height_end / 5) * 3)))
 
             font_surf_back = self.font.render("BACK", False, self.font_color_white)
-            font_rect_back = font_surf_back.get_rect(center=(400, self.xy_pos_pane.y + round((self.pane_height_end / 5) * 4)))
+            font_rect_back = font_surf_back.get_rect(center=(400, self.pane_y_edge + round((self.pane_height_end / 5) * 4)))
 
             self.fonts = {
                 0: {  # main menu
@@ -166,6 +167,7 @@ class MenuPane:
                 self.xy_pos_pane.y -= size_change / 2
             else:
                 self.direction.y = 0
+
         elif self.direction.y < 0: # window pane height decreases (y=-1)
             size_change = self.direction.y * self.animate_speed * dt
             if self.pane_height_curr + size_change >= self.pane_height_start:
@@ -175,16 +177,18 @@ class MenuPane:
                 self.direction.y = 1
 
                 if self.curr_menu_point[0] == 0:
-                    if self.locator.current_location == 0:
+                    if self.locator.current_location == 0: # title menu
                         if self.curr_menu_point[1] == "NEW GAME":
                             self.active = False
                             self.locator.current_location = 1
-                    else:
+
+                    else: # pause menu
                         if self.curr_menu_point[1] == "QUIT":
                             self.active = False
                             self.locator.current_location = 0
                         elif self.curr_menu_point[1] == "CONTINUE":
                             self.active = False
+
         else:
             self.xy_pos_pane.y = 125
             self.show_fonts = True
@@ -253,6 +257,16 @@ class MenuPane:
                             self.settings.save_changes_to_db()
                             self.curr_menu_point[0] = 0
                             self.curr_menu_point[1] = "SETTINGS"
+
+            elif keys[pg.K_ESCAPE] and self.locator.current_location != 0 and self.curr_menu_point[0] == 0:
+
+                key_pressed()
+
+                self.direction.y = -1
+
+                self.sfx_menu_pane_closing.play()
+                self.show_fonts = False
+                self.curr_menu_point[1] = "CONTINUE"
 
             elif keys[pg.K_DOWN] or keys[pg.K_s]:
 

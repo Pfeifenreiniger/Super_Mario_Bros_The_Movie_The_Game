@@ -44,6 +44,7 @@ class GameLoop:
                 del self._01_level
         elif self.locator.current_location == 1:
             if hasattr(self, '_00_screen'):
+                self._00_screen.press_start_sfx.stop()
                 del self._00_screen
 
     def looping(self):

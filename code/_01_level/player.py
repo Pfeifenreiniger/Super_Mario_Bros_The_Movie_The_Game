@@ -1,13 +1,11 @@
 
 import pygame as pg
+from math import sin
 
 from code._01_level.entity import Entity
 
 class Player(Entity):
     def __init__(self, groups, pos, collision_sprites, map_width, death_zones, settings, menu_pane, distance_between_rects_method):
-        super().__init__(groups, pos, collision_sprites, death_zones, settings, map_width, distance_between_rects_method)
-
-        self.menu_pane = menu_pane
 
         self.sprites = {
             "stand_left" : (pg.image.load("graphics/01_excavation_site/entities/player/stand_left/player_stand_left_f1.png").convert_alpha(),
@@ -84,23 +82,30 @@ class Player(Entity):
                                   pg.image.load("graphics/01_excavation_site/entities/player/duck_attack_left/player_duck_attack_left_f9.png").convert_alpha())
         }
 
-        self.image = self.sprites[self.animation_status][self.frame_index]
-        self.set_hitbox(pos)
-        self.xy_pos = pg.math.Vector2(self.rect.topleft)
-        self.start_xy_pos = tuple(self.xy_pos)
+        self.image = self.sprites["stand_right"][0]
+
+        super().__init__(groups, pos, collision_sprites, death_zones, settings, map_width, distance_between_rects_method)
+
+        self.menu_pane = menu_pane
 
         self.sfx = {
             "jump" : pg.mixer.Sound("audio/sfx/player/jump.mp3"),
             "crowbar_swing" : pg.mixer.Sound("audio/sfx/player/crowbar_swing.wav"),
-            "crowbar_hit" : pg.mixer.Sound("audio/sfx/player/crowbar_hit.mp3")
+            "crowbar_hit" : pg.mixer.Sound("audio/sfx/player/crowbar_hit.mp3"),
+            "get_damage" : pg.mixer.Sound("audio/sfx/player/get_damage.mp3")
         }
         self.set_sfx_volume()
 
+        self.attack_power = 15
 
         self.speed = 250
         self.jump_speed = 600
         self.on_floor = False
         self.jumped = False
+
+        self.is_vulnerable = True
+        self.invul_duration = 1500
+        self.hit_time = None
 
         self.menu_pressed = False
         self.menu_pressed_timestamp = None
@@ -138,6 +143,27 @@ class Player(Entity):
                                       self.rect.top - attachbox_margin_upper), # top
                                      (self.rect.width - (self.rect.width // 2), # width
                                       attachbox_margin_upper * 3)) # height
+
+    def vulnerability_timer(self):
+        if not self.is_vulnerable:
+            current_time = pg.time.get_ticks()
+            if current_time - self.hit_time > self.invul_duration:
+                self.is_vulnerable = True
+
+    def blink(self):
+        if not self.is_vulnerable:
+            if self.wave_value():
+                mask = pg.mask.from_surface(self.image)
+                white_surf = mask.to_surface()
+                white_surf.set_colorkey((0, 0, 0))
+                self.image = white_surf
+
+    def wave_value(self):
+        value = sin(pg.time.get_ticks())
+        if value >= 0:
+            return True
+        else:
+            return False
 
     def check_fall_death(self):
 
@@ -187,6 +213,17 @@ class Player(Entity):
         # no contact between player and floor and not jumping -> falling
         if not contact and not self.jumped:
             self.on_floor = False
+
+    def get_damage(self, amount):
+
+        if self.is_vulnerable:
+            self.sfx["get_damage"].play()
+            self.hit_time = pg.time.get_ticks()
+            self.is_vulnerable = False
+
+            self.health -= amount
+            if self.health <= 0:
+                print("UARGH! BIN TOT!")
 
     def input(self):
 
@@ -242,7 +279,12 @@ class Player(Entity):
                 if keys[pg.K_ESCAPE] and not self.menu_pressed:
                     self.direction.x = 0
                     self.animation_status = f"stand_{'right' if 'right' in self.animation_status else 'left'}"
+
+                    # self.menu_pane.direction.y = 1
                     self.menu_pane.active = True
+                    self.menu_pane.key_pressed = True
+                    self.menu_pane.key_pressed_timestamp = pg.time.get_ticks()
+
                     self.menu_pressed = True
                     self.menu_pressed_timestamp = pg.time.get_ticks()
 
@@ -332,6 +374,8 @@ class Player(Entity):
         self.move(dt)
         self.animate(dt)
         self.check_fall_death()
+        self.vulnerability_timer()
+        self.blink()
 
         # print(f"RECT: {self.rect.top}")
         # print(f"HITBOX: {self.hitbox.top}")
