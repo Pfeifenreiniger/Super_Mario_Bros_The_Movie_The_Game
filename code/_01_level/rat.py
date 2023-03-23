@@ -35,6 +35,8 @@ class Rat(Enemy):
         self.health = 30
         self.speed = 150
 
+        self.knockback = 10
+
 
     def set_hitbox(self, pos):
         """generates rect object and adjust its size to be the hitbox"""
@@ -65,6 +67,6 @@ class Rat(Enemy):
         self.move(dt)
         self.animate(dt)
         self.deal_damage()
-        self.get_damage()
+        self.get_damage(self.knockback)
         self.check_fall_death()
 

@@ -6,6 +6,7 @@ from pytmx.util_pygame import load_pygame
 from code.menu_pane import MenuPane
 from code._01_level.player import Player
 from code._01_level.rat import Rat
+from code._01_level.bouncer import Bouncer
 from code._01_level.lamp import Lamp
 from code.tile import Tile, CollisionTile
 from code._01_level.layers import LAYERS
@@ -110,6 +111,20 @@ class _01_Main:
 
             elif obj.name == 'Rat':
                 Rat(
+                    groups=self.all_sprites,
+                    pos=(obj.x, obj.y),
+                    collision_sprites=self.collision_sprites,
+                    map_width=self.map_width,
+                    death_zones=self.death_zones,
+                    ledges=self.ledges,
+                    settings=self.settings,
+                    player=self.player,
+                    distance_between_rects_method=self.check_distance_between_rects
+                )
+
+            elif obj.name == "Bouncer1":
+                Bouncer(
+                    bouncer_no=1,
                     groups=self.all_sprites,
                     pos=(obj.x, obj.y),
                     collision_sprites=self.collision_sprites,
@@ -235,12 +250,12 @@ class _01_Main:
                     elif sprite.__class__.__name__ == "Lamp":
                         self.lamp.update(dt)
                         self.all_sprites.draw(sprite=sprite, player=self.player)
-                    elif sprite.__class__.__name__ == "Rat":
+                    elif sprite.__class__.__name__ == "Rat" or sprite.__class__.__name__ == "Bouncer":
                         sprite.update(dt)
                         self.all_sprites.draw(sprite=sprite, player=self.player)
                 else:
                     # reset enemy positions if distance between player and enemy are too far away
-                    if sprite.__class__.__name__ == "Rat":
+                    if sprite.__class__.__name__ == "Rat" or sprite.__class__.__name__ == "Bouncer":
                         sprite.xy_pos = pg.math.Vector2(sprite.start_xy_pos)
 
     def update(self, dt):

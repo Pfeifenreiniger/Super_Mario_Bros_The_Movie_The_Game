@@ -16,6 +16,8 @@ class Enemy(Entity):
 
         if self.__class__.__name__ == "Rat":
             dying_sfx = pg.mixer.Sound("audio/sfx/enemies/rat/rat_squeak_sfx.mp3")
+        elif self.__class__.__name__ == "Bouncer":
+            dying_sfx = pg.mixer.Sound("audio/sfx/enemies/bouncer/bouncer_get_koed.mp3")
 
         self.sfx = {
             "dying" : dying_sfx
@@ -116,7 +118,7 @@ class Enemy(Entity):
         if self.rect.colliderect(self.player.rect) and not 'attack' in self.player.animation_status:
             self.player.get_damage(amount=self.attack_power)
 
-    def get_damage(self):
+    def get_damage(self, knockback:int):
 
         # if player attacks and has a attackbox which collides with the enemy's hitbox -> enemy receives damage
         if 'attack' in self.player.animation_status:
@@ -133,9 +135,9 @@ class Enemy(Entity):
                     # if not dead, enemy will be knocked back by player's attack
                     else:
                         if "left" in self.animation_status:
-                            self.xy_pos.x += 10 * self.player.attack_power
+                            self.xy_pos.x += knockback * self.player.attack_power
                         else:
-                            self.xy_pos.x -= 10 * self.attack_power
+                            self.xy_pos.x -= knockback * self.player.attack_power
 
     def animate(self, dt):
 

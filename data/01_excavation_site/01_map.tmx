@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="280" height="60" tilewidth="20" tileheight="20" infinite="0" nextlayerid="17" nextobjectid="203">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="280" height="60" tilewidth="20" tileheight="20" infinite="0" nextlayerid="17" nextobjectid="205">
  <tileset firstgid="1" source="01_tiles_bg.tsx"/>
  <tileset firstgid="481" source="01_tiles_mg.tsx"/>
  <tileset firstgid="855" source="01_objects_bg.tsx"/>
@@ -323,6 +323,12 @@
    <point/>
   </object>
   <object id="191" name="Rat" x="1742" y="640">
+   <point/>
+  </object>
+  <object id="203" name="Bouncer1" x="838" y="642">
+   <point/>
+  </object>
+  <object id="204" name="Bouncer1" x="3402" y="532">
    <point/>
   </object>
  </objectgroup>
