@@ -9,7 +9,7 @@ class GameOverScreen:
     def __init__(self, settings):
         self.SCREEN = settings.get_display_screen()
 
-        self.music = pg.mixer.Sound("audio/music/FainGames - Cyberpunk 8-bit Relaxing Music.wav")
+        self.music = pg.mixer.Sound("audio/music/FainGames - Cyberpunk 8-bit Relaxing Music.mp3")
         self.music_play = False
 
         self.restart_level = False

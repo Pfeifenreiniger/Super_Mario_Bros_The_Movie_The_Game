@@ -234,7 +234,6 @@ class Player(Entity):
         
         if self.lives <= 0:
             self.dead = True
-            print("UARGH. BIN TOT!")
         else:
             self.health = self.max_health
             self.xy_pos = pg.math.Vector2(self.start_xy_pos)
