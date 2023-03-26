@@ -1,0 +1,18 @@
+2023-03-26 16:47:08,413 ERROR No file 'graphics/00_hud/life_player' found in working directory 'C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game'.
+Traceback (most recent call last):
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\game.py", line 9, in <module>
+    game_loop.looping()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 61, in looping
+    self.setup()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 37, in setup
+    self._01_level = _01_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_01_level\_01_main.py", line 80, in __init__
+    self.setup()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_01_level\_01_main.py", line 228, in setup
+    self.hud = HUD(
+               ^^^^
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_01_level\hud.py", line 11, in __init__
+    self.life_image = pg.image.load("graphics/00_hud/life_player").convert_alpha()
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: No file 'graphics/00_hud/life_player' found in working directory 'C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game'.

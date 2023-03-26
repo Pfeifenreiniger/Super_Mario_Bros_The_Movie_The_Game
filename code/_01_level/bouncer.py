@@ -42,8 +42,9 @@ class Bouncer(Enemy):
 
         self.health = 80 if self.bouncer_no == 1 else 60
         self.speed = 110 if self.bouncer_no == 1 else 130
+        self.attack_power = 40 if self.bouncer_no == 1 else 20
 
-        self.knockback = 4 if self.bouncer_no == 1 else 6
+        self.knockback = 4 if self.bouncer_no == 1 else 5
 
 
     def set_hitbox(self, pos):
@@ -51,7 +52,7 @@ class Bouncer(Enemy):
 
         self.rect = self.image.get_rect(topleft=pos)
 
-        hitbox_margin = (self.rect.width / 4)
+        hitbox_margin = (self.rect.width / 4) if self.bouncer_no == 1 else (self.rect.width / 3.5)
         hitbox_left = self.rect.left + hitbox_margin
 
         self.rect = pg.Rect((hitbox_left,  # left

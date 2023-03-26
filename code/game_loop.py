@@ -16,7 +16,7 @@ class GameLoop:
         # basic setup
         self.settings = Settings()
         self.event_loop = EventLoop(self.settings)
-        self.SCREEN = self.settings.get_display_screen()
+        # self.SCREEN = self.settings.get_display_screen()
         self.clock = pg.time.Clock()
         self.FPS = 30
         pg.display.set_caption("SUPER MARIO BROS. THE MOVIE: THE GAME")

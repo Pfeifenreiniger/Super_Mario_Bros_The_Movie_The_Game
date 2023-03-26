@@ -8,17 +8,18 @@ from code._01_level.player import Player
 from code._01_level.rat import Rat
 from code._01_level.bouncer import Bouncer
 from code._01_level.lamp import Lamp
+from code._01_level.hud import HUD
 from code.tile import Tile, CollisionTile
 from code._01_level.layers import LAYERS
+from code.game_over import GameOverScreen
 
 
 class AllSprites(pg.sprite.Group):
-    def __init__(self, settings, map_width, map_height):
+    def __init__(self, screen, settings, map_width, map_height):
         super().__init__()
-        self.settings = settings
-        self.SCREEN = pg.display.get_surface()
         self.offset = pg.math.Vector2()
-
+        self.SCREEN = screen
+        self.settings = settings
         self.map_width = map_width
         self.map_height = map_height
 
@@ -60,6 +61,8 @@ class _01_Main:
         self.settings = settings
         self.locator = locator
 
+        self.game_over_screen = GameOverScreen(settings)
+
         SCREEN = self.settings.get_display_screen()
         self.menu_pane = MenuPane(screen=SCREEN, settings=self.settings, locator=locator)
 
@@ -74,7 +77,7 @@ class _01_Main:
         self.music.play(loops=-1)
 
         # groups
-        self.all_sprites = AllSprites(settings=self.settings, map_width=self.map_width, map_height=self.map_height)
+        self.all_sprites = AllSprites(screen=SCREEN, settings=self.settings, map_width=self.map_width, map_height=self.map_height)
         self.collision_sprites = pg.sprite.Group()
 
         self.setup()
@@ -125,6 +128,20 @@ class _01_Main:
             elif obj.name == "Bouncer1":
                 Bouncer(
                     bouncer_no=1,
+                    groups=self.all_sprites,
+                    pos=(obj.x, obj.y),
+                    collision_sprites=self.collision_sprites,
+                    map_width=self.map_width,
+                    death_zones=self.death_zones,
+                    ledges=self.ledges,
+                    settings=self.settings,
+                    player=self.player,
+                    distance_between_rects_method=self.check_distance_between_rects
+                )
+
+            elif obj.name == "Bouncer2":
+                Bouncer(
+                    bouncer_no=2,
                     groups=self.all_sprites,
                     pos=(obj.x, obj.y),
                     collision_sprites=self.collision_sprites,
@@ -210,6 +227,12 @@ class _01_Main:
                 distance_between_rects_method=self.check_distance_between_rects
                 )
 
+        # player HUD
+        self.hud = HUD(
+                    settings=self.settings,
+                    player=self.player
+                    )
+
     def check_loading_progression(self):
         if not isinstance(self, type(None)):
             self.loaded = True
@@ -262,19 +285,36 @@ class _01_Main:
 
         if self.all_sprites_loaded:
 
-            self.player.update(dt)
+            if not self.player.dead:
+                self.player.update(dt)
 
-            self.update_sprites(dt)
+                self.update_sprites(dt)
 
-            # pause menu in front if active
-            if self.menu_pane.active:
-                self.menu_pane.update(dt)
-                self.menu_pane.draw()
+                # pause menu in front if active
+                if self.menu_pane.active:
+                    self.menu_pane.update(dt)
+                    self.menu_pane.draw()
 
-                self.check_settings_updates()
+                    self.check_settings_updates()
 
-            if self.locator.current_location != 1:
+                # else player hud in front
+                else:
+                    self.hud.draw()
+
+                if self.locator.current_location != 1:
+                    self.music.stop()
+            else:
                 self.music.stop()
+                if self.game_over_screen.restart_game:
+                    self.game_over_screen.music.stop()
+                    del self.game_over_screen
+                    self.locator.current_location = 0
+                elif self.game_over_screen.restart_level:
+                    self.game_over_screen.music.stop()
+                    self.__init__(event_loop=self.event_loop,settings=self.settings,locator=self.locator)
+                else:
+                    self.game_over_screen.update()
+                    self.game_over_screen.draw()
 
         else:
             while not self.all_sprites_loaded:

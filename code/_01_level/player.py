@@ -92,12 +92,16 @@ class Player(Entity):
             "jump" : pg.mixer.Sound("audio/sfx/player/jump.mp3"),
             "crowbar_swing" : pg.mixer.Sound("audio/sfx/player/crowbar_swing.wav"),
             "crowbar_hit" : pg.mixer.Sound("audio/sfx/player/crowbar_hit.mp3"),
-            "get_damage" : pg.mixer.Sound("audio/sfx/player/get_damage.mp3")
+            "get_damage" : pg.mixer.Sound("audio/sfx/player/get_damage.mp3"),
+            "lose_life" : pg.mixer.Sound("audio/sfx/player/lose_life.mp3")
         }
         self.set_sfx_volume()
 
         self.attack_power = 15
 
+        self.max_health = self.health
+        self.lives = 3
+        self.dead = False
         self.speed = 250
         self.jump_speed = 600
         self.on_floor = False
@@ -168,8 +172,7 @@ class Player(Entity):
     def check_fall_death(self):
 
         if self.rect.collidelist(self.death_zones) >= 0:
-            self.xy_pos = pg.math.Vector2(self.start_xy_pos)
-            self.rect.topleft = self.xy_pos
+            self.lose_life()
 
     def check_collision(self, direction):
 
@@ -223,7 +226,19 @@ class Player(Entity):
 
             self.health -= amount
             if self.health <= 0:
-                print("UARGH! BIN TOT!")
+                self.lose_life()
+
+    def lose_life(self):
+        self.lives -= 1
+        self.sfx["lose_life"].play()
+        
+        if self.lives <= 0:
+            self.dead = True
+            print("UARGH. BIN TOT!")
+        else:
+            self.health = self.max_health
+            self.xy_pos = pg.math.Vector2(self.start_xy_pos)
+            self.rect.topleft = self.xy_pos
 
     def input(self):
 

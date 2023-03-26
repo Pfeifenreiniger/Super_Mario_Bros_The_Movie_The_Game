@@ -354,7 +354,7 @@ class PressStart:
         self.SCREEN = screen
         font = FONT_MASHEEN_BOLD_30
         text = "PRESS START"
-        self.text_surf =  font.render(text, True, (244, 244, 244))
+        self.text_surf =  font.render(text, False, (244, 244, 244))
         self.text_rect = self.text_surf.get_rect(center = (400, 510))
 
         self.blink_value = -1
