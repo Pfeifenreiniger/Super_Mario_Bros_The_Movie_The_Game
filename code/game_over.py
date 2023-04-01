@@ -15,7 +15,7 @@ class GameOverScreen:
         self.restart_level = False
         self.restart_game = False
 
-        self.fader = Fader(settings)
+        self.fader = Fader(settings, "IN")
 
         self.main_font = FONT_MASHEEN_BOLD_40
         self.second_font = FONT_PRESS_START_14

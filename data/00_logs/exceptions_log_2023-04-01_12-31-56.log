@@ -1,0 +1,8 @@
+2023-04-01 12:31:56,952 ERROR 'GameLoop' object has no attribute '_00_screen'
+Traceback (most recent call last):
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\game.py", line 9, in <module>
+    game_loop.looping()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 76, in looping
+    if self._00_screen.loaded:
+       ^^^^^^^^^^^^^^^
+AttributeError: 'GameLoop' object has no attribute '_00_screen'

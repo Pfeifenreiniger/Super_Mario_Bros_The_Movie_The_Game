@@ -7,6 +7,7 @@ from code.settings import Settings
 from code.event_loop import EventLoop
 from code.locator import Locator
 
+from code._00_startup_logos._00_logos import _00_Logos
 from code._00_title_screen._00_main import _00_Main
 from code._01_level._01_main import _01_Main
 
@@ -16,10 +17,10 @@ class GameLoop:
         # basic setup
         self.settings = Settings()
         self.event_loop = EventLoop(self.settings)
-        # self.SCREEN = self.settings.get_display_screen()
         self.clock = pg.time.Clock()
         self.FPS = 30
         pg.display.set_caption("SUPER MARIO BROS. THE MOVIE: THE GAME")
+        self.first_start = True
 
         self.locator = Locator()
         self.old_current_location = self.locator.current_location
@@ -32,7 +33,10 @@ class GameLoop:
         self.garbage_cleanup()
 
         if self.locator.current_location == 0:
-            self._00_screen = _00_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator)
+            if self.first_start:
+                self._00_startup_logos = _00_Logos(settings=self.settings)
+            else:
+                self._00_screen = _00_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator)
         elif self.locator.current_location == 1:
             self._01_level = _01_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator)
 
@@ -43,6 +47,8 @@ class GameLoop:
             if hasattr(self, '_01_level'):
                 del self._01_level
         elif self.locator.current_location == 1:
+            if hasattr(self, '_00_startup_logos'):
+                del self._00_startup_logos
             if hasattr(self, '_00_screen'):
                 self._00_screen.press_start_sfx.stop()
                 del self._00_screen
@@ -56,15 +62,25 @@ class GameLoop:
             # delta time
             dt = self.clock.tick(self.FPS) / 1000
 
-            if self.old_current_location != self.locator.current_location:
-                self.old_current_location = self.locator.current_location
-                self.setup()
+            if not self.first_start:
+                if self.old_current_location != self.locator.current_location:
+                    self.old_current_location = self.locator.current_location
+                    self.setup()
 
             if self.locator.current_location == 0:
-                if self._00_screen.loaded:
-                    self._00_screen.update(dt)
+                if self.first_start:
+                    if self._00_startup_logos.loaded:
+                        self._00_startup_logos.update(dt)
+                        if self._00_startup_logos.logos_done:
+                            self.first_start = False
+                            self.setup()
+                    else:
+                        self._00_startup_logos.check_loading_progression()
                 else:
-                    self._00_screen.check_loading_progression()
+                    if self._00_screen.loaded:
+                        self._00_screen.update(dt)
+                    else:
+                        self._00_screen.check_loading_progression()
             elif self.locator.current_location == 1:
                 if self._01_level.loaded:
                     self._01_level.update(dt)
