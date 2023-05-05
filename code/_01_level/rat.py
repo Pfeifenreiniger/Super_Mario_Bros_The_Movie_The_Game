@@ -43,21 +43,23 @@ class Rat(Enemy):
 
         self.rect = self.image.get_rect(topleft=pos)
 
-        hitbox_margin = (self.rect.width // 2)
+        hitbox_margin_horiz = (self.rect.width // 2)
         if "right" in self.animation_status:
-            hitbox_left = self.rect.left + hitbox_margin
+            hitbox_left = self.rect.left + hitbox_margin_horiz
         else:
             hitbox_left = self.rect.left
 
         if "left" in self.animation_status:
-            hitbox_right = self.rect.right - hitbox_margin
+            hitbox_right = self.rect.right - hitbox_margin_horiz
         else:
             hitbox_right = self.rect.right
 
+        hitbox_margin_vert = (self.rect.height // 8)
+
         self.rect = pg.Rect((hitbox_left,  # left
                                self.rect.top), # top
-                              (self.rect.width - hitbox_margin,  # width
-                               self.rect.height)) # height
+                              (self.rect.width - hitbox_margin_horiz,  # width
+                               self.rect.height - hitbox_margin_vert)) # height
 
 
     def update(self, dt):

@@ -83,7 +83,10 @@ class GameLoop:
                         self._00_screen.check_loading_progression()
             elif self.locator.current_location == 1:
                 if self._01_level.loaded:
-                    self._01_level.update(dt)
+                    if not self._01_level.intro.done:
+                        self._01_level.intro.update(dt)
+                    else:
+                        self._01_level.update(dt)
                 else:
                     self._01_level.check_loading_progression()
 

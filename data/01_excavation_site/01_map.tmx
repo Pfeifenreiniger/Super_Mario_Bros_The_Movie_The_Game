@@ -306,14 +306,14 @@
   <object id="103" name="Fall" x="520.667" y="1178.67" width="138" height="20.6667"/>
  </objectgroup>
  <objectgroup id="16" name="LEDGES" locked="1">
-  <object id="194" name="Ledge" x="638.5" y="600" width="40" height="180"/>
-  <object id="195" name="Ledge" x="500.5" y="599" width="40" height="180"/>
-  <object id="196" name="Ledge" x="901.5" y="599" width="40" height="180"/>
-  <object id="198" name="Ledge" x="1275" y="599.5" width="40" height="180"/>
-  <object id="199" name="Ledge" x="1480.5" y="599" width="40" height="180"/>
-  <object id="200" name="Ledge" x="1599.5" y="539" width="40" height="180"/>
-  <object id="201" name="Ledge" x="2600" y="539" width="40" height="180"/>
-  <object id="202" name="Ledge" x="2739" y="499" width="40" height="180"/>
+  <object id="194" name="Ledge" x="615.833" y="599.333" width="40" height="180"/>
+  <object id="195" name="Ledge" x="520.5" y="599" width="40" height="180"/>
+  <object id="196" name="Ledge" x="920.833" y="598.333" width="40" height="180"/>
+  <object id="198" name="Ledge" x="1258.33" y="600.167" width="40" height="180"/>
+  <object id="199" name="Ledge" x="1499.83" y="599.667" width="40" height="180"/>
+  <object id="200" name="Ledge" x="1577.5" y="540.333" width="40" height="180"/>
+  <object id="201" name="Ledge" x="2620.67" y="538.333" width="40" height="180"/>
+  <object id="202" name="Ledge" x="2719" y="499.667" width="40" height="180"/>
  </objectgroup>
  <objectgroup id="6" name="ENTITIES" locked="1">
   <object id="1" name="Player" x="88" y="575.5">

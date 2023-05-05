@@ -146,7 +146,7 @@ class Player(Entity):
             self.attackbox = pg.Rect((self.rect.left + attackbox_margin_left, # left
                                       self.rect.top - attachbox_margin_upper), # top
                                      (self.rect.width - (self.rect.width // 2), # width
-                                      attachbox_margin_upper * 3)) # height
+                                      attachbox_margin_upper * 4)) # height
 
     def vulnerability_timer(self):
         if not self.is_vulnerable:

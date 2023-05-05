@@ -1,6 +1,7 @@
 
 import pygame as pg
 import math
+import random as rnd
 
 from pytmx.util_pygame import load_pygame
 from code.menu_pane import MenuPane
@@ -12,6 +13,7 @@ from code._01_level.hud import HUD
 from code.tile import Tile, CollisionTile
 from code._01_level.layers import LAYERS
 from code.game_over import GameOverScreen
+from code.level_intro import Intro
 
 
 class AllSprites(pg.sprite.Group):
@@ -62,6 +64,7 @@ class _01_Main:
         self.locator = locator
 
         self.game_over_screen = GameOverScreen(settings)
+        self.intro = Intro(1, self.settings)
 
         SCREEN = self.settings.get_display_screen()
         self.menu_pane = MenuPane(screen=SCREEN, settings=self.settings, locator=locator)
@@ -74,7 +77,13 @@ class _01_Main:
         self.music_volume = self.settings.music_volume
         self.music = pg.mixer.Sound("audio/music/Valmont - Old Sewers (Demake Dead Cells Soundtrack).mp3")
         self.music.set_volume(self.music_volume)
-        self.music.play(loops=-1)
+        self.music_plays = False
+        # env sfx
+        self.sfx_volume = self.settings.sfx_volume
+        self.daisy_yells_sfx = pg.mixer.Sound("audio/sfx/environment/daisy_yells_luigi.mp3")
+        self.daisy_yells_sfx.set_volume(self.sfx_volume)
+        self.bg_sfx_played = False
+        self.bg_sfx_timestamp = None
 
         # groups
         self.all_sprites = AllSprites(screen=SCREEN, settings=self.settings, map_width=self.map_width, map_height=self.map_height)
@@ -235,7 +244,10 @@ class _01_Main:
 
     def check_loading_progression(self):
         if not isinstance(self, type(None)):
-            self.loaded = True
+            # check loading progression of intro
+            self.intro.check_loading_progression()
+            if self.intro.loaded:
+                self.loaded = True
 
     def check_distance_between_rects(self, rect1:pg.Rect, rect2:pg.Rect, max_distance:int) -> bool:
         """Method to pass to any graphical objects except the player.
@@ -256,10 +268,27 @@ class _01_Main:
             self.music_volume = self.settings.music_volume
             self.music.set_volume(self.music_volume)
 
+        # bg sfx
+        if self.sfx_volume != self.settings.sfx_volume:
+            self.sfx_volume = self.settings.sfx_volume
+            self.daisy_yells_sfx.set_volume(self.sfx_volume)
+
         # player sfx
         if self.player.old_sfx_volume != self.settings.sfx_volume:
             self.player.old_sfx_volume = self.settings.sfx_volume
             self.player.set_sfx_volume()
+
+    def check_bg_sfx(self):
+        if not self.bg_sfx_played:
+            if rnd.randint(1,1000) > 992:
+                self.daisy_yells_sfx.play()
+                self.bg_sfx_timestamp = pg.time.get_ticks()
+                self.bg_sfx_played = True
+        else:
+            if pg.time.get_ticks() - self.bg_sfx_timestamp > 5000:
+                # once daisy_yells_sfx played, wait roughly 5 seconds until next sfx could be played
+                self.bg_sfx_played = False
+                self.bg_sfx_timestamp = None
 
     def update_sprites(self, dt):
         for sprite in sorted(self.all_sprites.sprites(), key=lambda sprite: sprite.z):
@@ -285,10 +314,17 @@ class _01_Main:
 
         if self.all_sprites_loaded:
 
+            if self.intro.done and not self.music_plays:
+                # music plays as soon as the intro is done
+                self.music.play(loops=-1)
+                self.music_plays = True
+
             if not self.player.dead:
                 self.player.update(dt)
 
                 self.update_sprites(dt)
+
+                self.check_bg_sfx()
 
                 # pause menu in front if active
                 if self.menu_pane.active:
