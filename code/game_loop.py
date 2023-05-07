@@ -83,10 +83,17 @@ class GameLoop:
                         self._00_screen.check_loading_progression()
             elif self.locator.current_location == 1:
                 if self._01_level.loaded:
-                    if not self._01_level.intro.done:
+                    if not self._01_level.intro.done: # as long as the intro is not done -> update it
+                        self._01_level.intro.turn_active()
                         self._01_level.intro.update(dt)
-                    else:
-                        self._01_level.update(dt)
+                    else: # if intro done -> update level (as long as not level finished)
+                        if not self._01_level.finished:
+                            self._01_level.update(dt)
+                        else: # if level finished -> update outro
+                            self._01_level.outro.turn_active()
+                            self._01_level.outro.update(dt)
+                            if self._01_level.outro.done:
+                                self.locator.current_location = 0 # TODO: instead of 0 change to the next lvl (2) as soon as its done
                 else:
                     self._01_level.check_loading_progression()
 

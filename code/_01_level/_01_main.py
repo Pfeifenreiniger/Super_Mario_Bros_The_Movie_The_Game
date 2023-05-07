@@ -13,7 +13,7 @@ from code._01_level.hud import HUD
 from code.tile import Tile, CollisionTile
 from code._01_level.layers import LAYERS
 from code.game_over import GameOverScreen
-from code.level_intro import Intro
+from code.cutscenes import Intro, Outro
 
 
 class AllSprites(pg.sprite.Group):
@@ -58,6 +58,7 @@ class _01_Main:
 
         self.loaded = False
         self.all_sprites_loaded = False
+        self.finished = False
 
         self.event_loop = event_loop
         self.settings = settings
@@ -65,6 +66,7 @@ class _01_Main:
 
         self.game_over_screen = GameOverScreen(settings)
         self.intro = Intro(1, self.settings)
+        self.outro = Outro(1, self.settings)
 
         SCREEN = self.settings.get_display_screen()
         self.menu_pane = MenuPane(screen=SCREEN, settings=self.settings, locator=locator)
@@ -95,6 +97,10 @@ class _01_Main:
 
     def setup(self):
 
+        # objects: end zone
+        for obj in self.tmx_map.get_layer_by_name('END_ZONE'):
+            self.end_zone = pg.Rect(obj.x, obj.y, obj.width, obj.height)
+
         # objects: death zones
         death_zones = []
         for obj in self.tmx_map.get_layer_by_name('DEATH_ZONES'):
@@ -118,7 +124,8 @@ class _01_Main:
                                 death_zones=self.death_zones,
                                 settings=self.settings,
                                 menu_pane=self.menu_pane,
-                                distance_between_rects_method=self.check_distance_between_rects
+                                distance_between_rects_method=self.check_distance_between_rects,
+                                end_zone=self.end_zone
                                 )
 
             elif obj.name == 'Rat':
@@ -244,9 +251,10 @@ class _01_Main:
 
     def check_loading_progression(self):
         if not isinstance(self, type(None)):
-            # check loading progression of intro
+            # check loading progression of intro and outro
             self.intro.check_loading_progression()
-            if self.intro.loaded:
+            self.outro.check_loading_progression()
+            if self.intro.loaded and self.outro.loaded:
                 self.loaded = True
 
     def check_distance_between_rects(self, rect1:pg.Rect, rect2:pg.Rect, max_distance:int) -> bool:
@@ -290,6 +298,11 @@ class _01_Main:
                 self.bg_sfx_played = False
                 self.bg_sfx_timestamp = None
 
+    def check_level_finished(self):
+        if self.player.check_end_zone():
+            self.finished = True
+            self.music.stop()
+
     def update_sprites(self, dt):
         for sprite in sorted(self.all_sprites.sprites(), key=lambda sprite: sprite.z):
 
@@ -314,43 +327,47 @@ class _01_Main:
 
         if self.all_sprites_loaded:
 
-            if self.intro.done and not self.music_plays:
-                # music plays as soon as the intro is done
-                self.music.play(loops=-1)
-                self.music_plays = True
+            if not self.finished:
 
-            if not self.player.dead:
-                self.player.update(dt)
+                if self.intro.done and not self.music_plays:
+                    # music plays as soon as the intro is done
+                    self.music.play(loops=-1)
+                    self.music_plays = True
 
-                self.update_sprites(dt)
+                if not self.player.dead:
+                    self.player.update(dt)
 
-                self.check_bg_sfx()
+                    self.check_level_finished()
 
-                # pause menu in front if active
-                if self.menu_pane.active:
-                    self.menu_pane.update(dt)
-                    self.menu_pane.draw()
+                    self.update_sprites(dt)
 
-                    self.check_settings_updates()
+                    self.check_bg_sfx()
 
-                # else player hud in front
+                    # pause menu in front if active (and level not finished)
+                    if self.menu_pane.active and not self.finished:
+                        self.menu_pane.update(dt)
+                        self.menu_pane.draw()
+
+                        self.check_settings_updates()
+
+                    # else player hud in front
+                    else:
+                        self.hud.draw()
+
+                    if self.locator.current_location != 1:
+                        self.music.stop()
                 else:
-                    self.hud.draw()
-
-                if self.locator.current_location != 1:
                     self.music.stop()
-            else:
-                self.music.stop()
-                if self.game_over_screen.restart_game:
-                    self.game_over_screen.music.stop()
-                    del self.game_over_screen
-                    self.locator.current_location = 0
-                elif self.game_over_screen.restart_level:
-                    self.game_over_screen.music.stop()
-                    self.__init__(event_loop=self.event_loop,settings=self.settings,locator=self.locator)
-                else:
-                    self.game_over_screen.update()
-                    self.game_over_screen.draw()
+                    if self.game_over_screen.restart_game:
+                        self.game_over_screen.music.stop()
+                        del self.game_over_screen
+                        self.locator.current_location = 0
+                    elif self.game_over_screen.restart_level:
+                        self.game_over_screen.music.stop()
+                        self.__init__(event_loop=self.event_loop,settings=self.settings,locator=self.locator)
+                    else:
+                        self.game_over_screen.update()
+                        self.game_over_screen.draw()
 
         else:
             while not self.all_sprites_loaded:

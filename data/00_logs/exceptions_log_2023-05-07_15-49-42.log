@@ -1,0 +1,18 @@
+2023-05-07 15:49:42,169 ERROR 'pygame.Surface' object is not subscriptable
+Traceback (most recent call last):
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\game.py", line 9, in <module>
+    game_loop.looping()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 68, in looping
+    self.setup()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 41, in setup
+    self._01_level = _01_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_01_level\_01_main.py", line 69, in __init__
+    self.outro = Outro(1, self.settings)
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\cutscenes.py", line 229, in __init__
+    super().__init__(level=self.lvl, images=self.images, texts=self.texts, music=self.music, settings=settings)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\cutscenes.py", line 18, in __init__
+    self.image = self.images[self.img_ind]
+                 ~~~~~~~~~~~^^^^^^^^^^^^^^
+TypeError: 'pygame.Surface' object is not subscriptable

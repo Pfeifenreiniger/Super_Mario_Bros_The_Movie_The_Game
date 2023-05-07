@@ -5,7 +5,7 @@ from math import sin
 from code._01_level.entity import Entity
 
 class Player(Entity):
-    def __init__(self, groups, pos, collision_sprites, map_width, death_zones, settings, menu_pane, distance_between_rects_method):
+    def __init__(self, groups, pos, collision_sprites, map_width, death_zones, settings, menu_pane, distance_between_rects_method, end_zone):
 
         self.sprites = {
             "stand_left" : (pg.image.load("graphics/01_excavation_site/entities/player/stand_left/player_stand_left_f1.png").convert_alpha(),
@@ -85,6 +85,8 @@ class Player(Entity):
         self.image = self.sprites["stand_right"][0]
 
         super().__init__(groups, pos, collision_sprites, death_zones, settings, map_width, distance_between_rects_method)
+
+        self.end_zone = end_zone
 
         self.menu_pane = menu_pane
 
@@ -173,6 +175,13 @@ class Player(Entity):
 
         if self.rect.collidelist(self.death_zones) >= 0:
             self.lose_life()
+
+    def check_end_zone(self):
+        # if contact to level end zone -> returns True
+        if self.rect.colliderect(self.end_zone):
+            return True
+        else:
+            return False
 
     def check_collision(self, direction):
 
@@ -387,6 +396,7 @@ class Player(Entity):
         self.input()
         self.move(dt)
         self.animate(dt)
+        self.check_end_zone()
         self.check_fall_death()
         self.vulnerability_timer()
         self.blink()
