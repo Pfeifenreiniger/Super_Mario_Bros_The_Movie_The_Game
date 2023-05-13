@@ -21,7 +21,7 @@ class GameOverScreen:
         self.second_font = FONT_PRESS_START_14
 
         # main
-        self.main_text = "KING KOOPA WINS"
+        self.main_text = "KING KOOPA RULES BOTH WORLDS!"
         self.main_text_surf = self.main_font.render(self.main_text, False, (244, 244, 244))
         self.main_text_rect = self.main_text_surf.get_rect(center=(400, 300))
 

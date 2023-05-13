@@ -56,11 +56,13 @@ class Cutscene:
             self.music.play(loops=-1)
 
     def input(self):
-        keys = pg.key.get_pressed()
 
-        if keys[pg.K_SPACE] or keys[pg.K_RETURN] or keys[pg.K_ESCAPE] or keys[pg.K_KP_ENTER]:
-            self.end = True
-            self.music.fadeout(2000)
+        if not self.end:
+            keys = pg.key.get_pressed()
+
+            if keys[pg.K_SPACE] or keys[pg.K_RETURN] or keys[pg.K_ESCAPE] or keys[pg.K_KP_ENTER]:
+                self.end = True
+                self.music.fadeout(2000)
 
     def check_img_pause(self):
         if self.img_pause:

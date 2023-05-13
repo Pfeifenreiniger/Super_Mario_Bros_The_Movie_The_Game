@@ -14,6 +14,7 @@ from code.tile import Tile, CollisionTile
 from code._01_level.layers import LAYERS
 from code.game_over import GameOverScreen
 from code.cutscenes import Intro, Outro
+from code.control_screen import ControlScreen
 
 
 class AllSprites(pg.sprite.Group):
@@ -67,6 +68,7 @@ class _01_Main:
         self.game_over_screen = GameOverScreen(settings)
         self.intro = Intro(1, self.settings)
         self.outro = Outro(1, self.settings)
+        self.control_screen = ControlScreen(1, self.settings)
 
         SCREEN = self.settings.get_display_screen()
         self.menu_pane = MenuPane(screen=SCREEN, settings=self.settings, locator=locator)
@@ -254,7 +256,8 @@ class _01_Main:
             # check loading progression of intro and outro
             self.intro.check_loading_progression()
             self.outro.check_loading_progression()
-            if self.intro.loaded and self.outro.loaded:
+            self.control_screen.check_loading_progression()
+            if self.intro.loaded and self.outro.loaded and self.control_screen.loaded:
                 self.loaded = True
 
     def check_distance_between_rects(self, rect1:pg.Rect, rect2:pg.Rect, max_distance:int) -> bool:

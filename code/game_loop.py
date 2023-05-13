@@ -86,8 +86,10 @@ class GameLoop:
                     if not self._01_level.intro.done: # as long as the intro is not done -> update it
                         self._01_level.intro.turn_active()
                         self._01_level.intro.update(dt)
-                    else: # if intro done -> update level (as long as not level finished)
-                        if not self._01_level.finished:
+                    else: # if intro done -> first show control screen, then update level (as long as not level finished)
+                        if not self._01_level.control_screen.done:
+                            self._01_level.control_screen.update()
+                        elif not self._01_level.finished:
                             self._01_level.update(dt)
                         else: # if level finished -> update outro
                             self._01_level.outro.turn_active()

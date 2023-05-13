@@ -1,0 +1,22 @@
+2023-05-12 10:38:16,521 ERROR 'NoneType' object has no attribute 'get_rect'
+Traceback (most recent call last):
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\game.py", line 9, in <module>
+    game_loop.looping()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 68, in looping
+    self.setup()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 41, in setup
+    self._01_level = _01_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_01_level\_01_main.py", line 94, in __init__
+    self.setup()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_01_level\_01_main.py", line 119, in setup
+    self.player = Player(
+                  ^^^^^^^
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_01_level\player.py", line 87, in __init__
+    super().__init__(groups, pos, collision_sprites, death_zones, settings, map_width, distance_between_rects_method)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_01_level\entity.py", line 24, in __init__
+    self.set_hitbox(pos)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_01_level\player.py", line 123, in set_hitbox
+    self.rect = self.image.get_rect(topleft=pos)
+                ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'get_rect'
