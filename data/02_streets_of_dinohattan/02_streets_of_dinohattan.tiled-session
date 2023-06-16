@@ -1,0 +1,96 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "02_map.tmx",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "02_map.tmx": {
+            "scale": 0.33,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 1498.4848484848485,
+                "y": 2115.151515151515
+            }
+        },
+        "background.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 0.33,
+            "scaleInEditor": 1
+        },
+        "buildings.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 0.33,
+            "scaleInEditor": 1
+        },
+        "buildings_shadows.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 0.33,
+            "scaleInEditor": 1
+        },
+        "garbage_containers.tsx": {
+            "scaleInDock": 0.33,
+            "scaleInEditor": 1
+        },
+        "hydrant.tsx": {
+            "scaleInDock": 0.33,
+            "scaleInEditor": 1
+        },
+        "phone_box.tsx": {
+            "scaleInDock": 0.33,
+            "scaleInEditor": 1
+        },
+        "rail_track.tsx": {
+            "scaleInEditor": 1
+        },
+        "street_lights_double.tsx": {
+            "scaleInEditor": 1
+        },
+        "street_lights_single.tsx": {
+            "scaleInDock": 0.33,
+            "scaleInEditor": 1
+        },
+        "traffic_light.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "train.tsx": {
+            "scaleInEditor": 1
+        }
+    },
+    "last.imagePath": "C:/Users/kevin/PycharmProjects/Super_Mario_Bros_The_Movie_The_Game/graphics/02_streets_of_dinohattan/tileset/objects/train",
+    "map.height": 10,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 390,
+    "map.tileWidth": 400,
+    "map.width": 8,
+    "openFiles": [
+        "02_map.tmx",
+        "background.tsx",
+        "buildings.tsx",
+        "buildings_shadows.tsx",
+        "garbage_containers.tsx",
+        "phone_box.tsx",
+        "hydrant.tsx",
+        "street_lights_single.tsx"
+    ],
+    "project": "02_streets_of_dinohattan.tiled-project",
+    "recentFiles": [
+        "train.tsx",
+        "rail_track.tsx",
+        "street_lights_double.tsx",
+        "street_lights_single.tsx",
+        "hydrant.tsx",
+        "phone_box.tsx",
+        "garbage_containers.tsx",
+        "buildings_shadows.tsx",
+        "buildings.tsx",
+        "background.tsx",
+        "02_map.tmx",
+        "traffic_light.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.type": 1
+}
