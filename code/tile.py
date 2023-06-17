@@ -30,6 +30,17 @@ class CollisionTile(Tile):
                          player=player,
                          distance_between_rects_method=distance_between_rects_method)
 
+        self.hitbox = self.rect
+
         # self.old_rect = self.rect.copy()
 
+class CollisionTileWithSeparateHitbox(CollisionTile):
+    def __init__(self, groups, pos, surf, hitbox, z, player, distance_between_rects_method):
+        super().__init__(groups=groups,
+                         pos=pos,
+                         surf=surf,
+                         z=z,
+                         player=player,
+                         distance_between_rects_method=distance_between_rects_method)
 
+        self.hitbox = hitbox # custom set hitbox

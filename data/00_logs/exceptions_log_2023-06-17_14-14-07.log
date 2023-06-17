@@ -1,0 +1,16 @@
+2023-06-17 14:14:07,993 ERROR 'AllSprites' object has no attribute 'rect'
+Traceback (most recent call last):
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\game.py", line 9, in <module>
+    game_loop.looping()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 119, in looping
+    self._02_level.update(dt)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 282, in update
+    self.update_sprites(dt)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 273, in update_sprites
+    self.all_sprites.draw(sprite=sprite, player=self.player)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 47, in draw
+    self.update_offset(sprite, player)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 40, in update_offset
+    self.offset.y = 0 if self.rect.centery <= 300 else self.map_height - self.settings.WINDOW_HEIGHT
+                         ^^^^^^^^^
+AttributeError: 'AllSprites' object has no attribute 'rect'

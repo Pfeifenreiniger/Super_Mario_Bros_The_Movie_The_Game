@@ -11,9 +11,12 @@ class Lamp(pg.sprite.Sprite):
 
         self.loaded = False
 
-        self.images = [pg.image.load("graphics/01_excavation_site/tilesets/objects/lamp/01_object_lamp_f1.png").convert_alpha(),
-                       pg.image.load("graphics/01_excavation_site/tilesets/objects/lamp/01_object_lamp_f2.png").convert_alpha(),
-                       pg.image.load("graphics/01_excavation_site/tilesets/objects/lamp/01_object_lamp_f3.png").convert_alpha()]
+        self.images = (
+            pg.image.load("graphics/01_excavation_site/tilesets/objects/lamp/01_object_lamp_f1.png").convert_alpha(),
+            pg.image.load("graphics/01_excavation_site/tilesets/objects/lamp/01_object_lamp_f2.png").convert_alpha(),
+            pg.image.load("graphics/01_excavation_site/tilesets/objects/lamp/01_object_lamp_f3.png").convert_alpha()
+        )
+
         self.frame = 0
         self.image = self.images[self.frame]
         self.rect = self.image.get_rect(topleft=pos)

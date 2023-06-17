@@ -35,11 +35,9 @@
  </objectgroup>
  <objectgroup id="6" name="phone_box" locked="1">
   <object id="15" name="img" gid="95" x="1670" y="3804" width="216" height="192"/>
-  <object id="30" name="hitbox" x="1673" y="3615.5" width="90.5" height="91"/>
  </objectgroup>
  <objectgroup id="7" name="hydrant" locked="1">
   <object id="16" name="img" gid="96" x="1332" y="3389" width="40" height="66"/>
-  <object id="31" name="hitbox" x="1333.5" y="3323.5" width="35.5" height="29.5"/>
  </objectgroup>
  <objectgroup id="9" name="street_lights_single" locked="1">
   <object id="35" name="1" gid="97" x="-58" y="3221" width="172" height="236"/>
@@ -73,35 +71,7 @@
   <object id="63" name="29" gid="125" x="744.303" y="884.667" width="172" height="236"/>
   <object id="64" name="30" gid="126" x="1544.3" y="887.697" width="172" height="236"/>
   <object id="65" name="31" gid="127" x="2344.3" y="887.697" width="172" height="236"/>
-  <object id="66" name="32" gid="128" x="3141.27" y="890.727" width="172" height="236"/>
-  <object id="67" name="1_hitbox" x="18" y="3087.33" width="20" height="21.3333"/>
-  <object id="68" name="2_hitbox" x="826" y="3081.33" width="20" height="21.3333"/>
-  <object id="70" name="3_hitbox" x="1625.33" y="3082.67" width="20" height="21.3333"/>
-  <object id="71" name="4_hitbox" x="2428" y="3082.67" width="20" height="21.3333"/>
-  <object id="72" name="6_hitbox" x="422.667" y="2957.33" width="20" height="21.3333"/>
-  <object id="73" name="7_hitbox" x="1220" y="2955.33" width="20" height="21.3333"/>
-  <object id="74" name="8_hitbox" x="2015.33" y="2957.33" width="20" height="21.3333"/>
-  <object id="75" name="9_hitbox" x="2818.67" y="2956" width="20" height="21.3333"/>
-  <object id="76" name="10_hitbox" x="20" y="2208.67" width="20" height="21.3333"/>
-  <object id="77" name="11_hitbox" x="818" y="2214" width="20" height="21.3333"/>
-  <object id="78" name="12_hitbox" x="1617.33" y="2212" width="20" height="21.3333"/>
-  <object id="79" name="13_hitbox" x="2422.67" y="2212" width="20" height="21.3333"/>
-  <object id="80" name="15_hitbox" x="426.667" y="2054.67" width="20" height="21.3333"/>
-  <object id="81" name="16_hitbox" x="1220" y="2052" width="20" height="21.3333"/>
-  <object id="82" name="17_hitbox" x="2020" y="2053.33" width="20" height="21.3333"/>
-  <object id="83" name="18_hitbox" x="2819.33" y="2048" width="20" height="21.3333"/>
-  <object id="84" name="19_hitbox" x="24" y="1592.67" width="20" height="21.3333"/>
-  <object id="85" name="20_hitbox" x="817.333" y="1588.67" width="20" height="21.3333"/>
-  <object id="86" name="21_hitbox" x="1617.33" y="1588.67" width="20" height="21.3333"/>
-  <object id="87" name="22_hitbox" x="2416.67" y="1592.67" width="20" height="21.3333"/>
-  <object id="88" name="24_hitbox" x="417.333" y="1446" width="20" height="21.3333"/>
-  <object id="89" name="25_hitbox" x="1220" y="1441.33" width="20" height="21.3333"/>
-  <object id="90" name="26_hitbox" x="2016" y="1448" width="20" height="21.3333"/>
-  <object id="91" name="27_hitbox" x="2821.33" y="1450" width="20" height="21.3333"/>
-  <object id="92" name="28_hitbox" x="27.3333" y="742" width="20" height="21.3333"/>
-  <object id="93" name="29_hitbox" x="820" y="748.667" width="20" height="21.3333"/>
-  <object id="94" name="30_hitbox" x="1619.33" y="748.667" width="20" height="21.3333"/>
-  <object id="95" name="31_hitbox" x="2420.67" y="748.667" width="20" height="21.3333"/>
+  <object id="66" name="32" gid="128" x="3141.27" y="890.727" width="172" height="236" visible="0"/>
  </objectgroup>
  <objectgroup id="10" name="street_lights_double" locked="1">
   <object id="96" name="1" gid="129" x="112.333" y="2738" width="234" height="380"/>
@@ -112,14 +82,6 @@
   <object id="101" name="6" gid="134" x="936.333" y="1244.67" width="234" height="380"/>
   <object id="102" name="7" gid="135" x="1735" y="1248.67" width="234" height="380"/>
   <object id="103" name="8" gid="136" x="2535" y="1246" width="234" height="380"/>
-  <object id="106" name="1_hitbox" x="217.333" y="2519.33" width="21.3333" height="52"/>
-  <object id="107" name="2_hitbox" x="1030.67" y="2520" width="21.3333" height="52"/>
-  <object id="108" name="3_hitbox" x="1834.67" y="2519.33" width="21.3333" height="52"/>
-  <object id="109" name="4_hitbox" x="2637.33" y="2520.67" width="21.3333" height="52"/>
-  <object id="110" name="5_hitbox" x="230.667" y="1034.67" width="21.3333" height="52"/>
-  <object id="111" name="6_hitbox" x="1042.67" y="1029.33" width="21.3333" height="52"/>
-  <object id="112" name="7_hitbox" x="1842" y="1034" width="21.3333" height="52"/>
-  <object id="113" name="8_hitbox" x="2640.67" y="1030" width="21.3333" height="52"/>
  </objectgroup>
  <objectgroup id="8" name="traffic_light" locked="1">
   <object id="34" name="traffic_light_upperleft_corner" x="462" y="633">
@@ -161,13 +123,5 @@
   <object id="6" name="6" gid="86" x="623" y="710" width="726" height="654"/>
   <object id="7" name="8" gid="88" x="2586" y="762.667" width="723" height="707"/>
   <object id="8" name="7" gid="87" x="1837.33" y="710" width="747" height="656"/>
-  <object id="21" name="1_hitbox" x="601.333" y="3269.33" width="686.667" height="569.333"/>
-  <object id="22" name="2_hitbox" x="-94.0002" y="3270" width="686.667" height="569.333"/>
-  <object id="23" name="3_hitbox" x="1903.33" y="3268.67" width="686.667" height="569.333"/>
-  <object id="24" name="4_hitbox" x="2602" y="3268.67" width="686.667" height="569.333"/>
-  <object id="25" name="5_hitbox" x="-70.0002" y="80.6668" width="686.667" height="569.333"/>
-  <object id="26" name="6_hitbox" x="626" y="82.0002" width="686.667" height="569.333"/>
-  <object id="27" name="7_hitbox" x="1895.33" y="80.6668" width="686.667" height="569.333"/>
-  <object id="28" name="8_hitbox" x="2590" y="82.0002" width="686.667" height="569.333"/>
  </objectgroup>
 </map>

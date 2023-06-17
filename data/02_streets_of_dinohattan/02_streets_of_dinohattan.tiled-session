@@ -9,10 +9,10 @@
     "fileStates": {
         "02_map.tmx": {
             "scale": 0.33,
-            "selectedLayer": 4,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 1498.4848484848485,
-                "y": 2115.151515151515
+                "x": 1507.5757575757575,
+                "y": 1948.4848484848485
             }
         },
         "background.tsx": {
@@ -31,6 +31,7 @@
             "scaleInEditor": 1
         },
         "garbage_containers.tsx": {
+            "dynamicWrapping": false,
             "scaleInDock": 0.33,
             "scaleInEditor": 1
         },
@@ -43,9 +44,11 @@
             "scaleInEditor": 1
         },
         "rail_track.tsx": {
+            "scaleInDock": 0.25,
             "scaleInEditor": 1
         },
         "street_lights_double.tsx": {
+            "scaleInDock": 0.25,
             "scaleInEditor": 1
         },
         "street_lights_single.tsx": {
@@ -57,6 +60,7 @@
             "scaleInEditor": 1
         },
         "train.tsx": {
+            "scaleInDock": 1,
             "scaleInEditor": 1
         }
     },
@@ -67,17 +71,11 @@
     "map.tileWidth": 400,
     "map.width": 8,
     "openFiles": [
-        "02_map.tmx",
-        "background.tsx",
-        "buildings.tsx",
-        "buildings_shadows.tsx",
-        "garbage_containers.tsx",
-        "phone_box.tsx",
-        "hydrant.tsx",
-        "street_lights_single.tsx"
+        "02_map.tmx"
     ],
     "project": "02_streets_of_dinohattan.tiled-project",
     "recentFiles": [
+        "02_map.tmx",
         "train.tsx",
         "rail_track.tsx",
         "street_lights_double.tsx",
@@ -88,7 +86,6 @@
         "buildings_shadows.tsx",
         "buildings.tsx",
         "background.tsx",
-        "02_map.tmx",
         "traffic_light.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",

@@ -1,9 +1,15 @@
 
 import pygame as pg
 
+from code._02_level.layers import LAYERS
 from pytmx.util_pygame import load_pygame
+from code.check_distance_between_rects import check_distance_between_rects
 from code.game_over import GameOverScreen
-from code.tile import Tile, CollisionTile
+from code.tile import Tile, CollisionTile, CollisionTileWithSeparateHitbox
+
+from code._02_level.traffic_light import TrafficLight
+from code._02_level.player import Player
+
 
 class AllSprites(pg.sprite.Group):
     def __init__(self, screen, settings, map_width, map_height):
@@ -15,22 +21,23 @@ class AllSprites(pg.sprite.Group):
         self.map_height = map_height
 
     def update_offset(self, sprite, player):
-        # center camera x if player is not on the map outer edges
+        # center camera x if player is not on the map outer horizontal edges
         if player.rect.centerx > 400 and player.rect.centerx < self.map_width - self.settings.WINDOW_WIDTH // 2:
             self.offset.x = player.rect.centerx - self.settings.WINDOW_WIDTH // 2
-
-            # positive parallax scrolling for foreground tiles
-            if sprite.z == LAYERS['FG_Tiles'] or sprite.z == LAYERS['FG_Objects']:
-                self.offset.x = self.offset.x * 1.2
 
         else:
             self.offset.x = 0 if player.rect.centerx <= 400 else self.map_width - self.settings.WINDOW_WIDTH
 
-        # center camera y of player is not on the map lower edge
-        if player.rect.centery < self.map_height - self.settings.WINDOW_HEIGHT // 2:
-            self.offset.y = player.rect.centery - self.settings.WINDOW_HEIGHT // 1.8
+        # center camera y of player is not on the map outer vertical edges
+        if player.rect.centery > 300 and player.rect.centery < self.map_height - self.settings.WINDOW_HEIGHT // 2:
+            self.offset.y = player.rect.centery - self.settings.WINDOW_HEIGHT // 2
+
+            # positive parallax scrolling for train rail track and train
+            if sprite.z == LAYERS['FG3'] or sprite.z == LAYERS['FG4']:
+                self.offset.y = self.offset.y * 1.4
+
         else:
-            self.offset.y = self.map_height - self.settings.WINDOW_HEIGHT
+            self.offset.y = 0 if player.rect.centery <= 300 else self.map_height - self.settings.WINDOW_HEIGHT
 
         self.offset_rect = sprite.image.get_rect(center=sprite.rect.center)
         self.offset_rect.center -= self.offset
@@ -60,13 +67,54 @@ class _02_Main:
         self.tmx_map = load_pygame("data/02_streets_of_dinohattan/02_map.tmx")
         self.map_width = self.tmx_map.tilewidth * self.tmx_map.width
         self.map_height = self.tmx_map.tileheight * self.tmx_map.height
-        print(f"{self.map_width}x{self.map_height}")
+
+        # distance function
+        self.check_distance_between_rects = check_distance_between_rects
 
         # groups
         self.all_sprites = AllSprites(screen=SCREEN, settings=self.settings, map_width=self.map_width, map_height=self.map_height)
         self.collision_sprites = pg.sprite.Group()
 
+        self.setup()
+
     def setup(self):
+
+        def calc_hitbox(surf:pg.Surface,
+                        pos:tuple(),
+                        margin_left:int,
+                        margin_top:int,
+                        margin_right:int,
+                        margin_bottom:int) -> pg.Rect:
+
+            rect = surf.get_rect(topleft=pos)
+
+            hitbox_left = rect.left + margin_left
+            hitbox_top = rect.top + margin_top
+
+            hitbox_width = rect.width - (margin_left + margin_right)
+            hitbox_height = rect.height - (margin_top + margin_bottom)
+
+            return pg.Rect(
+                (hitbox_left,
+                 hitbox_top),
+                (hitbox_width,
+                 hitbox_height)
+            )
+
+        # entities
+        for obj in self.tmx_map.get_layer_by_name('entities'):
+            if obj.name == 'player':
+                self.player = Player(
+                    groups=self.all_sprites,
+                    pos=(obj.x, obj.y),
+                    collision_sprites=self.collision_sprites,
+                    map_width=self.map_width,
+                    map_height=self.map_height,
+                    settings=self.settings,
+                    distance_between_rects_method=self.check_distance_between_rects
+                )
+
+        # background
         for x, y, surf in self.tmx_map.get_layer_by_name('background').tiles():
             Tile(
                 groups=self.all_sprites,
@@ -76,3 +124,170 @@ class _02_Main:
                 player=self.player,
                 distance_between_rects_method=self.check_distance_between_rects
             )
+
+        # garbage containers
+        for obj in self.tmx_map.get_layer_by_name('garbage_containers'):
+            CollisionTile(
+                groups=[self.all_sprites, self.collision_sprites],
+                pos=(obj.x, obj.y),
+                surf=obj.image,
+                z=LAYERS['FG1'],
+                player=self.player,
+                distance_between_rects_method=self.check_distance_between_rects
+            )
+
+        # phone box
+        for obj in self.tmx_map.get_layer_by_name('phone_box'):
+            CollisionTileWithSeparateHitbox(
+                groups=[self.all_sprites, self.collision_sprites],
+                pos=(obj.x, obj.y),
+                surf=obj.image,
+                hitbox=calc_hitbox(obj.image, (obj.x, obj.y), 4, 3, 124, 100),
+                z=LAYERS['FG1'],
+                player=self.player,
+                distance_between_rects_method=self.check_distance_between_rects
+            )
+
+        # hydrant
+        for obj in self.tmx_map.get_layer_by_name('hydrant'):
+            CollisionTileWithSeparateHitbox(
+                groups=[self.all_sprites, self.collision_sprites],
+                pos=(obj.x, obj.y),
+                surf=obj.image,
+                hitbox=calc_hitbox(obj.image, (obj.x, obj.y), 2, 2, 2, 36),
+                z=LAYERS['FG1'],
+                player=self.player,
+                distance_between_rects_method=self.check_distance_between_rects
+            )
+
+        # street lights - single
+        for obj in self.tmx_map.get_layer_by_name('street_lights_single'):
+            CollisionTileWithSeparateHitbox(
+                groups=[self.all_sprites, self.collision_sprites],
+                pos=(obj.x, obj.y),
+                surf=obj.image,
+                hitbox=calc_hitbox(obj.image, (obj.x, obj.y), 77, 102, 77, 117),
+                z=LAYERS['FG1'],
+                player=self.player,
+                distance_between_rects_method=self.check_distance_between_rects
+            )
+
+        # street lights - double
+        for obj in self.tmx_map.get_layer_by_name('street_lights_double'):
+            CollisionTileWithSeparateHitbox(
+                groups=[self.all_sprites, self.collision_sprites],
+                pos=(obj.x, obj.y),
+                surf=obj.image,
+                hitbox=calc_hitbox(obj.image, (obj.x, obj.y), 110, 161, 110, 161),
+                z=LAYERS['FG1'],
+                player=self.player,
+                distance_between_rects_method=self.check_distance_between_rects
+            )
+
+        # traffic light
+        for obj in self.tmx_map.get_layer_by_name('traffic_light'):
+            self.traffic_light = TrafficLight(
+                groups=self.all_sprites,
+                pos=(obj.x, obj.y),
+                player=self.player,
+                distance_between_rects_method=self.check_distance_between_rects
+            )
+
+        # buildings shadows
+        for obj in self.tmx_map.get_layer_by_name('buildings_shadows'):
+            Tile(
+                groups=self.all_sprites,
+                pos=(obj.x, obj.y),
+                surf=obj.image,
+                z=LAYERS['FG1'],
+                player=self.player,
+                distance_between_rects_method=self.check_distance_between_rects
+            )
+
+        # buildings
+        for obj in self.tmx_map.get_layer_by_name('buildings'):
+
+            margin_left:int
+            margin_top:int
+            margin_right:int
+            margin_bottom:int
+
+            if obj.name == '1' or obj.name == 4:
+                margin_left = 8
+                margin_top = 62
+                margin_right = 42
+                margin_bottom = 32
+            elif obj.name == '2' or obj.name == '3':
+                margin_left = 42
+                margin_top = 62
+                margin_right = 8
+                margin_bottom = 32
+            elif obj.name == '5' or obj.name == '7':
+                margin_left = 42
+                margin_top = 32
+                margin_right = 8
+                margin_bottom = 62
+            elif obj.name == '6' or obj.name == '8':
+                margin_left = 8
+                margin_top = 32
+                margin_right = 42
+                if obj.name == '6':
+                    margin_bottom = 62
+                else:
+                    margin_bottom = 120
+
+            CollisionTileWithSeparateHitbox(
+                groups=[self.all_sprites, self.collision_sprites],
+                pos=(obj.x, obj.y),
+                surf=obj.image,
+                hitbox=calc_hitbox(obj.image, (obj.x, obj.y), margin_left, margin_top, margin_right, margin_bottom),
+                z=LAYERS['FG2'],
+                player=self.player,
+                distance_between_rects_method=self.check_distance_between_rects
+            )
+
+        # train rail track
+        for obj in self.tmx_map.get_layer_by_name('rail_track'):
+            Tile(
+                groups=self.all_sprites,
+                pos=(obj.x, obj.y),
+                surf=obj.image,
+                z=LAYERS['FG3'],
+                player=self.player,
+                distance_between_rects_method=self.check_distance_between_rects
+            )
+
+    def check_loading_progression(self):
+        if not isinstance(self, type(None)):
+            self.loaded = True
+
+
+    def update_sprites(self, dt):
+        for sprite in sorted(self.all_sprites.sprites(), key=lambda sprite: sprite.z):
+
+            if sprite.__class__.__name__ == "Player":
+                self.all_sprites.draw(sprite=sprite, player=self.player)
+            else:
+                if sprite.check_distance_between_rects(rect1=self.player.rect, rect2=sprite.rect, max_distance=1200):
+                    if sprite.__class__.__name__ == "Tile" or sprite.__class__.__name__ == "CollisionTile" or sprite.__class__.__name__ == "CollisionTileWithSeparateHitbox":
+                        self.all_sprites.draw(sprite=sprite, player=self.player)
+                    elif sprite.__class__.__name__ == "TrafficLight":
+                        self.traffic_light.update()
+                        self.all_sprites.draw(sprite=sprite, player=self.player)
+
+    def update(self, dt):
+
+        if self.all_sprites_loaded:
+            self.player.update(dt)
+            self.update_sprites(dt)
+
+        else:
+            while not self.all_sprites_loaded:
+                all_true = True
+                for sprite in self.all_sprites:
+                    sprite.check_loading_progression()
+                    if not sprite.loaded:
+                        all_true = False
+                        break
+                if all_true:
+                    self.all_sprites_loaded = True

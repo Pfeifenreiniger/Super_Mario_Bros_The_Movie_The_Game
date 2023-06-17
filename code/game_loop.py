@@ -10,6 +10,7 @@ from code.locator import Locator
 from code._00_startup_logos._00_logos import _00_Logos
 from code._00_title_screen._00_main import _00_Main
 from code._01_level._01_main import _01_Main
+from code._02_level._02_main import _02_Main
 
 
 class GameLoop:
@@ -39,19 +40,32 @@ class GameLoop:
                 self._00_screen = _00_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator)
         elif self.locator.current_location == 1:
             self._01_level = _01_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator)
+        elif self.locator.current_location == 2:
+            self._02_level = _02_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator)
 
     def garbage_cleanup(self):
         """get rid of currently not used levels"""
 
-        if self.locator.current_location == 0:
-            if hasattr(self, '_01_level'):
-                del self._01_level
-        elif self.locator.current_location == 1:
+        def del_main_menu_objects():
             if hasattr(self, '_00_startup_logos'):
                 del self._00_startup_logos
             if hasattr(self, '_00_screen'):
                 self._00_screen.press_start_sfx.stop()
                 del self._00_screen
+
+        if self.locator.current_location == 0:
+            if hasattr(self, '_01_level'):
+                del self._01_level
+            if hasattr(self, '_02_level'):
+                del self._02_level
+
+        elif self.locator.current_location == 1:
+            del_main_menu_objects()
+
+        elif self.locator.current_location == 2:
+            del_main_menu_objects()
+            if hasattr(self, '_01_level'):
+                del self._01_level
 
     def looping(self):
 
@@ -81,6 +95,7 @@ class GameLoop:
                         self._00_screen.update(dt)
                     else:
                         self._00_screen.check_loading_progression()
+
             elif self.locator.current_location == 1:
                 if self._01_level.loaded:
                     if not self._01_level.intro.done: # as long as the intro is not done -> update it
@@ -98,6 +113,12 @@ class GameLoop:
                                 self.locator.current_location = 0 # TODO: instead of 0 change to the next lvl (2) as soon as its done
                 else:
                     self._01_level.check_loading_progression()
+
+            elif self.locator.current_location == 2:
+                if self._02_level.loaded:
+                    self._02_level.update(dt)
+                else:
+                    self._02_level.check_loading_progression()
 
 
 

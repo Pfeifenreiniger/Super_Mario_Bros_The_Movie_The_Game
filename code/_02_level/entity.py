@@ -16,10 +16,6 @@ class Entity(pg.sprite.Sprite, BaseLoading):
 
         self.check_distance_between_rects = distance_between_rects_method
 
-        self.health = 100
-
-        self.frame_index = 0
-
         self.set_hitbox(pos)
         self.xy_pos = pg.math.Vector2(self.rect.topleft)
         self.start_xy_pos = tuple(self.xy_pos)
@@ -34,10 +30,10 @@ class Entity(pg.sprite.Sprite, BaseLoading):
     def set_hitbox(self, pos):
         """generates rect object and adjust its size to be the hitbox"""
 
-        self.rect = pg.Rect((pos[0]+5,  # left
-                             pos[1]+5),  # top
-                            (35,  # width
-                             35))  # height
+        self.rect = pg.Rect((pos[0],  # left
+                             pos[1]),  # top
+                            (50,  # width
+                             50))  # height
 
     def move(self, dt):
 
@@ -49,21 +45,17 @@ class Entity(pg.sprite.Sprite, BaseLoading):
         # horizontal movement
         x_movement = self.direction.x * self.speed * dt
 
-        if x_movement > 0:
-            # horizontal movement only possible between horizontal level edges
-            if self.xy_pos.x + x_movement > 0 and self.xy_pos.x + x_movement < self.map_width - self.rect.width:
-                self.xy_pos.x += x_movement
+        # horizontal movement only possible between horizontal level edges
+        if self.xy_pos.x + x_movement > 0 and self.xy_pos.x + x_movement < self.map_width - self.rect.width:
+            self.xy_pos.x += x_movement
 
-            self.rect.x = round(self.xy_pos.x)
-            self.check_collision('horizontal')
+        self.rect.x = round(self.xy_pos.x)
 
         # vertical movement
         y_movement = self.direction.y * self.speed * dt
 
-        if y_movement > 0:
-            # vertical movement only possible between vertical level edges
-            if self.xy_pos.y - y_movement > 0 and self.xy_pos.y + y_movement < self.map_height - self.rect.height:
-                self.xy_pos.y += y_movement
+        # vertical movement only possible between vertical level edges
+        if self.xy_pos.y - y_movement > 0 and self.xy_pos.y + y_movement < self.map_height - self.rect.height:
+            self.xy_pos.y += y_movement
 
-            self.rect.y = round(self.xy_pos.y)
-            self.check_collision('vertical')
+        self.rect.y = round(self.xy_pos.y)

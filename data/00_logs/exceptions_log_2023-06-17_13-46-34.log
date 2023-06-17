@@ -1,0 +1,19 @@
+2023-06-17 13:46:34,308 ERROR No file 'graphics/02_streets_of_dinohattan_tileset/objects/traffic_light/traffic_light_f1.png' found in working directory 'C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game'.
+Traceback (most recent call last):
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\game.py", line 8, in <module>
+    game_loop = GameLoop()
+                ^^^^^^^^^^
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 29, in __init__
+    self.setup()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 44, in setup
+    self._02_level = _02_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 79, in __init__
+    self.setup()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 190, in setup
+    self.traffic_light = TrafficLight(
+                         ^^^^^^^^^^^^^
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\traffic_light.py", line 14, in __init__
+    pg.image.load("graphics/02_streets_of_dinohattan_tileset/objects/traffic_light/traffic_light_f1.png").convert_alpha(),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: No file 'graphics/02_streets_of_dinohattan_tileset/objects/traffic_light/traffic_light_f1.png' found in working directory 'C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game'.

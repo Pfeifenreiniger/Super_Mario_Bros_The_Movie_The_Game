@@ -1,9 +1,9 @@
 
 import pygame as pg
-import math
 import random as rnd
 
 from pytmx.util_pygame import load_pygame
+from code.check_distance_between_rects import check_distance_between_rects
 from code.menu_pane import MenuPane
 from code._01_level.player import Player
 from code._01_level.rat import Rat
@@ -88,6 +88,9 @@ class _01_Main:
         self.daisy_yells_sfx.set_volume(self.sfx_volume)
         self.bg_sfx_played = False
         self.bg_sfx_timestamp = None
+
+        # distance function
+        self.check_distance_between_rects = check_distance_between_rects
 
         # groups
         self.all_sprites = AllSprites(screen=SCREEN, settings=self.settings, map_width=self.map_width, map_height=self.map_height)
@@ -259,19 +262,6 @@ class _01_Main:
             self.control_screen.check_loading_progression()
             if self.intro.loaded and self.outro.loaded and self.control_screen.loaded:
                 self.loaded = True
-
-    def check_distance_between_rects(self, rect1:pg.Rect, rect2:pg.Rect, max_distance:int) -> bool:
-        """Method to pass to any graphical objects except the player.
-        It will calculate the distance between said objects and the player's current position in pixels.
-        The object's rectangle has to be passed to the parameter 'rect='.
-        If the distance between the player's rectangle center position and those of the passed object's rectangle
-        center position exceeds the set maximum (parameter 'max_distance=') a boolean false will be returned,
-        otherwise true."""
-
-        if math.dist(rect1.center, rect2.center) < max_distance:
-            return True
-        else:
-            return False
 
     def check_settings_updates(self):
         # bg music
