@@ -5,7 +5,6 @@ import sys
 from code.menu_pane import MenuPane
 from code.fonts import FONT_MASHEEN_BOLD_30, FONT_PRESS_START_20
 
-
 class _00_Main:
     def __init__(self, event_loop, settings, locator):
 
@@ -17,9 +16,7 @@ class _00_Main:
 
         # event loop - adding a custom event
         self.event_loop = event_loop
-        clouds_timer = pg.event.custom_type()
-        pg.time.set_timer(clouds_timer, 12 * 1000)
-        self.event_loop.add_event(clouds_timer)
+        CloudsTimerEvent(event_loop=self.event_loop)
 
         # inst objects
         self.sky = Sky(self.SCREEN)
@@ -171,6 +168,12 @@ class _00_Main:
 
     def update(self, dt):
 
+        # if event clouds timer event triggered
+        if 'clouds_timer' in self.event_loop.triggered_events:
+            self.cloud_numb = 1 if self.cloud_numb == 2 else 2
+            Cloud(group=self.clouds, cloud_numb=self.cloud_numb)
+            self.event_loop.triggered_events.remove('clouds_timer')
+
         self.input()
 
         self.check_konami_code()
@@ -184,10 +187,6 @@ class _00_Main:
 
         self.dinohattan.update(dt)
         self.koopahari_desert.update(dt)
-
-        if self.event_loop.loop_events() == "spawn_cloud":
-            self.cloud_numb = 1 if self.cloud_numb == 2 else 2
-            Cloud(group=self.clouds, cloud_numb=self.cloud_numb)
 
         for cloud in self.clouds:
             cloud.update(dt)
@@ -325,6 +324,14 @@ class Cloud(pg.sprite.Sprite):
 
     def update(self, dt):
         self.move(dt)
+
+class CloudsTimerEvent:
+    def __init__(self, event_loop):
+        self.event_loop = event_loop
+        event_id = pg.USEREVENT + 1
+        self.event_loop.EVENT_IDS['clouds_timer'] = event_id
+        pg.time.set_timer(event_id, 12 * 1000)
+        self.event_loop.add_event(event_id)
 
 class Logo:
     def __init__(self, screen):

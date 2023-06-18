@@ -9,6 +9,7 @@ from code.tile import Tile, CollisionTile, CollisionTileWithSeparateHitbox
 
 from code._02_level.traffic_light import TrafficLight
 from code._02_level.player import Player
+from code._02_level.car import CarsTimer
 
 
 class AllSprites(pg.sprite.Group):
@@ -74,6 +75,9 @@ class _02_Main:
         # groups
         self.all_sprites = AllSprites(screen=SCREEN, settings=self.settings, map_width=self.map_width, map_height=self.map_height)
         self.collision_sprites = pg.sprite.Group()
+        self.cars_sprites = pg.sprite.Group()
+
+        self.cars_timers = []
 
         self.setup()
 
@@ -112,6 +116,22 @@ class _02_Main:
                     map_height=self.map_height,
                     settings=self.settings,
                     distance_between_rects_method=self.check_distance_between_rects
+                )
+
+        for obj in self.tmx_map.get_layer_by_name('entities'):
+            if 'cars' in obj.name:
+                self.cars_timers.append(
+                    CarsTimer(
+                        groups=[self.all_sprites, self.cars_sprites],
+                        cars_start_pos_no=int(obj.name.split('_')[1]),
+                        pos=(obj.x, obj.y),
+                        player=self.player,
+                        distance_between_rects_method=self.check_distance_between_rects,
+                        event_loop=self.event_loop,
+                        settings=self.settings,
+                        map_width=self.map_width,
+                        map_height=self.map_height
+                    )
                 )
 
         # background
@@ -261,12 +281,21 @@ class _02_Main:
         if not isinstance(self, type(None)):
             self.loaded = True
 
+    def update_cars_timers(self):
+        for cars_timer in self.cars_timers:
+            cars_timer.update()
 
     def update_sprites(self, dt):
         for sprite in sorted(self.all_sprites.sprites(), key=lambda sprite: sprite.z):
 
             if sprite.__class__.__name__ == "Player":
                 self.all_sprites.draw(sprite=sprite, player=self.player)
+            elif sprite.__class__.__name__ == "Car":
+                if sprite.check_distance_between_rects(rect1=self.player.rect, rect2=sprite.rect, max_distance=3400):
+                    sprite.update(dt)
+                    self.all_sprites.draw(sprite=sprite, player=self.player)
+                else:
+                    sprite.kill()
             else:
                 if sprite.check_distance_between_rects(rect1=self.player.rect, rect2=sprite.rect, max_distance=1200):
                     if sprite.__class__.__name__ == "Tile" or sprite.__class__.__name__ == "CollisionTile" or sprite.__class__.__name__ == "CollisionTileWithSeparateHitbox":
@@ -279,6 +308,7 @@ class _02_Main:
 
         if self.all_sprites_loaded:
             self.player.update(dt)
+            self.update_cars_timers()
             self.update_sprites(dt)
 
         else:

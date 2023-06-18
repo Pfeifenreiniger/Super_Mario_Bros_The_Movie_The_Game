@@ -400,13 +400,3 @@ class Player(Entity):
         self.check_fall_death()
         self.vulnerability_timer()
         self.blink()
-
-        # print(f"RECT: {self.rect.top}")
-        # print(f"HITBOX: {self.hitbox.top}")
-        # print(f"XY: {self.xy_pos.y}")
-
-        # print(self.xy_pos)
-        # print("current rect", self.rect.left)
-        # print("old rect", self.old_rect.left)
-
-

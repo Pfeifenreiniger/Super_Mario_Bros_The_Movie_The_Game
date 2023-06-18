@@ -5,7 +5,7 @@ from code._02_level.base_loading import BaseLoading
 from code._02_level.layers import LAYERS
 
 class Entity(pg.sprite.Sprite, BaseLoading):
-    def __init__(self, groups, pos, collision_sprites, settings, map_width, map_height, distance_between_rects_method):
+    def __init__(self, groups, pos, settings, map_width, map_height, distance_between_rects_method):
         # init super classes
         pg.sprite.Sprite.__init__(self, groups)
         BaseLoading.__init__(self)
@@ -25,8 +25,6 @@ class Entity(pg.sprite.Sprite, BaseLoading):
         self.direction = pg.math.Vector2(x=0, y=0)
         self.speed = 100
 
-        self.collision_sprites = collision_sprites
-
     def set_hitbox(self, pos):
         """generates rect object and adjust its size to be the hitbox"""
 
@@ -45,17 +43,13 @@ class Entity(pg.sprite.Sprite, BaseLoading):
         # horizontal movement
         x_movement = self.direction.x * self.speed * dt
 
-        # horizontal movement only possible between horizontal level edges
-        if self.xy_pos.x + x_movement > 0 and self.xy_pos.x + x_movement < self.map_width - self.rect.width:
-            self.xy_pos.x += x_movement
+        self.xy_pos.x += x_movement
 
         self.rect.x = round(self.xy_pos.x)
 
         # vertical movement
         y_movement = self.direction.y * self.speed * dt
 
-        # vertical movement only possible between vertical level edges
-        if self.xy_pos.y - y_movement > 0 and self.xy_pos.y + y_movement < self.map_height - self.rect.height:
-            self.xy_pos.y += y_movement
+        self.xy_pos.y += y_movement
 
         self.rect.y = round(self.xy_pos.y)

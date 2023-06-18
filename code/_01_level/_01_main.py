@@ -55,13 +55,12 @@ class AllSprites(pg.sprite.Group):
 
 
 class _01_Main:
-    def __init__(self, event_loop, settings, locator):
+    def __init__(self, settings, locator):
 
         self.loaded = False
         self.all_sprites_loaded = False
         self.finished = False
 
-        self.event_loop = event_loop
         self.settings = settings
         self.locator = locator
 
@@ -357,7 +356,7 @@ class _01_Main:
                         self.locator.current_location = 0
                     elif self.game_over_screen.restart_level:
                         self.game_over_screen.music.stop()
-                        self.__init__(event_loop=self.event_loop,settings=self.settings,locator=self.locator)
+                        self.__init__(settings=self.settings,locator=self.locator)
                     else:
                         self.game_over_screen.update()
                         self.game_over_screen.draw()

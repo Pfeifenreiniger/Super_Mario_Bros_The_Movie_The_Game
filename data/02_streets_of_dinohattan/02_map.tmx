@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="8" height="10" tilewidth="400" tileheight="390" infinite="0" nextlayerid="14" nextobjectid="140">
+<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="8" height="10" tilewidth="400" tileheight="390" infinite="0" nextlayerid="14" nextobjectid="156">
  <tileset firstgid="1" source="background.tsx"/>
  <tileset firstgid="81" source="buildings.tsx"/>
  <tileset firstgid="89" source="buildings_shadows.tsx"/>
@@ -24,8 +24,56 @@
 73,74,75,76,77,78,79,80
 </data>
  </layer>
- <objectgroup id="13" name="entities" locked="1">
+ <objectgroup id="13" name="entities">
   <object id="139" name="player" x="1554" y="3604">
+   <point/>
+  </object>
+  <object id="140" name="cars_0" x="3245.45" y="3266.52">
+   <point/>
+  </object>
+  <object id="141" name="cars_1" x="-63.8182" y="3163.24">
+   <point/>
+  </object>
+  <object id="142" name="cars_2" x="3227.3" y="2897.73">
+   <point/>
+  </object>
+  <object id="143" name="cars_3" x="-48.5455" y="2786.52">
+   <point/>
+  </object>
+  <object id="144" name="cars_4" x="3222.27" y="2689.55">
+   <point/>
+  </object>
+  <object id="145" name="cars_5" x="-37.3939" y="2400.76">
+   <point/>
+  </object>
+  <object id="146" name="cars_6" x="-53.7576" y="2300.79">
+   <point/>
+  </object>
+  <object id="147" name="cars_7" x="3221.24" y="1989.7">
+   <point/>
+  </object>
+  <object id="148" name="cars_8" x="3220.18" y="1885.58">
+   <point/>
+  </object>
+  <object id="149" name="cars_9" x="3220.24" y="1783.48">
+   <point/>
+  </object>
+  <object id="150" name="cars_10" x="3243.21" y="1673.33">
+   <point/>
+  </object>
+  <object id="151" name="cars_11" x="-24.2424" y="1382.61">
+   <point/>
+  </object>
+  <object id="152" name="cars_12" x="3220.21" y="1276.39">
+   <point/>
+  </object>
+  <object id="153" name="cars_13" x="-30.4848" y="1178.33">
+   <point/>
+  </object>
+  <object id="154" name="cars_14" x="3230.36" y="940.091">
+   <point/>
+  </object>
+  <object id="155" name="cars_15" x="3229.3" y="837.03">
    <point/>
   </object>
  </objectgroup>

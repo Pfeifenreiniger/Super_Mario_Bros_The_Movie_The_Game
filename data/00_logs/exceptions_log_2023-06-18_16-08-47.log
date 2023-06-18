@@ -1,0 +1,16 @@
+2023-06-18 16:08:47,866 ERROR 'method' object is not subscriptable
+Traceback (most recent call last):
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\game.py", line 9, in <module>
+    game_loop.looping()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 121, in looping
+    self._02_level.update(dt)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 312, in update
+    self.update_sprites(dt)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 295, in update_sprites
+    sprite.update(dt)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\car.py", line 69, in update
+    self.check_car_collision()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\car.py", line 52, in check_car_collision
+    for sprite in self.groups[1]:
+                  ~~~~~~~~~~~^^^
+TypeError: 'method' object is not subscriptable

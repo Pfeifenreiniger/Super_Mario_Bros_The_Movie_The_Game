@@ -198,6 +198,12 @@ class Player(Humanoid):
         self.rect.y = round(self.xy_pos.y)
         self.check_collision('vertical')
 
+    def lose_life(self):
+        print("AUA ICH VERLIERE EIN LEBEN!")
+        self.lives -= 1
+        if self.lives <= 0:
+            self.dead = True
+
     def update(self, dt):
         self.old_animation_status = self.animation_status
         self.input()

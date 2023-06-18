@@ -1,0 +1,18 @@
+2023-06-18 14:45:12,423 ERROR No file 'graphics/02_streets_of_dinohattan/entities/model3/model3_car2.png' found in working directory 'C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game'.
+Traceback (most recent call last):
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\game.py", line 9, in <module>
+    game_loop.looping()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 121, in looping
+    self._02_level.update(dt)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 307, in update
+    self.update_cars_timers()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 285, in update_cars_timers
+    cars_timer.update()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\car.py", line 124, in update
+    self.spawn_car()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\car.py", line 111, in spawn_car
+    Car(groups=self.groups,
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\car.py", line 10, in __init__
+    self.image = pg.image.load(f"graphics/02_streets_of_dinohattan/entities/model{model_no}/model{model_no}_car{car_no}.png").convert_alpha()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: No file 'graphics/02_streets_of_dinohattan/entities/model3/model3_car2.png' found in working directory 'C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game'.

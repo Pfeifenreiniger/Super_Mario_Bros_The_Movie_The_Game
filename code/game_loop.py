@@ -39,7 +39,7 @@ class GameLoop:
             else:
                 self._00_screen = _00_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator)
         elif self.locator.current_location == 1:
-            self._01_level = _01_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator)
+            self._01_level = _01_Main(settings=self.settings, locator=self.locator)
         elif self.locator.current_location == 2:
             self._02_level = _02_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator)
 
@@ -51,6 +51,8 @@ class GameLoop:
                 del self._00_startup_logos
             if hasattr(self, '_00_screen'):
                 self._00_screen.press_start_sfx.stop()
+                self.event_loop.remove_event(event=self.event_loop.EVENT_IDS['clouds_timer']) # remove clouds_timer event from event loop
+                del self.event_loop.EVENT_IDS['clouds_timer']
                 del self._00_screen
 
         if self.locator.current_location == 0:

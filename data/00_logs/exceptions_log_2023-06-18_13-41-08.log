@@ -1,0 +1,14 @@
+2023-06-18 13:41:08,799 ERROR 'dict' object has no attribute 'remove'
+Traceback (most recent call last):
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\game.py", line 9, in <module>
+    game_loop.looping()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 84, in looping
+    self.setup()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 34, in setup
+    self.garbage_cleanup()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 65, in garbage_cleanup
+    del_main_menu_objects()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 55, in del_main_menu_objects
+    self.event_loop.EVENT_IDS.remove('clouds_timer')
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'dict' object has no attribute 'remove'

@@ -5,7 +5,6 @@ class Humanoid(Entity):
     def __init__(self, groups, pos, collision_sprites, settings, map_width, map_height, distance_between_rects_method):
         super().__init__(groups=groups,
                          pos=pos,
-                         collision_sprites=collision_sprites,
                          settings=settings,
                          map_width=map_width,
                          map_height=map_height,
@@ -20,6 +19,8 @@ class Humanoid(Entity):
         self.old_animation_status = self.animation_status
 
         self.run_frame_direction = 1
+
+        self.collision_sprites = collision_sprites
 
     def is_idle_animation(self):
         if self.direction.x == 0 and self.direction.y == 0 and not 'stand' in self.animation_status:
