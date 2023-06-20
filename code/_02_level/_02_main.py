@@ -105,7 +105,7 @@ class _02_Main:
                  hitbox_height)
             )
 
-        # entities
+        # entities - player
         for obj in self.tmx_map.get_layer_by_name('entities'):
             if obj.name == 'player':
                 self.player = Player(
@@ -118,6 +118,16 @@ class _02_Main:
                     distance_between_rects_method=self.check_distance_between_rects
                 )
 
+        # traffic light
+        for obj in self.tmx_map.get_layer_by_name('traffic_light'):
+            self.traffic_light = TrafficLight(
+                groups=self.all_sprites,
+                pos=(obj.x, obj.y),
+                player=self.player,
+                distance_between_rects_method=self.check_distance_between_rects
+            )
+
+        # entities - cars
         for obj in self.tmx_map.get_layer_by_name('entities'):
             if 'cars' in obj.name:
                 self.cars_timers.append(
@@ -130,7 +140,8 @@ class _02_Main:
                         event_loop=self.event_loop,
                         settings=self.settings,
                         map_width=self.map_width,
-                        map_height=self.map_height
+                        map_height=self.map_height,
+                        traffic_light=self.traffic_light
                     )
                 )
 
@@ -140,7 +151,7 @@ class _02_Main:
                 groups=self.all_sprites,
                 pos=(x * 400, y * 390),
                 surf=surf,
-                z=LAYERS['BG'],
+                z=LAYERS['BG1'],
                 player=self.player,
                 distance_between_rects_method=self.check_distance_between_rects
             )
@@ -200,15 +211,6 @@ class _02_Main:
                 surf=obj.image,
                 hitbox=calc_hitbox(obj.image, (obj.x, obj.y), 110, 161, 110, 161),
                 z=LAYERS['FG1'],
-                player=self.player,
-                distance_between_rects_method=self.check_distance_between_rects
-            )
-
-        # traffic light
-        for obj in self.tmx_map.get_layer_by_name('traffic_light'):
-            self.traffic_light = TrafficLight(
-                groups=self.all_sprites,
-                pos=(obj.x, obj.y),
                 player=self.player,
                 distance_between_rects_method=self.check_distance_between_rects
             )
@@ -301,13 +303,15 @@ class _02_Main:
                     if sprite.__class__.__name__ == "Tile" or sprite.__class__.__name__ == "CollisionTile" or sprite.__class__.__name__ == "CollisionTileWithSeparateHitbox":
                         self.all_sprites.draw(sprite=sprite, player=self.player)
                     elif sprite.__class__.__name__ == "TrafficLight":
-                        self.traffic_light.update()
+                        self.all_sprites.draw(sprite=sprite, player=self.player)
+                    else:
                         self.all_sprites.draw(sprite=sprite, player=self.player)
 
     def update(self, dt):
 
         if self.all_sprites_loaded:
             self.player.update(dt)
+            self.traffic_light.update()
             self.update_cars_timers()
             self.update_sprites(dt)
 

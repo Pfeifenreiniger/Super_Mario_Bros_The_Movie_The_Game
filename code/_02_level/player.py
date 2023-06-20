@@ -1,7 +1,9 @@
 
 import pygame as pg
 
+from code._02_level.base_loading import BaseLoading
 from code._02_level.humanoid import Humanoid
+from code._02_level.layers import LAYERS
 
 class Player(Humanoid):
     def __init__(self, groups, pos, collision_sprites, map_width, map_height, settings, distance_between_rects_method):
@@ -86,6 +88,11 @@ class Player(Humanoid):
                          map_width=map_width,
                          map_height=map_height,
                          distance_between_rects_method=distance_between_rects_method)
+
+        self.shadow = PlayerShadow(groups=groups,
+                                   x_pos=self.xy_pos.x,
+                                   y_pos=self.xy_pos.y,
+                                   distance_between_rects_method=distance_between_rects_method)
 
         self.speed = 130
         self.max_health = self.health
@@ -204,9 +211,61 @@ class Player(Humanoid):
         if self.lives <= 0:
             self.dead = True
 
+    def update_shadow(self):
+
+        if "run" in self.animation_status:
+            if int(self.frame_index) == 0 or int(self.frame_index) == len(self.sprites[self.animation_status]) - 1:
+                self.shadow.change_size(to='big')
+            else:
+                if self.shadow.size == 'big':
+                    self.shadow.change_size(to='small')
+        else:
+            if self.shadow.size == 'big':
+                self.shadow.change_size(to='small')
+
+        self.shadow.update_xy_pos(x=self.xy_pos.x, y=self.xy_pos.y)
+
     def update(self, dt):
         self.old_animation_status = self.animation_status
         self.input()
         self.is_idle_animation()
         self.move(dt)
         self.animate(dt)
+        self.update_shadow()
+
+
+class PlayerShadow(pg.sprite.Sprite, BaseLoading):
+    def __init__(self, groups, x_pos:int, y_pos:int, distance_between_rects_method):
+
+        self.sprites = {
+            'big' : pg.image.load("graphics/02_streets_of_dinohattan/entities/player/shadows/player_shadow_big.png").convert_alpha(),
+            'small' : pg.image.load("graphics/02_streets_of_dinohattan/entities/player/shadows/player_shadow_small.png").convert_alpha()
+        }
+
+        super().__init__(groups)
+
+        self.size = 'small'
+
+        self.xy_pos = pg.math.Vector2(x_pos, y_pos)
+        self.z = LAYERS['BG2']
+
+        self.image = self.sprites[self.size]
+        self.rect = self.image.get_rect(topleft=self.xy_pos)
+
+        self.check_distance_between_rects = distance_between_rects_method
+
+    def update_xy_pos(self, x, y):
+
+        self.xy_pos.x = x
+        self.xy_pos.y = y
+        self.rect.x = round(x)
+        self.rect.y = round(y)
+
+    def change_size(self, to:str):
+        """
+        to = 'small' or 'big'
+        """
+
+        self.size = to.lower()
+        self.image = self.sprites[self.size]
+

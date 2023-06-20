@@ -1,0 +1,16 @@
+2023-06-20 09:07:13,337 ERROR 'TrafficLight' object has no attribute 'hitbox'
+Traceback (most recent call last):
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\game.py", line 9, in <module>
+    game_loop.looping()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 121, in looping
+    self._02_level.update(dt)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 316, in update
+    self.update_sprites(dt)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 297, in update_sprites
+    sprite.update(dt)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\car.py", line 116, in update
+    self.check_traffic_light()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\car.py", line 92, in check_traffic_light
+    if self.rect.left >= self.traffic_light.rect.right + 167 and self.check_distance_between_rects(rect1=self.hitbox, rect2=self.traffic_light.hitbox, max_distance=700): # check traffic light if car is right to light signal
+                                                                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'TrafficLight' object has no attribute 'hitbox'

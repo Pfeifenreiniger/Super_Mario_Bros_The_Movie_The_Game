@@ -5,7 +5,18 @@ import random as rnd
 from code._02_level.entity import Entity
 
 class Car(Entity):
-    def __init__(self, groups, pos, model_no, car_no, player, settings, map_width, map_height, distance_between_rects_method):
+    def __init__(self,
+                 groups,
+                 pos,
+                 car_line,
+                 model_no,
+                 car_no,
+                 player,
+                 settings,
+                 map_width,
+                 map_height,
+                 distance_between_rects_method,
+                 traffic_light):
 
         self.image = pg.image.load(f"graphics/02_streets_of_dinohattan/entities/cars/model{model_no}/model{model_no}_car{car_no}.png").convert_alpha()
 
@@ -22,9 +33,14 @@ class Car(Entity):
         self.set_hitbox(pos)
         self.set_direction()
 
+        self.car_line = car_line
+        self.traffic_light = traffic_light
+
         self.base_speed = 280
         self.speed_variance = 4
         self.speed = self.base_speed + (rnd.randint(-self.speed_variance * 3, self.speed_variance * 3))
+        self.start_speed = self.speed
+        self.max_speed = self.speed * 1.1
 
         self.player = player
         self.distance_to_player = 0 # value will be overwritten by check_distance method of player class
@@ -52,17 +68,53 @@ class Car(Entity):
 
     def check_car_collision(self):
         for sprite in self.cars_sprites:
-            if self.hitbox.colliderect(sprite.hitbox):
-                if self.direction.x == 1:
-                    if self.hitbox.left < sprite.hitbox.left and abs(self.hitbox.centery - sprite.hitbox.centery) < 6:
-                        self.speed -= self.speed_variance
-                    else:
-                        self.speed += self.speed_variance
+            if self.car_line == sprite.car_line:
+
+                # reduce speed or stop if cars close to each other
+                if (self.direction.x == 1 and self.hitbox.left < sprite.hitbox.left) \
+                        or (self.direction.x == -1 and self.hitbox.right > sprite.hitbox.right):
+
+                    if self.check_distance_between_rects(rect1=self.hitbox, rect2=sprite.hitbox, max_distance=225):
+                        self.speed = 0
+                    elif self.check_distance_between_rects(rect1=self.hitbox, rect2=sprite.hitbox, max_distance=300):
+                        self.speed = int(self.speed / 2)
+                    else: # if no cars in front, give speed!
+                        if self.speed < self.max_speed:
+                            self.speed += self.speed_variance
+
+                # avoid cars overlapping
+                if self.hitbox.colliderect(sprite.hitbox):
+                    if self.direction.x == 1: # moving to the right
+                        if self.hitbox.left < sprite.hitbox.left:
+                            self.speed = 0
+                            self.hitbox.right = sprite.hitbox.left - 2
+                    else: # moving to the left
+                        if self.hitbox.right > sprite.hitbox.right:
+                            self.speed = 0
+                            self.hitbox.left = sprite.hitbox.right + 2
+
+    def check_traffic_light(self):
+        if self.car_line >= 14: # traffic light only for car lines 14 and 15
+            speed_change = 15
+            if self.rect.left >= self.traffic_light.rect.right + 167 \
+                    and self.check_distance_between_rects(rect1=self.hitbox, rect2=self.traffic_light.rect, max_distance=550): # check traffic light if car is right to light signal
+
+                if self.traffic_light.frame == 1: # red for cars
+                    if self.speed - speed_change > 0:
+                        self.speed -= speed_change
+                    elif self.speed != 0:
+                        self.speed = 0
+                else: # green for cars
+                    if self.speed != self.start_speed:
+                        if self.speed + speed_change > self.start_speed:
+                            self.speed = self.start_speed
+                        else:
+                            self.speed += speed_change
+            elif self.speed != self.start_speed:
+                if self.speed + speed_change > self.start_speed:
+                    self.speed = self.start_speed
                 else:
-                    if self.hitbox.right > sprite.hitbox.right and abs(self.hitbox.centery - sprite.hitbox.centery) < 6:
-                        self.speed -= self.speed_variance
-                    else:
-                        self.speed += self.speed_variance
+                    self.speed += speed_change
 
     def update(self, dt):
         self.move(dt)
@@ -70,6 +122,7 @@ class Car(Entity):
 
         self.check_car_collision()
         self.check_player_collision()
+        self.check_traffic_light()
 
         if not -200 < self.rect.x < 3400:
             self.kill()
@@ -84,7 +137,8 @@ class CarsTimer:
                  event_loop,
                  settings,
                  map_width,
-                 map_height):
+                 map_height,
+                 traffic_light):
 
         # attributes for car-instantiation
         self.groups = groups
@@ -96,18 +150,20 @@ class CarsTimer:
         self.map_width = map_width
         self.map_height = map_height
 
+        self.traffic_light = traffic_light
+
         self.cars_start_pos_no = cars_start_pos_no
         self.event_name = f'cars_timer_{self.cars_start_pos_no}'
         self.event_loop = event_loop
 
-        self.spawn_times = (1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000)
+        self.spawn_times = (1750, 2000, 2250, 2500, 2750, 3000)
         self.timer_set = False
         self.random_renew_timer_timestamp = pg.time.get_ticks()
 
     def set_cars_timer(self):
         self.event_id = pg.USEREVENT + 2 + self.cars_start_pos_no
         self.event_loop.EVENT_IDS[self.event_name] = self.event_id
-        pg.time.set_timer(self.event_id, rnd.choice(self.spawn_times))  # every one and half a second a car spawn
+        pg.time.set_timer(self.event_id, rnd.choice(self.spawn_times))
         self.event_loop.add_event(self.event_id)
 
     def drop_cars_timer(self):
@@ -137,13 +193,15 @@ class CarsTimer:
             if self.event_name in self.event_loop.triggered_events:
                 Car(groups=self.groups,
                     pos=self.pos,
+                    car_line=self.cars_start_pos_no,
                     model_no=rnd.randint(1,4),
                     car_no=rnd.randint(1,3),
                     player=self.player,
                     settings=self.settings,
                     map_width=self.map_width,
                     map_height=self.map_height,
-                    distance_between_rects_method=self.check_distance_between_rects)
+                    distance_between_rects_method=self.check_distance_between_rects,
+                    traffic_light=self.traffic_light)
                 self.event_loop.triggered_events.remove(self.event_name)
 
     def update(self):
