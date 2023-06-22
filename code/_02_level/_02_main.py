@@ -10,6 +10,7 @@ from code.tile import Tile, CollisionTile, CollisionTileWithSeparateHitbox
 from code._02_level.traffic_light import TrafficLight
 from code._02_level.player import Player
 from code._02_level.car import CarsTimer
+from code._02_level.train import Train
 
 
 class AllSprites(pg.sprite.Group):
@@ -144,6 +145,18 @@ class _02_Main:
                         traffic_light=self.traffic_light
                     )
                 )
+
+        # train
+        for obj in self.tmx_map.get_layer_by_name('train'):
+            Train(
+                groups=self.all_sprites,
+                surf=obj.image,
+                pos=(obj.x, obj.y + 8),
+                map_width=self.map_width,
+                map_height=self.map_height,
+                settings=self.settings,
+                distance_between_rects_method=self.check_distance_between_rects
+            )
 
         # background
         for x, y, surf in self.tmx_map.get_layer_by_name('background').tiles():
@@ -298,12 +311,22 @@ class _02_Main:
                     self.all_sprites.draw(sprite=sprite, player=self.player)
                 else:
                     sprite.kill()
+            elif sprite.__class__.__name__ == "Train":
+                sprite.update(dt)
+                self.all_sprites.draw(sprite=sprite, player=self.player)
             else:
                 if sprite.check_distance_between_rects(rect1=self.player.rect, rect2=sprite.rect, max_distance=1200):
                     if sprite.__class__.__name__ == "Tile" or sprite.__class__.__name__ == "CollisionTile" or sprite.__class__.__name__ == "CollisionTileWithSeparateHitbox":
                         self.all_sprites.draw(sprite=sprite, player=self.player)
                     elif sprite.__class__.__name__ == "TrafficLight":
                         self.all_sprites.draw(sprite=sprite, player=self.player)
+                    elif sprite.__class__.__name__ == "StartArrow":
+                        if not sprite.is_init:
+                            sprite.is_init = True
+                            sprite.init_timestamps()
+                        sprite.update()
+                        if sprite.is_visible:
+                            self.all_sprites.draw(sprite=sprite, player=self.player)
                     else:
                         self.all_sprites.draw(sprite=sprite, player=self.player)
 

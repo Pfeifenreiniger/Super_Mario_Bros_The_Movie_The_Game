@@ -6,5 +6,5 @@ LAYERS = {
     'FG1' : 3, # lamps, lights, containers, phone box, hydrant, building shadows
     'FG2' : 4, # buildings
     'FG3' : 5, # train rail track
-    'FG4' : 6 # train
+    'FG4' : 6 # train, start arrow
 }

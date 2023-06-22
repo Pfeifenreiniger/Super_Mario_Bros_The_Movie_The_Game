@@ -24,7 +24,7 @@
 73,74,75,76,77,78,79,80
 </data>
  </layer>
- <objectgroup id="13" name="entities">
+ <objectgroup id="13" name="entities" locked="1">
   <object id="139" name="player" x="1554" y="3604">
    <point/>
   </object>

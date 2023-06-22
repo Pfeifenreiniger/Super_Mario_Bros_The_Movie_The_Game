@@ -94,6 +94,11 @@ class Player(Humanoid):
                                    y_pos=self.xy_pos.y,
                                    distance_between_rects_method=distance_between_rects_method)
 
+        self.start_arrow = StartArrow(groups=groups,
+                                      x_pos=self.rect.centerx - 54,
+                                      y_pos=self.rect.centery - 300,
+                                      distance_between_rects_method=distance_between_rects_method)
+
         self.speed = 130
         self.max_health = self.health
         self.lives = 3
@@ -104,7 +109,7 @@ class Player(Humanoid):
 
         self.rect = self.image.get_rect(topleft=pos)
 
-        hitbox_margin = int((self.rect.width / 8))
+        hitbox_margin = int((self.rect.width / 5))
         hitbox_left = self.rect.left + hitbox_margin
         hitbox_top = self.rect.top + hitbox_margin
 
@@ -115,31 +120,32 @@ class Player(Humanoid):
 
     def input(self):
 
-        keys = pg.key.get_pressed()
+        if self.start_arrow.is_done:
+            keys = pg.key.get_pressed()
 
-        # horizontal movement
-        if keys[pg.K_RIGHT]:
-            self.direction.x = 1
-            self.animation_status = "run_right"
+            # horizontal movement
+            if keys[pg.K_RIGHT]:
+                self.direction.x = 1
+                self.animation_status = "run_right"
 
-        elif keys[pg.K_LEFT]:
-            self.direction.x = -1
-            self.animation_status = "run_left"
+            elif keys[pg.K_LEFT]:
+                self.direction.x = -1
+                self.animation_status = "run_left"
 
-        else:
-            self.direction.x = 0
+            else:
+                self.direction.x = 0
 
-        # vertical movement
-        if keys[pg.K_UP]:
-            self.direction.y = -1
-            self.animation_status = "run_up"
+            # vertical movement
+            if keys[pg.K_UP]:
+                self.direction.y = -1
+                self.animation_status = "run_up"
 
-        elif keys[pg.K_DOWN]:
-            self.direction.y = 1
-            self.animation_status = "run_down"
+            elif keys[pg.K_DOWN]:
+                self.direction.y = 1
+                self.animation_status = "run_down"
 
-        else:
-            self.direction.y = 0
+            else:
+                self.direction.y = 0
 
 
     def check_collision(self, direction):
@@ -242,7 +248,8 @@ class PlayerShadow(pg.sprite.Sprite, BaseLoading):
             'small' : pg.image.load("graphics/02_streets_of_dinohattan/entities/player/shadows/player_shadow_small.png").convert_alpha()
         }
 
-        super().__init__(groups)
+        pg.sprite.Sprite.__init__(self, groups)
+        BaseLoading.__init__(self)
 
         self.size = 'small'
 
@@ -256,10 +263,10 @@ class PlayerShadow(pg.sprite.Sprite, BaseLoading):
 
     def update_xy_pos(self, x, y):
 
-        self.xy_pos.x = x
-        self.xy_pos.y = y
-        self.rect.x = round(x)
-        self.rect.y = round(y)
+        self.xy_pos.x = x - 5
+        self.xy_pos.y = y - 5
+        self.rect.x = round(self.xy_pos.x)
+        self.rect.y = round(self.xy_pos.y)
 
     def change_size(self, to:str):
         """
@@ -269,3 +276,49 @@ class PlayerShadow(pg.sprite.Sprite, BaseLoading):
         self.size = to.lower()
         self.image = self.sprites[self.size]
 
+
+class StartArrow(pg.sprite.Sprite, BaseLoading):
+    def __init__(self, groups, x_pos, y_pos, distance_between_rects_method):
+
+        self.is_init = False
+
+        self.image = pg.image.load("graphics/02_streets_of_dinohattan/entities/player/start_arrow/start_arrow.png").convert_alpha()
+
+        pg.sprite.Sprite.__init__(self, groups)
+        BaseLoading.__init__(self)
+
+        self.xy_pos = pg.math.Vector2(x=x_pos, y=y_pos)
+        self.rect = self.image.get_rect(topleft=self.xy_pos)
+
+        self.z = LAYERS['FG4']
+
+        self.is_visible = True
+        self.blink_timestamp = None
+        self.init_timestamp = None
+        self.is_done = False
+
+        self.check_distance_between_rects = distance_between_rects_method
+
+    def init_timestamps(self):
+        if self.is_init:
+            self.blink_timestamp = pg.time.get_ticks()
+            self.init_timestamp = self.blink_timestamp
+
+    def blink(self):
+
+        if pg.time.get_ticks() - self.blink_timestamp > 800:
+            self.is_visible = True if self.is_visible == False else False
+            self.blink_timestamp = pg.time.get_ticks()
+
+    def check_if_done(self):
+        if pg.time.get_ticks() - self.init_timestamp > 5500:
+            self.is_done = True
+            self.kill()
+
+    def update(self):
+
+        if self.init_timestamp != None:
+            self.check_if_done()
+
+        if self.blink_timestamp != None:
+            self.blink()
