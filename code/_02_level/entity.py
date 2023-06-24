@@ -32,6 +32,7 @@ class Entity(pg.sprite.Sprite, BaseLoading):
                              pos[1]),  # top
                             (50,  # width
                              50))  # height
+        self.hitbox = self.rect
 
     def move(self, dt):
 
@@ -45,11 +46,12 @@ class Entity(pg.sprite.Sprite, BaseLoading):
 
         self.xy_pos.x += x_movement
 
-        self.rect.x = round(self.xy_pos.x)
+        self.hitbox.x = round(self.xy_pos.x)
 
         # vertical movement
         y_movement = self.direction.y * self.speed * dt
 
         self.xy_pos.y += y_movement
 
-        self.rect.y = round(self.xy_pos.y)
+        self.hitbox.y = round(self.xy_pos.y)
+

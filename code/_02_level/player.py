@@ -1,6 +1,8 @@
 
 import pygame as pg
 
+from math import sin
+
 from code._02_level.base_loading import BaseLoading
 from code._02_level.humanoid import Humanoid
 from code._02_level.layers import LAYERS
@@ -103,6 +105,9 @@ class Player(Humanoid):
         self.max_health = self.health
         self.lives = 3
         self.dead = False
+        self.is_vulnerable = True
+        self.invul_duration = 1500
+        self.hit_time = None
 
     def set_hitbox(self, pos):
         """generates rect object and adjust its size to be the hitbox"""
@@ -211,11 +216,35 @@ class Player(Humanoid):
         self.rect.y = round(self.xy_pos.y)
         self.check_collision('vertical')
 
+    def vulnerability_timer(self):
+        if not self.is_vulnerable:
+            current_time = pg.time.get_ticks()
+            if current_time - self.hit_time > self.invul_duration:
+                self.is_vulnerable = True
+
+    def blink(self):
+        if not self.is_vulnerable:
+            if self.wave_value():
+                mask = pg.mask.from_surface(self.image)
+                white_surf = mask.to_surface()
+                white_surf.set_colorkey((0, 0, 0))
+                self.image = white_surf
+
+    def wave_value(self):
+        value = sin(pg.time.get_ticks())
+        if value >= 0:
+            return True
+        else:
+            return False
+
     def lose_life(self):
-        print("AUA ICH VERLIERE EIN LEBEN!")
-        self.lives -= 1
-        if self.lives <= 0:
-            self.dead = True
+
+        if self.is_vulnerable:
+            self.hit_time = pg.time.get_ticks()
+            self.is_vulnerable = False
+            self.lives -= 1
+            if self.lives <= 0:
+                self.dead = True
 
     def update_shadow(self):
 
@@ -238,6 +267,8 @@ class Player(Humanoid):
         self.move(dt)
         self.animate(dt)
         self.update_shadow()
+        self.vulnerability_timer()
+        self.blink()
 
 
 class PlayerShadow(pg.sprite.Sprite, BaseLoading):

@@ -19,6 +19,7 @@ class Car(Entity):
                  traffic_light):
 
         self.image = pg.image.load(f"graphics/02_streets_of_dinohattan/entities/cars/model{model_no}/model{model_no}_car{car_no}.png").convert_alpha()
+        self.model_no = model_no
 
         pos = self.randomize_y_pos(pos)
 
@@ -51,7 +52,24 @@ class Car(Entity):
 
     def set_hitbox(self, pos):
         self.rect = self.image.get_rect(center = pos)
-        self.hitbox = self.rect
+
+        if self.model_no == 1:
+            margin_left = self.rect.width // 5
+        elif self.model_no == 2 or self.model_no == 3:
+            margin_left = self.rect.width // 8
+        else:
+            margin_left = self.rect.width // 7
+        margin_top = self.rect.height // 8
+
+        hitbox_left = self.rect.left + margin_left
+        hitbox_top = self.rect.top + margin_top
+
+        self.hitbox = pg.Rect(
+                            (hitbox_left, # left
+                             hitbox_top), # top
+                            (self.rect.width - (2 * margin_left), # width
+                             self.rect.height - (2 * margin_top)) # height
+                            )
 
     def set_direction(self):
         if self.xy_pos.x < 600: # moving to the right
