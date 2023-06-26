@@ -11,7 +11,7 @@ from code._02_level.traffic_light import TrafficLight
 from code._02_level.player import Player
 from code._02_level.car import CarsTimer
 from code._02_level.train import Train
-
+from code._02_level.bertha import Bertha
 
 class AllSprites(pg.sprite.Group):
     def __init__(self, screen, settings, map_width, map_height):
@@ -110,6 +110,17 @@ class _02_Main:
         for obj in self.tmx_map.get_layer_by_name('entities'):
             if obj.name == 'player':
                 self.player = Player(
+                    groups=self.all_sprites,
+                    pos=(obj.x, obj.y),
+                    collision_sprites=self.collision_sprites,
+                    map_width=self.map_width,
+                    map_height=self.map_height,
+                    settings=self.settings,
+                    distance_between_rects_method=self.check_distance_between_rects
+                )
+        # entities - bertha
+            elif obj.name == 'bertha':
+                Bertha(
                     groups=self.all_sprites,
                     pos=(obj.x, obj.y),
                     collision_sprites=self.collision_sprites,
@@ -327,6 +338,11 @@ class _02_Main:
                         sprite.update()
                         if sprite.is_visible:
                             self.all_sprites.draw(sprite=sprite, player=self.player)
+                    elif sprite.__class__.__name__ == "Bertha":
+                        if not sprite.is_init:
+                            sprite.is_init = True
+                        sprite.update(dt)
+                        self.all_sprites.draw(sprite=sprite, player=self.player)
                     else:
                         self.all_sprites.draw(sprite=sprite, player=self.player)
 

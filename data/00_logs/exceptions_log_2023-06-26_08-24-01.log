@@ -1,0 +1,24 @@
+2023-06-26 08:24:01,291 ERROR name 'LAYERS' is not defined
+Traceback (most recent call last):
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\game.py", line 8, in <module>
+    game_loop = GameLoop()
+                ^^^^^^^^^^
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 29, in __init__
+    self.setup()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 44, in setup
+    self._02_level = _02_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 83, in __init__
+    self.setup()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 112, in setup
+    self.player = Player(
+                  ^^^^^^^
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\player.py", line 94, in __init__
+    self.shadow = PlayerShadow(groups=groups,
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\player.py", line 282, in __init__
+    super().__init__(
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\humanoid.py", line 87, in __init__
+    self.z = LAYERS['BG2']
+             ^^^^^^
+NameError: name 'LAYERS' is not defined

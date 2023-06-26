@@ -1,5 +1,9 @@
 
+import pygame as pg
+
+from code._02_level.base_loading import BaseLoading
 from code._02_level.entity import Entity
+from code._02_level.layers import LAYERS
 
 class Humanoid(Entity):
     def __init__(self, groups, pos, collision_sprites, settings, map_width, map_height, distance_between_rects_method):
@@ -68,3 +72,37 @@ class Humanoid(Entity):
 
         self.image = self.sprites[self.animation_status][int(self.frame_index)]
 
+
+class HumanoidShadow(pg.sprite.Sprite, BaseLoading):
+    def __init__(self, groups, sprites, x_pos:int, y_pos:int, xy_pos_margin:int, distance_between_rects_method):
+
+        self.sprites = sprites
+
+        pg.sprite.Sprite.__init__(self, groups)
+        BaseLoading.__init__(self)
+
+        self.size = 'small'
+
+        self.xy_pos = pg.math.Vector2(x_pos, y_pos)
+        self.xy_pos_margin = xy_pos_margin
+        self.z = LAYERS['BG2']
+
+        self.image = self.sprites[self.size]
+        self.rect = self.image.get_rect(topleft=self.xy_pos)
+
+        self.check_distance_between_rects = distance_between_rects_method
+
+    def update_xy_pos(self, x, y):
+
+        self.xy_pos.x = x + self.xy_pos_margin
+        self.xy_pos.y = y + self.xy_pos_margin
+        self.rect.x = round(self.xy_pos.x)
+        self.rect.y = round(self.xy_pos.y)
+
+    def change_size(self, to:str):
+        """
+        to = 'small' or 'big'
+        """
+
+        self.size = to.lower()
+        self.image = self.sprites[self.size]

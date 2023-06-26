@@ -9,10 +9,10 @@
     "fileStates": {
         "02_map.tmx": {
             "scale": 0.75,
-            "selectedLayer": 10,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": -599.3333333333334,
-                "y": 1065.3333333333333
+                "x": 1551.3333333333335,
+                "y": 3498.6666666666665
             }
         },
         "background.tsx": {

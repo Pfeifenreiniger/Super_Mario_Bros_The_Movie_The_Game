@@ -4,7 +4,7 @@ import pygame as pg
 from math import sin
 
 from code._02_level.base_loading import BaseLoading
-from code._02_level.humanoid import Humanoid
+from code._02_level.humanoid import Humanoid, HumanoidShadow
 from code._02_level.layers import LAYERS
 
 class Player(Humanoid):
@@ -271,7 +271,7 @@ class Player(Humanoid):
         self.blink()
 
 
-class PlayerShadow(pg.sprite.Sprite, BaseLoading):
+class PlayerShadow(HumanoidShadow):
     def __init__(self, groups, x_pos:int, y_pos:int, distance_between_rects_method):
 
         self.sprites = {
@@ -279,33 +279,17 @@ class PlayerShadow(pg.sprite.Sprite, BaseLoading):
             'small' : pg.image.load("graphics/02_streets_of_dinohattan/entities/player/shadows/player_shadow_small.png").convert_alpha()
         }
 
-        pg.sprite.Sprite.__init__(self, groups)
-        BaseLoading.__init__(self)
+        super().__init__(
+            groups=groups,
+            sprites=self.sprites,
+            x_pos=x_pos,
+            y_pos=y_pos,
+            xy_pos_margin=-5,
+            distance_between_rects_method=distance_between_rects_method
+        )
 
         self.size = 'small'
 
-        self.xy_pos = pg.math.Vector2(x_pos, y_pos)
-        self.z = LAYERS['BG2']
-
-        self.image = self.sprites[self.size]
-        self.rect = self.image.get_rect(topleft=self.xy_pos)
-
-        self.check_distance_between_rects = distance_between_rects_method
-
-    def update_xy_pos(self, x, y):
-
-        self.xy_pos.x = x - 5
-        self.xy_pos.y = y - 5
-        self.rect.x = round(self.xy_pos.x)
-        self.rect.y = round(self.xy_pos.y)
-
-    def change_size(self, to:str):
-        """
-        to = 'small' or 'big'
-        """
-
-        self.size = to.lower()
-        self.image = self.sprites[self.size]
 
 
 class StartArrow(pg.sprite.Sprite, BaseLoading):
