@@ -1,0 +1,18 @@
+2023-07-08 13:24:49,601 ERROR 'PedestriansTimer' object has no attribute 'cars_start_pos_no'
+Traceback (most recent call last):
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\game.py", line 9, in <module>
+    game_loop.looping()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 121, in looping
+    self._02_level.update(dt)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 386, in update
+    self.update_pedestrians_timers()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 337, in update_pedestrians_timers
+    pedestrians_timer.update()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\pedestrian.py", line 193, in update
+    self.is_timer_set()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\pedestrian.py", line 165, in is_timer_set
+    self.set_pedestrians_timer()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\pedestrian.py", line 151, in set_pedestrians_timer
+    self.event_id = pg.USEREVENT + 3 + self.cars_start_pos_no
+                                       ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PedestriansTimer' object has no attribute 'cars_start_pos_no'

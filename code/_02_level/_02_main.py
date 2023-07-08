@@ -10,6 +10,7 @@ from code.tile import Tile, CollisionTile, CollisionTileWithSeparateHitbox
 from code._02_level.traffic_light import TrafficLight
 from code._02_level.player import Player
 from code._02_level.car import CarsTimer
+from code._02_level.pedestrian import PedestriansTimer
 from code._02_level.train import Train
 from code._02_level.bertha import Bertha
 
@@ -77,8 +78,11 @@ class _02_Main:
         self.all_sprites = AllSprites(screen=SCREEN, settings=self.settings, map_width=self.map_width, map_height=self.map_height)
         self.collision_sprites = pg.sprite.Group()
         self.cars_sprites = pg.sprite.Group()
+        self.pedestrians_sprites = pg.sprite.Group()
 
+        # timers lists
         self.cars_timers = []
+        self.pedestrians_timers = []
 
         self.setup()
 
@@ -154,6 +158,23 @@ class _02_Main:
                         map_width=self.map_width,
                         map_height=self.map_height,
                         traffic_light=self.traffic_light
+                    )
+                )
+
+        # entities - pedestrians
+        for obj in self.tmx_map.get_layer_by_name('entities'):
+            if 'pedestrians' in obj.name:
+                self.pedestrians_timers.append(
+                    PedestriansTimer(
+                        groups=[self.all_sprites, self.pedestrians_sprites],
+                        pedestrians_start_pos_no=int(obj.name.split('_')[1]),
+                        pos=(obj.x, obj.y),
+                        player=self.player,
+                        distance_between_rects_method=self.check_distance_between_rects,
+                        event_loop=self.event_loop,
+                        settings=self.settings,
+                        map_width=self.map_width,
+                        map_height=self.map_height
                     )
                 )
 
@@ -311,12 +332,22 @@ class _02_Main:
         for cars_timer in self.cars_timers:
             cars_timer.update()
 
+    def update_pedestrians_timers(self):
+        for pedestrians_timer in self.pedestrians_timers:
+            pedestrians_timer.update()
+
     def update_sprites(self, dt):
         for sprite in sorted(self.all_sprites.sprites(), key=lambda sprite: sprite.z):
 
             if sprite.__class__.__name__ == "Player":
                 self.all_sprites.draw(sprite=sprite, player=self.player)
             elif sprite.__class__.__name__ == "Car":
+                if sprite.check_distance_between_rects(rect1=self.player.rect, rect2=sprite.rect, max_distance=3400):
+                    sprite.update(dt)
+                    self.all_sprites.draw(sprite=sprite, player=self.player)
+                else:
+                    sprite.kill()
+            elif sprite.__class__.__name__ == "Pedestrian":
                 if sprite.check_distance_between_rects(rect1=self.player.rect, rect2=sprite.rect, max_distance=3400):
                     sprite.update(dt)
                     self.all_sprites.draw(sprite=sprite, player=self.player)
@@ -352,6 +383,7 @@ class _02_Main:
             self.player.update(dt)
             self.traffic_light.update()
             self.update_cars_timers()
+            self.update_pedestrians_timers()
             self.update_sprites(dt)
 
         else:

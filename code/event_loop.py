@@ -47,7 +47,14 @@ class EventLoop:
                     # _02_level.car.CarsTimer
                     for event_name, event_id in self.EVENT_IDS.items():
                         if my_event == event_id:
-                            self.triggered_events.append(event_name)
+                            if event_name not in self.triggered_events:
+                                self.triggered_events.append(event_name)
+
+                    # _02_level.pedestrian.PedestriansTimer
+                    for event_name, event_id in self.EVENT_IDS.items():
+                        if my_event == event_id:
+                            if event_name not in self.triggered_events:
+                                self.triggered_events.append(event_name)
 
 
     def check_for_event(self, event_id:int) -> bool:

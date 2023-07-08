@@ -44,7 +44,6 @@ class Car(Entity):
         self.max_speed = self.speed * 1.1
 
         self.player = player
-        self.distance_to_player = 0 # value will be overwritten by check_distance method of player class
 
     def randomize_y_pos(self, pos:tuple[int, int]) -> tuple[int, int]:
         """To give the y-pos a bit of variance"""
@@ -80,9 +79,8 @@ class Car(Entity):
             self.image = pg.transform.flip(self.image, True, False)
 
     def check_player_collision(self):
-        if self.distance_to_player <= 150:
-            if self.hitbox.colliderect(self.player.rect):
-                self.player.lose_life()
+        if self.hitbox.colliderect(self.player.rect):
+            self.player.lose_life()
 
     def check_car_collision(self):
         for sprite in self.cars_sprites:

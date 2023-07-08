@@ -1,5 +1,6 @@
 
 import pygame as pg
+import random as rnd
 
 from math import sin
 
@@ -243,8 +244,23 @@ class Player(Humanoid):
             self.hit_time = pg.time.get_ticks()
             self.is_vulnerable = False
             self.lives -= 1
+            # TODO: plays lose-life sfx
             if self.lives <= 0:
                 self.dead = True
+
+    def get_pushed(self, pusher_hitbox):
+        if pusher_hitbox.bottom > self.rect.bottom:
+            self.rect.bottom = pusher_hitbox.top - 1
+        elif pusher_hitbox.top < self.rect.top:
+            self.rect.top = pusher_hitbox.bottom + 1
+        else:
+            if rnd.randint(0, 1) == 0:
+                self.rect.bottom = pusher_hitbox.top - 1
+            else:
+                self.rect.top = pusher_hitbox.bottom + 1
+
+        self.xy_pos.x = self.rect.x
+        self.xy_pos.y = self.rect.y
 
     def update_shadow(self):
 

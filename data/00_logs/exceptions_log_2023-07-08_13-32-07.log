@@ -1,0 +1,19 @@
+2023-07-08 13:32:07,888 ERROR name 'sprites' is not defined
+Traceback (most recent call last):
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\game.py", line 9, in <module>
+    game_loop.looping()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 121, in looping
+    self._02_level.update(dt)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 386, in update
+    self.update_pedestrians_timers()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 337, in update_pedestrians_timers
+    pedestrians_timer.update()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\pedestrian.py", line 196, in update
+    self.spawn_pedestrian()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\pedestrian.py", line 182, in spawn_pedestrian
+    Pedestrian(groups=self.groups,
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\pedestrian.py", line 47, in __init__
+    self.set_direction()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\pedestrian.py", line 84, in set_direction
+    sprites
+NameError: name 'sprites' is not defined

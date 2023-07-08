@@ -1,0 +1,18 @@
+2023-07-08 13:59:43,990 ERROR 'PedestrianShadow' object has no attribute 'rect'
+Traceback (most recent call last):
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\game.py", line 9, in <module>
+    game_loop.looping()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 121, in looping
+    self._02_level.update(dt)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 387, in update
+    self.update_sprites(dt)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 352, in update_sprites
+    sprite.update(dt)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\pedestrian.py", line 125, in update
+    self.update_shadow()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\pedestrian.py", line 121, in update_shadow
+    self.shadow.update_xy_pos(x=self.xy_pos.x, y=self.xy_pos.y)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\pedestrian.py", line 169, in update_xy_pos
+    self.rect.x = round(self.xy_pos.x)
+    ^^^^^^^^^
+AttributeError: 'PedestrianShadow' object has no attribute 'rect'
