@@ -13,6 +13,7 @@ from code._02_level.car import CarsTimer
 from code._02_level.pedestrian import PedestriansTimer
 from code._02_level.train import Train
 from code._02_level.bertha import Bertha
+from code.cutscenes import Intro, Outro
 
 class AllSprites(pg.sprite.Group):
     def __init__(self, screen, settings, map_width, map_height):
@@ -64,6 +65,7 @@ class _02_Main:
         self.locator = locator
 
         self.game_over_screen = GameOverScreen(settings)
+        self.intro = Intro(2, self.settings)
 
         SCREEN = self.settings.get_display_screen()
 

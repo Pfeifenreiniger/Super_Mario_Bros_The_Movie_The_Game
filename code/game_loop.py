@@ -118,7 +118,11 @@ class GameLoop:
 
             elif self.locator.current_location == 2:
                 if self._02_level.loaded:
-                    self._02_level.update(dt)
+                    if not self._02_level.intro.done:
+                        self._02_level.intro.turn_active()
+                        self._02_level.intro.update(dt)
+                    else:
+                        self._02_level.update(dt)
                 else:
                     self._02_level.check_loading_progression()
 

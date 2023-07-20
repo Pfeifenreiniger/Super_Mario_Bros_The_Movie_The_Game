@@ -178,6 +178,12 @@ class Intro(Cutscene):
                 pg.image.load("graphics/01_excavation_site/intro/01_intro_03.png").convert(),
                 pg.image.load("graphics/01_excavation_site/intro/01_intro_04.png").convert()
             )
+        elif self.lvl == 2:
+            self.images = (
+                pg.image.load("graphics/02_streets_of_dinohattan/intro/02_intro_01.png").convert(),
+                pg.image.load("graphics/02_streets_of_dinohattan/intro/02_intro_02.png").convert(),
+                pg.image.load("graphics/02_streets_of_dinohattan/intro/02_intro_03.png").convert()
+            )
 
     def load_texts(self):
 
@@ -219,11 +225,32 @@ class Intro(Cutscene):
                            "her toward a gateway to the other world.",
                            '"Let go of me!" Daisy yelled...')
             )
+        elif self.lvl == 2:
+            self.texts = (("Luigi and Mario jumped through the", # 02_intro_01
+                           "gateway after Daisy.",
+                           "They fell through a dimensional vortex",
+                           "and didn't know which way",
+                           "was up or down there..."),
+                          ("They found themselves in a strange-", # 02_intro_02
+                           "looking city that was covered with",
+                           "thick yellow fungus.",
+                           "In some way, the buildings recalled",
+                           "them to Brooklyn...",
+                           "Daisy was nowhere in sight."),
+                          ("Just then a women named Big Bertha", # 02_intro_03
+                           "ran up to the Mario brothers.",
+                           "Despite her appearance, she seemed",
+                           "to be friendly at first.",
+                           "Suddenly, Bertha snatched Daisy's",
+                           "crystal from Luigi and rushed off!")
+                          )
 
     def load_music(self):
 
         if self.lvl == 1:
             self.music = pg.mixer.Sound("audio/music/HeatleyBros - 8 Bit Town.mp3")
+        elif self.lvl == 2:
+            self.music = pg.mixer.Sound("audio/music/Cyberpunk Edgerunners - Franz Ferdinand [Chiptune Cover].mp3")
 
 
 class Outro(Cutscene):
