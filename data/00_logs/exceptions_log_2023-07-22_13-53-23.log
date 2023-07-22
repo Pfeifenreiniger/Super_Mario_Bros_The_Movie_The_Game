@@ -1,0 +1,19 @@
+2023-07-22 13:53:23,799 ERROR No file 'graphics/01_excavation_site/controls/02_controls_screen.png' found in working directory 'C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game'.
+Traceback (most recent call last):
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\game.py", line 8, in <module>
+    game_loop = GameLoop()
+                ^^^^^^^^^^
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 29, in __init__
+    self.setup()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 44, in setup
+    self._02_level = _02_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 72, in __init__
+    self.control_screen = ControlScreen(2, self.settings)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\control_screen.py", line 14, in __init__
+    self.load_bg()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\control_screen.py", line 68, in load_bg
+    self.bg_image = pg.image.load(f'graphics/01_excavation_site/controls/0{self.lvl}_controls_screen.png').convert()
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: No file 'graphics/01_excavation_site/controls/02_controls_screen.png' found in working directory 'C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game'.

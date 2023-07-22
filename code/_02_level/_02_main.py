@@ -4,6 +4,7 @@ import pygame as pg
 from code._02_level.layers import LAYERS
 from pytmx.util_pygame import load_pygame
 from code.check_distance_between_rects import check_distance_between_rects
+from code.menu_pane import MenuPane
 from code.game_over import GameOverScreen
 from code.tile import Tile, CollisionTile, CollisionTileWithSeparateHitbox
 
@@ -13,7 +14,9 @@ from code._02_level.car import CarsTimer
 from code._02_level.pedestrian import PedestriansTimer
 from code._02_level.train import Train
 from code._02_level.bertha import Bertha
+from code._02_level.hud import HUD
 from code.cutscenes import Intro, Outro
+from code.control_screen import ControlScreen
 
 class AllSprites(pg.sprite.Group):
     def __init__(self, screen, settings, map_width, map_height):
@@ -66,12 +69,20 @@ class _02_Main:
 
         self.game_over_screen = GameOverScreen(settings)
         self.intro = Intro(2, self.settings)
+        self.control_screen = ControlScreen(2, self.settings)
 
         SCREEN = self.settings.get_display_screen()
+        self.menu_pane = MenuPane(screen=SCREEN, settings=self.settings, locator=locator)
 
         self.tmx_map = load_pygame("data/02_streets_of_dinohattan/02_map.tmx")
         self.map_width = self.tmx_map.tilewidth * self.tmx_map.width
         self.map_height = self.tmx_map.tileheight * self.tmx_map.height
+
+        # music
+        self.music_volume = self.settings.music_volume
+        self.music = pg.mixer.Sound("audio/music/Aim To Head - Heroez.mp3")
+        self.music.set_volume(self.music_volume)
+        self.music_plays = False
 
         # distance function
         self.check_distance_between_rects = check_distance_between_rects
@@ -122,6 +133,7 @@ class _02_Main:
                     map_width=self.map_width,
                     map_height=self.map_height,
                     settings=self.settings,
+                    menu_pane=self.menu_pane,
                     distance_between_rects_method=self.check_distance_between_rects
                 )
         # entities - bertha
@@ -326,6 +338,12 @@ class _02_Main:
                 distance_between_rects_method=self.check_distance_between_rects
             )
 
+        # player HUD
+        self.hud = HUD(
+            settings=self.settings,
+            player=self.player
+        )
+
     def check_loading_progression(self):
         if not isinstance(self, type(None)):
             self.loaded = True
@@ -382,11 +400,48 @@ class _02_Main:
     def update(self, dt):
 
         if self.all_sprites_loaded:
-            self.player.update(dt)
-            self.traffic_light.update()
-            self.update_cars_timers()
-            self.update_pedestrians_timers()
-            self.update_sprites(dt)
+
+            if not self.finished:
+
+                if self.intro.done and not self.music_plays:
+                    # music plays as soon as the intro is done
+                    self.music.play(loops=-1)
+                    self.music_plays = True
+
+                if not self.player.dead:
+                    self.player.update(dt)
+                    self.traffic_light.update()
+                    self.update_cars_timers()
+                    self.update_pedestrians_timers()
+                    self.update_sprites(dt)
+
+                    if self.music_volume != self.settings.music_volume:
+                        self.music_volume = self.settings.music_volume
+                        self.music.set_volume(self.music_volume)
+
+                    if self.menu_pane.active and not self.finished:
+                        self.menu_pane.update(dt)
+                        self.menu_pane.draw()
+                    else:
+                        self.hud.draw()
+
+                    if self.locator.current_location != 2:
+                        self.music.stop()
+
+                else:
+                    self.music.stop()
+                    if self.game_over_screen.restart_game:
+                        self.game_over_screen.music.stop()
+                        del self.game_over_screen
+                        self.locator.current_location = 0
+                    elif self.game_over_screen.restart_level:
+                        self.game_over_screen.music.stop()
+                        self.__init__(settings=self.settings, locator=self.locator)
+                    else:
+                        self.game_over_screen.update()
+                        self.game_over_screen.draw()
+
+
 
         else:
             while not self.all_sprites_loaded:

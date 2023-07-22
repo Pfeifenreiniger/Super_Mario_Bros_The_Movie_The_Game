@@ -1,0 +1,14 @@
+2023-07-22 13:33:42,147 ERROR name 'MenuPane' is not defined
+Traceback (most recent call last):
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\game.py", line 8, in <module>
+    game_loop = GameLoop()
+                ^^^^^^^^^^
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 29, in __init__
+    self.setup()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 44, in setup
+    self._02_level = _02_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 72, in __init__
+    self.menu_pane = MenuPane(screen=SCREEN, settings=self.settings, locator=locator)
+                     ^^^^^^^^
+NameError: name 'MenuPane' is not defined

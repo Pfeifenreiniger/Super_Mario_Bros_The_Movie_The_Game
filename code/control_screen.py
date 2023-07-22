@@ -45,6 +45,12 @@ class ControlScreen:
             key_texts = ["left", "right", "jump", "duck", "attack", "menu"]
             keys_in_use = ["left", "right", "up", "down", "space", "escape"]
 
+        elif self.lvl == 2:
+            xs = [i * round(800 / 6) for i in range(6) if i != 0]
+            rgb = (244, 244, 244)
+            key_texts = ["left", "right", "up", "down", "menu"]
+            keys_in_use = ["left", "right", "up", "down", "escape"]
+
         self.keys_in_use = keys_in_use.copy()
 
         # rects
@@ -61,6 +67,8 @@ class ControlScreen:
     def load_bg(self):
         if self.lvl == 1:
             self.bg_image = pg.image.load('graphics/01_excavation_site/controls/01_controls_screen.png').convert()
+        elif self.lvl == 2:
+            self.bg_image = pg.image.load('graphics/02_streets_of_dinohattan/controls/02_controls_screen.png').convert()
 
         self.bg_rect = self.bg_image.get_rect(topleft=(0, 0))
 

@@ -1,4 +1,5 @@
 
+import math
 import pygame as pg
 import random as rnd
 
@@ -44,6 +45,16 @@ class Car(Entity):
         self.max_speed = self.speed * 1.1
 
         self.player = player
+
+        # sfx
+        self.sfx_volume = self.settings.music_volume
+        self.engine_sfx = pg.mixer.Sound("audio/sfx/enemies/car/car_engine.mp3")
+        self.engine_sfx.set_volume(self.sfx_volume)
+        self.engine_sfx_plays = False
+
+        self.horn_sfx = pg.mixer.Sound("audio/sfx/enemies/car/car_horn.mp3")
+        self.horn_sfx.set_volume(self.sfx_volume)
+        self.horn_sfx_played = False
 
     def randomize_y_pos(self, pos:tuple[int, int]) -> tuple[int, int]:
         """To give the y-pos a bit of variance"""
@@ -132,6 +143,31 @@ class Car(Entity):
                 else:
                     self.speed += speed_change
 
+    def check_sfx(self):
+
+        if self.player.dead:
+            self.engine_sfx.stop()
+
+        distance_to_player = math.dist(self.hitbox.center, self.player.rect.center)
+        if distance_to_player < 400:
+            if not self.engine_sfx_plays:
+                self.engine_sfx_plays = True
+                self.engine_sfx.play(loops=-1)
+            if distance_to_player < 75:
+                if not self.horn_sfx_played:
+                    self.horn_sfx.play()
+                    self.horn_sfx_played = True
+        else:
+            if self.engine_sfx_plays:
+                self.engine_sfx_plays = False
+                self.engine_sfx.stop()
+
+        # check volume change
+        if self.sfx_volume != self.settings.sfx_volume:
+            self.sfx_volume = self.settings.sfx_volume
+            self.engine_sfx.set_volume(self.sfx_volume)
+            self.horn_sfx.set_volume(self.sfx_volume)
+
     def update(self, dt):
         self.move(dt)
         self.hitbox = self.rect
@@ -139,6 +175,7 @@ class Car(Entity):
         self.check_car_collision()
         self.check_player_collision()
         self.check_traffic_light()
+        self.check_sfx()
 
         if not -200 < self.rect.x < 3400:
             self.kill()

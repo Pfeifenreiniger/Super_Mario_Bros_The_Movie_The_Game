@@ -9,7 +9,7 @@ from code._02_level.humanoid import Humanoid, HumanoidShadow
 from code._02_level.layers import LAYERS
 
 class Player(Humanoid):
-    def __init__(self, groups, pos, collision_sprites, map_width, map_height, settings, distance_between_rects_method):
+    def __init__(self, groups, pos, collision_sprites, map_width, map_height, settings, menu_pane, distance_between_rects_method):
 
         self.sprites = {
             "stand_left" : (
@@ -110,6 +110,15 @@ class Player(Humanoid):
         self.invul_duration = 1500
         self.hit_time = None
 
+        self.menu_pane = menu_pane
+        self.menu_pressed = False
+        self.menu_pressed_timestamp = None
+
+        # sfx
+        self.sfx_volume = self.settings.sfx_volume
+        self.lose_life_sfx = pg.mixer.Sound("audio/sfx/player/lose_life.mp3")
+        self.lose_life_sfx.set_volume(self.sfx_volume)
+
     def set_hitbox(self, pos):
         """generates rect object and adjust its size to be the hitbox"""
 
@@ -127,31 +136,50 @@ class Player(Humanoid):
     def input(self):
 
         if self.start_arrow.is_done:
-            keys = pg.key.get_pressed()
 
-            # horizontal movement
-            if keys[pg.K_RIGHT]:
-                self.direction.x = 1
-                self.animation_status = "run_right"
+            if not self.menu_pane.active:
 
-            elif keys[pg.K_LEFT]:
-                self.direction.x = -1
-                self.animation_status = "run_left"
+                keys = pg.key.get_pressed()
 
-            else:
-                self.direction.x = 0
+                # horizontal movement
+                if keys[pg.K_RIGHT]:
+                    self.direction.x = 1
+                    self.animation_status = "run_right"
 
-            # vertical movement
-            if keys[pg.K_UP]:
-                self.direction.y = -1
-                self.animation_status = "run_up"
+                elif keys[pg.K_LEFT]:
+                    self.direction.x = -1
+                    self.animation_status = "run_left"
 
-            elif keys[pg.K_DOWN]:
-                self.direction.y = 1
-                self.animation_status = "run_down"
+                else:
+                    self.direction.x = 0
 
-            else:
-                self.direction.y = 0
+                # vertical movement
+                if keys[pg.K_UP]:
+                    self.direction.y = -1
+                    self.animation_status = "run_up"
+
+                elif keys[pg.K_DOWN]:
+                    self.direction.y = 1
+                    self.animation_status = "run_down"
+
+                else:
+                    self.direction.y = 0
+
+                # activate menu pane
+                if keys[pg.K_ESCAPE] and not self.menu_pressed:
+                    self.direction.x = 0
+                    self.direction.y = 0
+
+                    self.menu_pane.active = True
+                    self.menu_pane.key_pressed = True
+                    self.menu_pane.key_pressed_timestamp = pg.time.get_ticks()
+
+                    self.menu_pressed = True
+                    self.menu_pressed_timestamp = pg.time.get_ticks()
+
+                if self.menu_pressed:
+                    if pg.time.get_ticks() - self.menu_pressed_timestamp > 300:
+                        self.menu_pressed = False
 
 
     def check_collision(self, direction):
@@ -244,7 +272,7 @@ class Player(Humanoid):
             self.hit_time = pg.time.get_ticks()
             self.is_vulnerable = False
             self.lives -= 1
-            # TODO: plays lose-life sfx
+            self.lose_life_sfx.play()
             if self.lives <= 0:
                 self.dead = True
 
@@ -276,6 +304,11 @@ class Player(Humanoid):
 
         self.shadow.update_xy_pos(x=self.xy_pos.x, y=self.xy_pos.y)
 
+    def check_sfx_vol(self):
+        if self.sfx_volume != self.settings.sfx_volume:
+            self.sfx_volume = self.settings.sfx_volume
+            self.lose_life_sfx.set_volume(self.sfx_volume)
+
     def update(self, dt):
         self.old_animation_status = self.animation_status
         self.input()
@@ -285,6 +318,7 @@ class Player(Humanoid):
         self.update_shadow()
         self.vulnerability_timer()
         self.blink()
+        self.check_sfx_vol()
 
 
 class PlayerShadow(HumanoidShadow):

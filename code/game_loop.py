@@ -112,7 +112,7 @@ class GameLoop:
                             self._01_level.outro.turn_active()
                             self._01_level.outro.update(dt)
                             if self._01_level.outro.done:
-                                self.locator.current_location = 0 # TODO: instead of 0 change to the next lvl (2) as soon as its done
+                                self.locator.current_location = 2
                 else:
                     self._01_level.check_loading_progression()
 
@@ -122,7 +122,13 @@ class GameLoop:
                         self._02_level.intro.turn_active()
                         self._02_level.intro.update(dt)
                     else:
-                        self._02_level.update(dt)
+                        if not self._02_level.control_screen.done:
+                            self._02_level.control_screen.update()
+                        elif not self._02_level.finished:
+                            self._02_level.update(dt)
+                        else:
+                            pass
+                            # TODO: outro lvl2 einfuegen
                 else:
                     self._02_level.check_loading_progression()
 

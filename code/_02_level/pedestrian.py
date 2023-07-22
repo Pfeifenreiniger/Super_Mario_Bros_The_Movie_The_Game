@@ -62,6 +62,13 @@ class Pedestrian(Entity):
             distance_between_rects_method=distance_between_rects_method
         )
 
+        # sfx
+        self.sfx_volume = self.settings.music_volume
+        self.yelling_sfx = pg.mixer.Sound(f"audio/sfx/enemies/pedestrians/pedestrian{pedestrian_no}_yelling.mp3")
+        self.yelling_sfx.set_volume(self.sfx_volume)
+        self.yelling_sfx_played = False
+        self.yelling_sfx_timestamp = None
+
     def randomize_y_pos(self, pos:tuple[int, int]) -> tuple[int, int]:
         return (pos[0], pos[1] + rnd.randint(-2, 2))
 
@@ -101,7 +108,13 @@ class Pedestrian(Entity):
     def check_player_collision(self):
         if self.hitbox.colliderect(self.player.rect):
             self.player.get_pushed(pusher_hitbox=self.hitbox)
-            # TODO: play pedestrian-pushes sfx
+            if self.yelling_sfx_timestamp is None:
+                self.yelling_sfx_timestamp = pg.time.get_ticks()
+                self.yelling_sfx.play()
+            else:
+                if pg.time.get_ticks() - self.yelling_sfx_timestamp > 1000:
+                    self.yelling_sfx_timestamp = pg.time.get_ticks()
+                    self.yelling_sfx.play()
 
     def animate(self, dt):
 
@@ -122,6 +135,11 @@ class Pedestrian(Entity):
 
         self.shadow.update_xy_pos(x=self.xy_pos.x, y=self.xy_pos.y)
 
+    def check_sfx_vol(self):
+        if self.sfx_volume != self.settings.sfx_volume:
+            self.sfx_volume = self.settings.sfx_volume
+            self.yelling_sfx.set_volume(self.sfx_volume)
+
     def update(self, dt):
         self.move(dt)
         self.update_shadow()
@@ -129,6 +147,8 @@ class Pedestrian(Entity):
         self.hitbox = self.rect
 
         self.check_player_collision()
+
+        self.check_sfx_vol()
 
         if not -100 < self.rect.x < 3300:
             self.shadow.kill()
