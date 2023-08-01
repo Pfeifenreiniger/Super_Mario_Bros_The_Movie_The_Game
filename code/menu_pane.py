@@ -5,8 +5,15 @@ import sys
 from code.fonts import FONT_MASHEEN_BOLD_30, FONT_PRESS_START_20
 
 class MenuPane:
-    def __init__(self, screen, settings, locator):
+    def __init__(self, screen, settings, locator, savegames):
+
         self.SCREEN = screen
+
+        self.savegames = savegames
+        self.save_level = self.savegames.load_level()
+        self.new_game = False
+        self.load_game = False
+
         self.settings = settings
         self.locator = locator
 
@@ -74,10 +81,28 @@ class MenuPane:
             font_rect_quit = font_surf_quit.get_rect(center = (400, self.pane_y_edge + round((self.pane_height_end / 5) * 4)))
 
             # new game menu (1)
-            # ...
+            if self.save_level != 0:
+                text_new_game_1_1 = "OVERRIDE?"
+            else:
+                text_new_game_1_1 = "LET'S A GO!"
+
+            font_surf_new_game_1_1 = self.font.render(text_new_game_1_1, False, self.font_color_white)
+            font_rect_new_game_1_1 = font_surf_new_game_1_1.get_rect(center = (400, self.pane_y_edge + round((self.pane_height_end / 5) * 1)))
+
+            font_surf_new_game_1_2 = self.font.render("BACK", False, self.font_color_white)
+            font_rect_new_game_1_2 = font_surf_new_game_1_2.get_rect(center = (400, self.pane_y_edge + round((self.pane_height_end / 5) * 2)))
 
             # load game menu (2)
-            # ...
+            if self.save_level != 0:
+                text_load_game_2_1 = f"LOAD LVL {self.save_level}"
+            else:
+                text_load_game_2_1 = "NO LVL TO LOAD"
+
+            font_surf_load_game_2_1 = self.font.render(text_load_game_2_1, False, self.font_color_white)
+            font_rect_load_game_2_1 = font_surf_load_game_2_1.get_rect(center = (400, self.pane_y_edge + round((self.pane_height_end / 5) * 1)))
+
+            font_surf_load_game_2_2 = self.font.render("BACK", False, self.font_color_white)
+            font_rect_load_game_2_2 = font_surf_load_game_2_2.get_rect(center = (400, self.pane_y_edge + round((self.pane_height_end / 5) * 2)))
 
             # settings menu (3)
             font_surf_music_vol = self.font.render(f"MUSIC VOL.: {int(self.settings.music_volume * 100)}%", False, self.font_color_white)
@@ -100,10 +125,12 @@ class MenuPane:
                     "QUIT" : [font_surf_quit, font_rect_quit]
                 },
                 1 : { # new game
-
+                    text_new_game_1_1 : [font_surf_new_game_1_1, font_rect_new_game_1_1],
+                    "BACK" : [font_surf_new_game_1_2, font_rect_new_game_1_2]
                 },
                 2 : { # load game
-
+                    text_load_game_2_1 : [font_surf_load_game_2_1, font_rect_load_game_2_1],
+                    "BACK" : [font_surf_load_game_2_2, font_rect_load_game_2_2]
                 },
                 3 : { # settings
                     f"MUSIC VOL.: {int(self.settings.music_volume * 100)}%" : [font_surf_music_vol, font_rect_music_vol],
@@ -176,13 +203,22 @@ class MenuPane:
             else:
                 self.direction.y = 1
 
-                if self.curr_menu_point[0] == 0:
-                    if self.locator.current_location == 0: # title menu
-                        if self.curr_menu_point[1] == "NEW GAME":
+                if self.locator.current_location == 0: # title menu
+
+                    if self.curr_menu_point[0] == 1: # new game
+                        if self.curr_menu_point[1] != "BACK" and self.new_game:
                             self.active = False
                             self.locator.current_location = 1
 
-                    else: # pause menu
+                    elif self.curr_menu_point[0] == 2: # load game
+                        if self.curr_menu_point[1] == f"LOAD LVL {self.save_level}" and self.load_game:
+                            self.active = False
+                            self.locator.current_location = self.save_level
+
+                else: # pause menu
+
+                    if self.curr_menu_point[0] == 0:
+
                         if self.curr_menu_point[1] == "QUIT":
                             self.active = False
                             self.locator.current_location = 0
@@ -207,7 +243,10 @@ class MenuPane:
 
                 if self.locator.current_location == 0: # title menu
 
-                    if self.curr_menu_point[0] == 0 or (self.curr_menu_point[0] == 3 and self.curr_menu_point[1] == "BACK"):
+                    if self.curr_menu_point[0] == 0 or\
+                        (self.curr_menu_point[0] == 3 and self.curr_menu_point[1] == "BACK") or\
+                        self.curr_menu_point[0] == 1 or\
+                        self.curr_menu_point[0] == 2:
 
                         key_pressed()
 
@@ -216,7 +255,6 @@ class MenuPane:
                         self.show_fonts = False
 
                         if self.curr_menu_point[0] == 0: # main menu
-                            print(f"LET'S A GO TO {self.curr_menu_point[1]}")
 
                             if self.curr_menu_point[1] == "QUIT":
                                 self.settings.db.close()
@@ -226,9 +264,26 @@ class MenuPane:
                                 self.settings.get_settings()
                                 self.curr_menu_point[0] = 3
                                 self.curr_menu_point[1] = list(self.fonts[3].keys())[0]
+                            elif self.curr_menu_point[1] == "LOAD GAME":
+                                self.curr_menu_point[0] = 2
+                                self.curr_menu_point[1] = list(self.fonts[2].keys())[0]
+                            elif self.curr_menu_point[1] == "NEW GAME":
+                                self.curr_menu_point[0] = 1
+                                self.curr_menu_point[1] = list(self.fonts[1].keys())[0]
+
+                        elif self.curr_menu_point[0] == 1: # new game
+                            if self.curr_menu_point[1] == "BACK":
+                                self.curr_menu_point[0] = 0
+                                self.curr_menu_point[1] = "NEW GAME"
+                            else:
+                                self.new_game = True
 
                         elif self.curr_menu_point[0] == 2: # load game
-                            pass
+                            if self.curr_menu_point[1] != f"LOAD LVL {self.save_level}":
+                                self.curr_menu_point[0] = 0
+                                self.curr_menu_point[1] = "LOAD GAME"
+                            else:
+                                self.load_game = True
 
                         elif self.curr_menu_point[0] == 3: # settings
                             self.settings.save_changes_to_db()
@@ -284,8 +339,27 @@ class MenuPane:
                             case "SETTINGS" : self.curr_menu_point[1] = "QUIT"
                             case "QUIT" : self.curr_menu_point[1] = "NEW GAME"
 
+                    elif self.curr_menu_point[0] == 1: # new game
+
+                        if self.curr_menu_point[1] == "OVERRIDE?" or\
+                                self.curr_menu_point[1] == "LET'S A GO!":
+                            self.curr_menu_point[1] = "BACK"
+                        elif self.curr_menu_point[1] == "BACK":
+                            if self.save_level != 0:
+                                self.curr_menu_point[1] = "OVERRIDE?"
+                            else:
+                                self.curr_menu_point[1] = "LET'S A GO!"
+
                     elif self.curr_menu_point[0] == 2: # load game
-                        pass
+
+                        if self.curr_menu_point[1] == f"LOAD LVL {self.save_level}" or\
+                                self.curr_menu_point[1] == "NO LVL TO LOAD":
+                            self.curr_menu_point[1] = "BACK"
+                        elif self.curr_menu_point[1] == "BACK":
+                            if self.save_level != 0:
+                                self.curr_menu_point[1] = f"LOAD LVL {self.save_level}"
+                            else:
+                                self.curr_menu_point[1] = "NO LVL TO LOAD"
 
                     elif self.curr_menu_point[0] == 3: # settings
 
@@ -335,10 +409,26 @@ class MenuPane:
                             case "QUIT" : self.curr_menu_point[1] = "SETTINGS"
 
                     elif self.curr_menu_point[0] == 1:  # new game
-                        pass
+
+                        if self.curr_menu_point[1] == "OVERRIDE?" or\
+                                self.curr_menu_point[1] == "LET'S A GO!":
+                            self.curr_menu_point[1] = "BACK"
+                        elif self.curr_menu_point[1] == "BACK":
+                            if self.save_level != 0:
+                                self.curr_menu_point[1] = "OVERRIDE?"
+                            else:
+                                self.curr_menu_point[1] = "LET'S A GO!"
 
                     elif self.curr_menu_point[0] == 2:  # load game
-                        pass
+
+                        if self.curr_menu_point[1] == f"LOAD LVL {self.save_level}" or\
+                                self.curr_menu_point[1] == "NO LVL TO LOAD":
+                            self.curr_menu_point[1] = "BACK"
+                        elif self.curr_menu_point[1] == "BACK":
+                            if self.save_level != 0:
+                                self.curr_menu_point[1] = f"LOAD LVL {self.save_level}"
+                            else:
+                                self.curr_menu_point[1] = "NO LVL TO LOAD"
 
                     elif self.curr_menu_point[0] == 3:  # settings
 

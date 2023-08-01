@@ -6,7 +6,7 @@ from code.menu_pane import MenuPane
 from code.fonts import FONT_MASHEEN_BOLD_30, FONT_PRESS_START_20
 
 class _00_Main:
-    def __init__(self, event_loop, settings, locator):
+    def __init__(self, event_loop, settings, locator, savegames):
 
         self.loaded = False
 
@@ -28,7 +28,7 @@ class _00_Main:
         self.logo = Logo(self.SCREEN)
         self.logo_appearance = False
         self.press_start = PressStart(self.SCREEN)
-        self.menu_pane = MenuPane(self.SCREEN, settings, self.locator)
+        self.menu_pane = MenuPane(self.SCREEN, settings, self.locator, savegames)
         self.show_pane = False
 
         self.button_pressed = False

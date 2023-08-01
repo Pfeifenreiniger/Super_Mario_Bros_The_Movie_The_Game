@@ -2,7 +2,7 @@
 import pygame as pg
 pg.init()
 
-
+from code.savegame_db import SavegameDB
 from code.settings import Settings
 from code.event_loop import EventLoop
 from code.locator import Locator
@@ -16,6 +16,7 @@ from code._02_level._02_main import _02_Main
 class GameLoop:
     def __init__(self):
         # basic setup
+        self.savegames = SavegameDB()
         self.settings = Settings()
         self.event_loop = EventLoop(self.settings)
         self.clock = pg.time.Clock()
@@ -37,11 +38,11 @@ class GameLoop:
             if self.first_start:
                 self._00_startup_logos = _00_Logos(settings=self.settings)
             else:
-                self._00_screen = _00_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator)
+                self._00_screen = _00_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator, savegames=self.savegames)
         elif self.locator.current_location == 1:
-            self._01_level = _01_Main(settings=self.settings, locator=self.locator)
+            self._01_level = _01_Main(settings=self.settings, locator=self.locator, savegames=self.savegames)
         elif self.locator.current_location == 2:
-            self._02_level = _02_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator)
+            self._02_level = _02_Main(event_loop=self.event_loop, settings=self.settings, locator=self.locator, savegames=self.savegames)
 
     def garbage_cleanup(self):
         """get rid of currently not used levels"""
@@ -59,6 +60,9 @@ class GameLoop:
             if hasattr(self, '_01_level'):
                 del self._01_level
             if hasattr(self, '_02_level'):
+                self._02_level.music.stop()
+                for car in self._02_level.cars_sprites:
+                    car.engine_sfx.stop()
                 del self._02_level
 
         elif self.locator.current_location == 1:
@@ -127,8 +131,10 @@ class GameLoop:
                         elif not self._02_level.finished:
                             self._02_level.update(dt)
                         else:
-                            pass
-                            # TODO: outro lvl2 einfuegen
+                            self._02_level.outro.turn_active()
+                            self._02_level.outro.update(dt)
+                            if self._02_level.outro.done:
+                                self.locator.current_location = 0 # TODO: to lvl 3 once its done
                 else:
                     self._02_level.check_loading_progression()
 

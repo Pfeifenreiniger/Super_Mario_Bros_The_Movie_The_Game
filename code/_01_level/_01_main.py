@@ -55,7 +55,7 @@ class AllSprites(pg.sprite.Group):
 
 
 class _01_Main:
-    def __init__(self, settings, locator):
+    def __init__(self, settings, locator, savegames):
 
         self.loaded = False
         self.all_sprites_loaded = False
@@ -63,6 +63,8 @@ class _01_Main:
 
         self.settings = settings
         self.locator = locator
+        savegames.update_level(1)
+
 
         self.game_over_screen = GameOverScreen(settings)
         self.intro = Intro(1, self.settings)
@@ -70,7 +72,7 @@ class _01_Main:
         self.control_screen = ControlScreen(1, self.settings)
 
         SCREEN = self.settings.get_display_screen()
-        self.menu_pane = MenuPane(screen=SCREEN, settings=self.settings, locator=locator)
+        self.menu_pane = MenuPane(screen=SCREEN, settings=self.settings, locator=locator, savegames=savegames)
 
         self.tmx_map = load_pygame("data/01_excavation_site/01_map.tmx")
         self.map_width = self.tmx_map.tilewidth * self.tmx_map.width

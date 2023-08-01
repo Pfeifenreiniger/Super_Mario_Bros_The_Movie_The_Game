@@ -9,7 +9,7 @@ from code._02_level.humanoid import Humanoid, HumanoidShadow
 from code._02_level.layers import LAYERS
 
 class Player(Humanoid):
-    def __init__(self, groups, pos, collision_sprites, map_width, map_height, settings, menu_pane, distance_between_rects_method):
+    def __init__(self, groups, pos, collision_sprites, map_width, map_height, settings, menu_pane, distance_between_rects_method, end_zone):
 
         self.sprites = {
             "stand_left" : (
@@ -114,6 +114,8 @@ class Player(Humanoid):
         self.menu_pressed = False
         self.menu_pressed_timestamp = None
 
+        self.end_zone = end_zone
+
         # sfx
         self.sfx_volume = self.settings.sfx_volume
         self.lose_life_sfx = pg.mixer.Sound("audio/sfx/player/lose_life.mp3")
@@ -216,6 +218,13 @@ class Player(Humanoid):
                                 self.rect.bottom = sprite.hitbox.top
 
                         self.xy_pos.y = self.rect.y
+
+    def check_end_zone(self):
+        # if contact to level end zone -> returns True
+        if self.rect.colliderect(self.end_zone):
+            return True
+        else:
+            return False
 
     def move(self, dt):
         """player checks collision to level objects"""

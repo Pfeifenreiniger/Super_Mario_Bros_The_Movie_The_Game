@@ -57,7 +57,7 @@ class AllSprites(pg.sprite.Group):
 
 
 class _02_Main:
-    def __init__(self, event_loop, settings, locator):
+    def __init__(self, event_loop, settings, locator, savegames):
 
         self.loaded = False
         self.all_sprites_loaded = False
@@ -66,13 +66,15 @@ class _02_Main:
         self.event_loop = event_loop
         self.settings = settings
         self.locator = locator
+        savegames.update_level(2)
 
         self.game_over_screen = GameOverScreen(settings)
         self.intro = Intro(2, self.settings)
+        self.outro = Outro(2, self.settings)
         self.control_screen = ControlScreen(2, self.settings)
 
         SCREEN = self.settings.get_display_screen()
-        self.menu_pane = MenuPane(screen=SCREEN, settings=self.settings, locator=locator)
+        self.menu_pane = MenuPane(screen=SCREEN, settings=self.settings, locator=locator, savegames=savegames)
 
         self.tmx_map = load_pygame("data/02_streets_of_dinohattan/02_map.tmx")
         self.map_width = self.tmx_map.tilewidth * self.tmx_map.width
@@ -123,6 +125,10 @@ class _02_Main:
                  hitbox_height)
             )
 
+        # end zone
+        for obj in self.tmx_map.get_layer_by_name('end_zone'):
+            end_zone = pg.Rect(obj.x, obj.y, obj.width, obj.height)
+
         # entities - player
         for obj in self.tmx_map.get_layer_by_name('entities'):
             if obj.name == 'player':
@@ -134,8 +140,10 @@ class _02_Main:
                     map_height=self.map_height,
                     settings=self.settings,
                     menu_pane=self.menu_pane,
-                    distance_between_rects_method=self.check_distance_between_rects
+                    distance_between_rects_method=self.check_distance_between_rects,
+                    end_zone=end_zone
                 )
+
         # entities - bertha
             elif obj.name == 'bertha':
                 Bertha(
@@ -348,6 +356,11 @@ class _02_Main:
         if not isinstance(self, type(None)):
             self.loaded = True
 
+    def check_level_finished(self):
+        if self.player.check_end_zone():
+            self.finished = True
+            self.music.stop()
+
     def update_cars_timers(self):
         for cars_timer in self.cars_timers:
             cars_timer.update()
@@ -410,6 +423,7 @@ class _02_Main:
 
                 if not self.player.dead:
                     self.player.update(dt)
+                    self.check_level_finished()
                     self.traffic_light.update()
                     self.update_cars_timers()
                     self.update_pedestrians_timers()
@@ -436,7 +450,7 @@ class _02_Main:
                         self.locator.current_location = 0
                     elif self.game_over_screen.restart_level:
                         self.game_over_screen.music.stop()
-                        self.__init__(settings=self.settings, locator=self.locator)
+                        self.__init__(settings=self.settings, locator=self.locator, event_loop=self.event_loop)
                     else:
                         self.game_over_screen.update()
                         self.game_over_screen.draw()

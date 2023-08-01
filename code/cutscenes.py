@@ -268,6 +268,11 @@ class Outro(Cutscene):
             self.images = (
                 pg.image.load("graphics/01_excavation_site/outro/01_outro_01.png").convert(),
             )
+        elif self.lvl == 2:
+            self.images = (
+                pg.image.load("graphics/02_streets_of_dinohattan/outro/02_outro_01.png").convert(),
+                pg.image.load("graphics/02_streets_of_dinohattan/outro/02_outro_02.png").convert()
+            )
 
     def load_texts(self):
 
@@ -277,9 +282,28 @@ class Outro(Cutscene):
                            "Luigi tried to grab her, but he caught",
                            "only the crystal hanging from her neck.",
                            '"We must save Daisy!" cried Luigi.'),
-            )
+                        )
+        elif self.lvl == 2:
+            self.texts = (("Meanwhile Iggy and Spike brought",
+                           "Daisy to Koopa's headquarters.",
+                           "Koopa's nasty girlfriend, Lena, was",
+                           'with him. "You nabbed the right girl",',
+                           'said Koopa, "but you lost the crystal.',
+                           'Where is it?"',
+                           '"Some plumbers took it." Spike said.',
+                           '"Bring me those plumbers!" Koopa',
+                           'commanded.'),
+                          ("Daisy didn't like Koopa, but she made",
+                           "friends with his pet tyrannosaur, Yoshi.",
+                           "Yoshi didn't like being Koopa's prisoner",
+                           "any more than Daisy did...",
+                           "Both hoped that the Mario Brothers",
+                           "will eventually come to their rescue.")
+                        )
 
     def load_music(self):
 
         if self.lvl == 1:
             self.music = pg.mixer.Sound("audio/music/Dawid Podsiadło - Let You Down (Chiptune Mix by Sammeh12 8-bit).mp3")
+        elif self.lvl == 2:
+            self.music = pg.mixer.Sound("audio/music/Future Freak - The Last Hero.mp3")

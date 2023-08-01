@@ -1,0 +1,14 @@
+2023-08-01 08:32:15,096 ERROR near "(": syntax error
+Traceback (most recent call last):
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\game.py", line 9, in <module>
+    game_loop.looping()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 85, in looping
+    self.setup()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 43, in setup
+    self._01_level = _01_Main(settings=self.settings, locator=self.locator, savegames=self.savegames)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_01_level\_01_main.py", line 66, in __init__
+    savegames.update_level(1)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\savegame_db.py", line 106, in update_level
+    cursor.execute(query)
+sqlite3.OperationalError: near "(": syntax error

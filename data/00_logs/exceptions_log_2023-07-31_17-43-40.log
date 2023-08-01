@@ -1,0 +1,9 @@
+2023-07-31 17:43:40,438 ERROR _02_Main.__init__() missing 1 required positional argument: 'event_loop'
+Traceback (most recent call last):
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\game.py", line 9, in <module>
+    game_loop.looping()
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\game_loop.py", line 128, in looping
+    self._02_level.update(dt)
+  File "C:\Users\kevin\PycharmProjects\Super_Mario_Bros_The_Movie_The_Game\code\_02_level\_02_main.py", line 452, in update
+    self.__init__(settings=self.settings, locator=self.locator)
+TypeError: _02_Main.__init__() missing 1 required positional argument: 'event_loop'

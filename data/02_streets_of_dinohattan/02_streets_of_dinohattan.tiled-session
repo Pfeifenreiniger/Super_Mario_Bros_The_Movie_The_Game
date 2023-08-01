@@ -8,11 +8,11 @@
     ],
     "fileStates": {
         "02_map.tmx": {
-            "scale": 0.75,
-            "selectedLayer": 1,
+            "scale": 0.33,
+            "selectedLayer": 12,
             "viewCenter": {
-                "x": 3239.333333333333,
-                "y": 3029.333333333333
+                "x": 1604.5454545454545,
+                "y": 66.66666666666674
             }
         },
         "background.tsx": {
